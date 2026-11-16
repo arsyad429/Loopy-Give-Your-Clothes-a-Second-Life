@@ -1,0 +1,52 @@
+[
+  {
+    "file": "Handout Dasar Kotlin dan Android.pdf",
+    "bytes": 668287,
+    "sha256": "65dae9388335f8ad35b8479b4af45fadebaab59a98902c4ce2de2e7e7ae597fd"
+  },
+  {
+    "file": "Modul 2- Konsep Dasar UI Jetpack Compose.pdf",
+    "bytes": 154472,
+    "sha256": "040c42daafeef88a8da099588e7fe737b695b635f98d0cc67105f932406beaa3"
+  },
+  {
+    "file": "Modul PAPB 3- Konsep State dan Rekomposisi.pdf",
+    "bytes": 300077,
+    "sha256": "376c5ce8106f8d372b15235475902eeed77148c11ecd1f076aaed59d773754f9"
+  },
+  {
+    "file": "Modul Praktikum 06 Arsitektur Android FILKOM UB.pdf",
+    "bytes": 632408,
+    "sha256": "aac53a67a0603ddd7fb1c0e87a1088c5f243424ce26741edb3c6a5249a7f17db"
+  },
+  {
+    "file": "Modul Praktikum 07 REST API Retrofit.pdf",
+    "bytes": 574767,
+    "sha256": "dbc5046a7054364cdcce885e2f4ad97846de970550ad3c24d8412f03a6fc2b3a"
+  },
+  {
+    "file": "Modul Praktikum 08 Kotlin Coroutines Flow.pdf",
+    "bytes": 615442,
+    "sha256": "051c22d78d3184abfa301387e2de67e15962de5d40283a3e4ac9da3f88405e13"
+  },
+  {
+    "file": "Modul Praktikum 09 (Beranotasi).pdf",
+    "bytes": 2877359,
+    "sha256": "cf7d73fff7a681279fd893b6b8790005adb5199bce29ef4986b52b71e35fc8ad"
+  },
+  {
+    "file": "Modul Praktikum-FILKOM UB-Mobile_1_Debug_SDK_LIBRARY_MAIN ACTIVITY.pdf",
+    "bytes": 1292710,
+    "sha256": "3f65472b36f6dedba535058ec4ade94eb78e49c7dbf41b9f19a0d33cbdc455bd"
+  },
+  {
+    "file": "Modul Praktikum-FILKOM UB-Mobile_2_Activity LifeCycle_Composable_Modifier.pdf",
+    "bytes": 486995,
+    "sha256": "4c6004ce51926a7931f1a65bbd6ba6c797a9afd2eb6e4cb5b9f2d17ec37ef9aa"
+  },
+  {
+    "file": "Modul_Praktikum_05_Navigation_Compose_FILKOM_UB.pdf",
+    "bytes": 579120,
+    "sha256": "0b2ecae11e484816e7159406730f89d9cc798c6c832d2a2ff2d9189e621eb08e"
+  }
+]

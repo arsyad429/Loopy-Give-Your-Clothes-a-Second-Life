@@ -1,0 +1,962 @@
+<canvas id="0:1" name="Loopy · Mobile" x="0" y="0" width="0" height="0">
+  <frame id="2:51" name="Loopy / Reusable components" x="1950" y="100" width="1100" height="994">
+    <text id="2:52" name="Loopy UI kit" x="32" y="32" width="148" height="32" />
+    <text id="2:53" name="Reusable buttons, fields and statuses · Plus Jakar" x="32" y="88" width="366" height="21" />
+    <frame id="2:54" name="Buttons" x="32" y="133" width="1036" height="52" />
+    <symbol id="2:61" name="Loopy/Field" x="32" y="209" width="342" height="81" />
+    <frame id="2:65" name="Status badges" x="32" y="314" width="1036" height="32" />
+    <frame id="3:2" name="Icons" x="32" y="370" width="1036" height="24">
+      <symbol id="3:3" name="Loopy/Icon/shirt" x="0" y="0" width="24" height="24" />
+      <symbol id="3:6" name="Loopy/Icon/camera" x="40" y="0" width="24" height="24" />
+      <symbol id="3:10" name="Loopy/Icon/image" x="80" y="0" width="24" height="24" />
+      <symbol id="3:15" name="Loopy/Icon/house" x="120" y="0" width="24" height="24" />
+      <symbol id="3:19" name="Loopy/Icon/package" x="160" y="0" width="24" height="24" />
+      <symbol id="3:25" name="Loopy/Icon/gift" x="200" y="0" width="24" height="24" />
+      <symbol id="3:31" name="Loopy/Icon/arrow-left" x="240" y="0" width="24" height="24" />
+      <symbol id="3:35" name="Loopy/Icon/arrow-right" x="280" y="0" width="24" height="24" />
+      <symbol id="3:39" name="Loopy/Icon/scan-line" x="320" y="0" width="24" height="24" />
+      <symbol id="3:46" name="Loopy/Icon/check" x="360" y="0" width="24" height="24" />
+      <symbol id="3:49" name="Loopy/Icon/leaf" x="400" y="0" width="24" height="24" />
+      <symbol id="3:53" name="Loopy/Icon/calendar-days" x="440" y="0" width="24" height="24" />
+      <symbol id="3:65" name="Loopy/Icon/map-pin" x="480" y="0" width="24" height="24" />
+      <symbol id="3:69" name="Loopy/Icon/clock" x="520" y="0" width="24" height="24" />
+      <symbol id="3:73" name="Loopy/Icon/user" x="560" y="0" width="24" height="24" />
+      <symbol id="3:77" name="Loopy/Icon/sparkles" x="600" y="0" width="24" height="24" />
+      <symbol id="3:84" name="Loopy/Icon/search" x="640" y="0" width="24" height="24" />
+      <symbol id="3:88" name="Loopy/Icon/eye" x="680" y="0" width="24" height="24" />
+      <symbol id="3:92" name="Loopy/Icon/upload" x="720" y="0" width="24" height="24" />
+      <symbol id="3:97" name="Loopy/Icon/circle-check" x="760" y="0" width="24" height="24" />
+      <symbol id="3:101" name="Loopy/Icon/circle-alert" x="800" y="0" width="24" height="24" />
+      <symbol id="3:106" name="Loopy/Icon/x" x="840" y="0" width="24" height="24" />
+      <symbol id="3:110" name="Loopy/Icon/log-out" x="880" y="0" width="24" height="24" />
+    </frame>
+    <symbol id="3:115" name="Loopy/ClothingSample" x="32" y="418" width="342" height="190" />
+    <symbol id="3:120" name="Loopy/DonationCard" x="32" y="632" width="342" height="118" />
+    <symbol id="3:130" name="Loopy/UserNav" x="32" y="774" width="390" height="82" />
+    <symbol id="3:153" name="Loopy/AdminNav" x="32" y="880" width="390" height="82" />
+    <frame id="5:448" name="Loopy/Button" x="32" y="986" width="1024" height="84">
+      <symbol id="2:55" name="Style=Primary" x="16" y="16" width="320" height="52" />
+      <symbol id="2:57" name="Style=Secondary" x="352" y="16" width="320" height="52" />
+      <symbol id="2:59" name="Style=Disabled" x="688" y="16" width="320" height="52" />
+    </frame>
+    <frame id="5:449" name="Loopy/Status" x="32" y="1094" width="507" height="64">
+      <symbol id="2:66" name="Status=Pending" x="16" y="16" width="122" height="32" />
+      <symbol id="2:68" name="Status=Scheduled" x="154" y="16" width="81" height="32" />
+      <symbol id="2:70" name="Status=Picked" x="251" y="16" width="100" height="32" />
+      <symbol id="2:72" name="Status=Completed" x="367" y="16" width="54" height="32" />
+      <symbol id="2:74" name="Status=Rejected" x="437" y="16" width="54" height="32" />
+    </frame>
+  </frame>
+  <frame id="2:82" name="S01 · Landing" x="140" y="372" width="390" height="844">
+    <frame id="4:28" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:29" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:30" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:31" name="App bar" x="0" y="28" width="390" height="84">
+      <text id="4:32" name="loopy ↻" x="24" y="26" width="109" height="32" />
+      <frame id="4:33" name="Spacer" x="145" y="37" width="169" height="10" />
+      <frame id="4:34" name="Account" x="326" y="24" width="40" height="36">
+        <text id="4:35" name="A" x="15" y="8" width="10" height="20" />
+      </frame>
+    </frame>
+    <frame id="4:36" name="Scrollable content" x="0" y="112" width="390" height="632">
+      <frame id="4:37" name="Content" x="0" y="0" width="390" height="776">
+        <frame id="39:729" name="loopy-hero-banner 1" x="24" y="8" width="342" height="326">
+          <vector id="39:730" name="Vector" x="0" y="0" width="342" height="326" />
+          <vector id="39:731" name="Vector" x="44" y="39" width="146" height="49" />
+          <vector id="39:732" name="Vector" x="245" y="30" width="85" height="56" />
+          <vector id="39:733" name="Vector" x="226.16734313964844" y="165.12271118164062" width="115.83265686035156" height="160.87728881835938" />
+          <vector id="39:734" name="Vector" x="118" y="208.2845916748047" width="169.86599731445312" height="100.71540832519531" />
+          <frame id="39:735" name="Group" x="25" y="51.80869674682617" width="22.750213623046875" height="23.577016830444336" />
+          <text id="39:737" name="SECOND LIFE CLUB" x="67" y="52" width="143" height="18" />
+          <frame id="39:738" name="Group" x="220" y="85" width="158.2608184814453" height="118" />
+          <text id="39:759" name="Baju lama," x="24" y="112" width="191" height="46" />
+          <text id="39:760" name="cerita baru." x="24" y="155" width="214" height="46" />
+          <frame id="39:763" name="Group" x="24" y="228" width="322" height="43">
+            <text id="39:761" name="Donasikan pakaian yang masih layak. Kami" x="24" y="228" width="322" height="19" />
+            <text id="39:762" name="bantu cek dan atur penjemputannya." x="24" y="252" width="277" height="19" />
+          </frame>
+          <vector id="39:764" name="Vector" x="288" y="262" width="60" height="47.32548904418945" />
+        </frame>
+        <frame id="4:38" name="Give your clothes a second life" x="24" y="8" width="342" height="326" hidden="true">
+          <frame id="4:39" name="Club tag" x="20" y="20" width="302" height="20">
+            <instance id="4:40" name="Icon/leaf" x="0" y="0" width="20" height="20" />
+            <text id="4:44" name="SECOND LIFE CLUB" x="28" y="0" width="104" height="16" />
+          </frame>
+          <instance id="4:45" name="Icon/shirt" x="20" y="52" width="112" height="112" />
+          <text id="4:48" name="Baju lama,
+cerita baru." x="20" y="176" width="302" height="76" />
+          <text id="4:49" name="Donasikan pakaian yang masih layak. Kami bantu cek dan atur " x="20" y="264" width="302" height="42" />
+        </frame>
+        <text id="4:50" name="Kenapa Loopy?" x="24" y="354" width="136" height="24" />
+        <frame id="4:51" name="Cek dengan AI" x="24" y="398" width="342" height="42">
+          <instance id="4:52" name="Icon/scan-line" x="0" y="0" width="24" height="24" />
+          <frame id="4:59" name="Copy" x="36" y="0" width="306" height="42">
+            <text id="4:60" name="Cek dengan AI" x="0" y="0" width="98" height="20" />
+            <text id="4:61" name="Pemeriksaan awal dari foto pakaian." x="0" y="24" width="306" height="18" />
+          </frame>
+        </frame>
+        <frame id="4:62" name="Pickup lebih mudah" x="24" y="460" width="342" height="42">
+          <instance id="4:63" name="Icon/package" x="0" y="0" width="24" height="24" />
+          <frame id="4:69" name="Copy" x="36" y="0" width="306" height="42">
+            <text id="4:70" name="Pickup lebih mudah" x="0" y="0" width="132" height="20" />
+            <text id="4:71" name="Ajukan penjemputan dari rumah." x="0" y="24" width="306" height="18" />
+          </frame>
+        </frame>
+        <frame id="4:72" name="Kebaikan dapat apresiasi" x="24" y="522" width="342" height="42">
+          <instance id="4:73" name="Icon/gift" x="0" y="0" width="24" height="24" />
+          <frame id="4:79" name="Copy" x="36" y="0" width="306" height="42">
+            <text id="4:80" name="Kebaikan dapat apresiasi" x="0" y="0" width="169" height="20" />
+            <text id="4:81" name="Poin setelah donasi selesai." x="0" y="24" width="306" height="18" />
+          </frame>
+        </frame>
+        <text id="4:82" name="Empat langkah sederhana" x="24" y="584" width="225" height="24" />
+        <text id="4:83" name="01  Cek pakaian
+02  Ajukan penjemputan
+03  Pantau donasimu
+0" x="24" y="628" width="342" height="84" />
+        <text id="4:87" name="Sudah punya akun? Masuk" x="24" y="732" width="342" height="20" />
+      </frame>
+    </frame>
+    <frame id="4:84" name="Bottom action" x="0" y="744" width="390" height="100">
+      <instance id="4:85" name="Mulai sekarang" x="24" y="24" width="342" height="52" />
+    </frame>
+  </frame>
+  <frame id="2:83" name="S02 · Login" x="562" y="372" width="390" height="844">
+    <frame id="4:88" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:89" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:90" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:91" name="App bar" x="0" y="28" width="390" height="84">
+      <text id="4:92" name="loopy ↻" x="24" y="26" width="109" height="32" />
+      <frame id="4:93" name="Spacer" x="145" y="37" width="169" height="10" />
+      <frame id="4:94" name="Account" x="326" y="24" width="40" height="36">
+        <text id="4:95" name="A" x="15" y="8" width="10" height="20" />
+      </frame>
+    </frame>
+    <frame id="4:96" name="Scrollable content" x="0" y="112" width="390" height="632">
+      <frame id="4:97" name="Content" x="0" y="0" width="390" height="671">
+        <frame id="4:98" name="Welcome illustration" x="24" y="8" width="342" height="106">
+          <instance id="4:99" name="Icon/shirt" x="24" y="24" width="58" height="58" />
+          <text id="4:102" name="WELCOME BACK
+SECOND LIFE CLUB" x="94" y="24" width="114" height="36" />
+        </frame>
+        <text id="4:103" name="Senang kamu
+kembali!" x="24" y="134" width="342" height="64" />
+        <text id="4:104" name="Masuk untuk melanjutkan langkah baikmu." x="24" y="218" width="342" height="21" />
+        <instance id="4:105" name="Field" x="24" y="259" width="342" height="81" />
+        <instance id="4:109" name="Field" x="24" y="360" width="342" height="81" />
+        <text id="4:113" name="Gunakan akun yang sudah terdaftar." x="24" y="461" width="342" height="18" />
+        <text id="4:114" name="Belum punya akun? Daftar" x="24" y="499" width="342" height="20" />
+        <frame id="4:115" name="Satu akun, banyak kebaikan" x="24" y="539" width="342" height="108">
+          <frame id="4:116" name="Title" x="20" y="20" width="302" height="20">
+            <instance id="4:117" name="Icon/leaf" x="0" y="0" width="20" height="20" />
+            <text id="4:121" name="Satu akun, banyak kebaikan" x="28" y="0" width="186" height="20" />
+          </frame>
+          <text id="4:122" name="Akun admin menggunakan halaman masuk yang sama." x="20" y="52" width="302" height="36" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="4:123" name="Bottom action" x="0" y="744" width="390" height="100">
+      <instance id="4:124" name="Masuk" x="24" y="24" width="342" height="52" />
+    </frame>
+  </frame>
+  <frame id="2:84" name="S03 · Register" x="984" y="372" width="390" height="844">
+    <frame id="4:126" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:127" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:128" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:129" name="App bar" x="0" y="28" width="390" height="72">
+      <instance id="4:130" name="Icon/arrow-left" x="24" y="24" width="24" height="24" />
+      <text id="4:134" name="Buat akun" x="60" y="24" width="87" height="24" />
+    </frame>
+    <frame id="4:135" name="Scrollable content" x="0" y="100" width="390" height="644">
+      <frame id="4:136" name="Content" x="0" y="0" width="390" height="810">
+        <instance id="4:137" name="Icon/sparkles" x="24" y="8" width="40" height="40" />
+        <text id="4:144" name="Mulai langkah
+baikmu." x="24" y="68" width="342" height="64" />
+        <text id="4:145" name="Pakaian yang jarang dipakai bisa berarti bagi orang lain." x="24" y="152" width="342" height="42" />
+        <instance id="4:146" name="Field" x="24" y="214" width="342" height="81" />
+        <instance id="19:703" name="Field / Username" x="24" y="315" width="342" height="81" />
+        <instance id="4:150" name="Field" x="24" y="416" width="342" height="81" />
+        <instance id="4:154" name="Field" x="24" y="517" width="342" height="81" />
+        <text id="4:158" name="Gunakan password yang kuat dan mudah kamu ingat." x="24" y="618" width="342" height="18" />
+        <text id="4:159" name="Sudah punya akun? Masuk" x="24" y="656" width="342" height="20" />
+        <frame id="4:160" name="Kamu mulai dari 0 poin" x="24" y="696" width="342" height="90">
+          <frame id="4:161" name="Title" x="20" y="20" width="302" height="20">
+            <instance id="4:162" name="Icon/leaf" x="0" y="0" width="20" height="20" />
+            <text id="4:166" name="Kamu mulai dari 0 poin" x="28" y="0" width="151" height="20" />
+          </frame>
+          <text id="4:167" name="Dapatkan 10 poin setiap pengajuan donasi selesai." x="20" y="52" width="302" height="18" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="4:168" name="Bottom action" x="0" y="744" width="390" height="100">
+      <instance id="4:169" name="Buat akun" x="24" y="24" width="342" height="52" />
+    </frame>
+  </frame>
+  <frame id="2:87" name="S04 · Home" x="140" y="1304" width="390" height="844">
+    <frame id="4:171" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:172" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:173" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:174" name="App bar" x="0" y="28" width="390" height="84">
+      <text id="4:175" name="loopy ↻" x="24" y="26" width="109" height="32" />
+      <frame id="4:176" name="Spacer" x="145" y="37" width="169" height="10" />
+      <frame id="4:177" name="Account" x="326" y="24" width="40" height="36">
+        <text id="4:178" name="A" x="15" y="8" width="10" height="20" />
+      </frame>
+    </frame>
+    <frame id="4:179" name="Scrollable content" x="0" y="112" width="390" height="650">
+      <frame id="4:180" name="Content" x="0" y="0" width="390" height="706">
+        <text id="4:181" name="Hai, Arsyad!" x="24" y="8" width="68" height="18" />
+        <text id="4:182" name="Lemari lega.
+Kebaikan bertambah." x="24" y="38" width="342" height="64" />
+        <frame id="4:183" name="Start donation" x="24" y="114" width="342" height="238">
+          <frame id="4:184" name="Hero header" x="16" y="16" width="302" height="48">
+            <instance id="4:185" name="Icon/shirt" x="0" y="0" width="48" height="48" />
+            <text id="4:188" name="SECOND LIFE CLUB" x="60" y="0" width="104" height="16" />
+          </frame>
+          <text id="4:189" name="Punya baju yang
+jarang dipakai?" x="16" y="72" width="302" height="64" />
+          <text id="4:190" name="Cek dulu, lalu ajukan penjemputan." x="16" y="144" width="302" height="18" />
+          <instance id="4:191" name="Cek pakaian" x="16" y="170" width="302" height="52" />
+        </frame>
+        <frame id="4:193" name="Points balance" x="24" y="364" width="342" height="122">
+          <text id="4:194" name="LOOPY POINTS" x="16" y="16" width="82" height="16" />
+          <frame id="4:195" name="Balance" x="16" y="40" width="302" height="38">
+            <text id="4:196" name="20" x="0" y="0" width="42" height="38" />
+            <text id="4:197" name="poin terkumpul" x="54" y="0" width="87" height="18" />
+          </frame>
+          <text id="4:198" name="Lihat rewards →" x="16" y="86" width="342" height="20" />
+        </frame>
+        <text id="4:199" name="Donasi terakhirmu" x="24" y="498" width="159" height="24" />
+        <instance id="4:200" name="DonationCard" x="24" y="534" width="342" height="118" />
+        <text id="4:210" name="Tip: pakaian bersih, kering, dan aman dipakai." x="24" y="664" width="342" height="18" />
+      </frame>
+    </frame>
+    <instance id="4:211" name="UserNav" x="0" y="762" width="390" height="82" />
+  </frame>
+  <frame id="2:88" name="S05 · AI Clothing Detector" x="562" y="1304" width="390" height="844">
+    <frame id="4:234" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:235" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:236" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:237" name="App bar" x="0" y="28" width="390" height="72">
+      <instance id="4:238" name="Icon/arrow-left" x="24" y="24" width="24" height="24" />
+      <text id="4:242" name="Cek pakaian" x="60" y="24" width="108" height="24" />
+    </frame>
+    <frame id="4:243" name="Scrollable content" x="0" y="100" width="390" height="644">
+      <frame id="4:244" name="Content" x="0" y="0" width="390" height="610">
+        <text id="4:245" name="Satu foto,
+langkah pertama." x="24" y="8" width="342" height="64" />
+        <text id="4:246" name="Bentangkan satu pakaian dan tampilkan seluruh bagiannya." x="24" y="92" width="342" height="42" />
+        <frame id="4:247" name="Photo preview" x="24" y="154" width="342" height="176">
+          <instance id="4:248" name="Icon/shirt" x="118" y="20" width="106" height="106" />
+          <text id="4:251" name="kaus-hijau.jpg · contoh foto" x="91.5" y="138" width="159" height="18" />
+        </frame>
+        <frame id="4:252" name="Photo sources" x="24" y="350" width="342" height="52">
+          <instance id="4:253" name="Ambil foto" x="0" y="0" width="165" height="52" />
+          <instance id="4:255" name="Pilih galeri" x="177" y="0" width="165" height="52" />
+        </frame>
+        <frame id="4:257" name="Biar hasilnya lebih jelas" x="24" y="422" width="342" height="108">
+          <frame id="4:258" name="Title" x="20" y="20" width="302" height="20">
+            <instance id="4:259" name="Icon/camera" x="0" y="0" width="20" height="20" />
+            <text id="4:263" name="Biar hasilnya lebih jelas" x="28" y="0" width="152" height="20" />
+          </frame>
+          <text id="4:264" name="Cahaya cukup · pakaian terlihat utuh · latar sederhana." x="20" y="52" width="302" height="36" />
+        </frame>
+        <text id="4:265" name="AI menilai kondisi yang terlihat pada foto. Bau dan kerusaka" x="24" y="550" width="342" height="36" />
+      </frame>
+    </frame>
+    <frame id="4:266" name="Bottom action" x="0" y="744" width="390" height="100">
+      <instance id="4:267" name="Periksa pakaian" x="24" y="24" width="342" height="52" />
+    </frame>
+  </frame>
+  <frame id="2:89" name="S06 · Check Result" x="984" y="1304" width="390" height="844">
+    <frame id="4:269" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:270" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:271" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:272" name="App bar" x="0" y="28" width="390" height="72">
+      <instance id="4:273" name="Icon/arrow-left" x="24" y="24" width="24" height="24" />
+      <text id="4:277" name="Hasil pemeriksaan" x="60" y="24" width="159" height="24" />
+    </frame>
+    <frame id="4:278" name="Scrollable content" x="0" y="100" width="390" height="644">
+      <frame id="4:279" name="Content" x="0" y="0" width="390" height="559">
+        <instance id="4:280" name="ClothingSample" x="24" y="8" width="342" height="180" />
+        <frame id="4:285" name="AI result" x="24" y="208" width="342" height="169">
+          <frame id="4:286" name="Result heading" x="20" y="20" width="302" height="24">
+            <instance id="4:287" name="Icon/circle-check" x="0" y="0" width="24" height="24" />
+            <text id="4:291" name="Berpotensi layak" x="32" y="0" width="146" height="24" />
+          </frame>
+          <text id="4:292" name="Jenis pakaian: Kaus" x="20" y="56" width="109" height="18" />
+          <text id="4:293" name="Tidak tampak sobekan besar pada foto. Periksa kembali kebers" x="20" y="86" width="302" height="63" />
+        </frame>
+        <text id="4:294" name="Hasil AI adalah pemeriksaan awal. Penerimaan tetap diverifik" x="24" y="397" width="342" height="36" />
+        <frame id="4:295" name="Required clean and safe confirmation" x="24" y="453" width="342" height="82">
+          <frame id="4:296" name="Checkbox row" x="20" y="20" width="302" height="42">
+            <frame id="4:297" name="Checked" x="0" y="0" width="24" height="24">
+              <instance id="4:298" name="Icon/check" x="4" y="4" width="16" height="16" />
+            </frame>
+            <text id="4:301" name="Saya memastikan pakaian bersih dan aman digunakan." x="36" y="0" width="266" height="42" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <frame id="4:302" name="Bottom action" x="0" y="744" width="390" height="100">
+      <instance id="4:303" name="Ajukan penjemputan" x="24" y="24" width="342" height="52" />
+    </frame>
+  </frame>
+  <frame id="2:90" name="S07 · Pickup Request" x="1406" y="1304" width="390" height="844">
+    <frame id="4:305" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:306" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:307" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:308" name="App bar" x="0" y="28" width="390" height="72">
+      <instance id="4:309" name="Icon/arrow-left" x="24" y="24" width="24" height="24" />
+      <text id="4:313" name="Ajukan penjemputan" x="60" y="24" width="180" height="24" />
+    </frame>
+    <frame id="4:314" name="Scrollable content" x="0" y="100" width="390" height="618">
+      <frame id="4:315" name="Content" x="0" y="0" width="390" height="1495">
+        <text id="4:316" name="Siap berbagi?" x="24" y="8" width="342" height="32" />
+        <text id="4:317" name="Lengkapi data agar admin bisa mengatur pickup." x="24" y="60" width="342" height="21" />
+        <text id="4:318" name="01 / Pakaian" x="24" y="101" width="104" height="24" />
+        <instance id="4:319" name="ClothingSample" x="24" y="145" width="342" height="145" />
+        <instance id="4:324" name="Field" x="24" y="310" width="342" height="81" />
+        <instance id="4:328" name="Field" x="24" y="411" width="342" height="81" />
+        <text id="4:332" name="02 / Kontak &amp; alamat" x="24" y="512" width="182" height="24" />
+        <instance id="4:333" name="Field" x="24" y="556" width="342" height="81" />
+        <instance id="4:337" name="Field" x="24" y="657" width="342" height="81" />
+        <instance id="4:341" name="Field" x="24" y="758" width="342" height="81" />
+        <instance id="4:345" name="Field" x="24" y="859" width="342" height="81" />
+        <text id="4:349" name="03 / Preferensi penjemputan" x="24" y="960" width="250" height="24" />
+        <instance id="4:350" name="Field" x="24" y="1004" width="342" height="81" />
+        <instance id="4:354" name="Field" x="24" y="1105" width="342" height="81" />
+        <frame id="4:358" name="Ini jadwal pilihanmu" x="24" y="1206" width="342" height="108">
+          <frame id="4:359" name="Title" x="20" y="20" width="302" height="20">
+            <instance id="4:360" name="Icon/calendar-days" x="0" y="0" width="20" height="20" />
+            <text id="4:372" name="Ini jadwal pilihanmu" x="28" y="0" width="130" height="20" />
+          </frame>
+          <text id="4:373" name="Jadwal final dikonfirmasi oleh admin setelah pengajuan diset" x="20" y="52" width="302" height="36" />
+        </frame>
+        <instance id="4:374" name="Field" x="24" y="1334" width="342" height="81" />
+        <text id="4:378" name="Alamat dan nomor telepon digunakan untuk mengatur penjemputa" x="24" y="1435" width="342" height="36" />
+      </frame>
+    </frame>
+    <frame id="4:379" name="Bottom action" x="0" y="718" width="390" height="126">
+      <text id="4:380" name="Status awal: menunggu verifikasi admin." x="24" y="24" width="342" height="18" />
+      <instance id="4:381" name="Kirim pengajuan" x="24" y="50" width="342" height="52" />
+    </frame>
+  </frame>
+  <frame id="2:93" name="S08 · My Donations" x="140" y="2236" width="390" height="844">
+    <frame id="4:383" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:384" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:385" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:386" name="App bar" x="0" y="28" width="390" height="84">
+      <text id="4:387" name="Donasiku" x="24" y="30" width="82" height="24" />
+      <frame id="4:388" name="Spacer" x="118" y="37" width="196" height="10" />
+      <frame id="4:389" name="Account" x="326" y="24" width="40" height="36">
+        <text id="4:390" name="A" x="15" y="8" width="10" height="20" />
+      </frame>
+    </frame>
+    <frame id="4:391" name="Scrollable content" x="0" y="112" width="390" height="650">
+      <frame id="4:392" name="Content" x="0" y="0" width="390" height="947">
+        <text id="4:393" name="Setiap donasi
+punya cerita." x="24" y="8" width="342" height="64" />
+        <text id="4:394" name="Pantau perjalanan pakaian yang kamu bagikan." x="24" y="92" width="342" height="21" />
+        <frame id="4:395" name="Filters" x="24" y="133" width="342" height="40">
+          <frame id="4:396" name="Semua" x="0" y="0" width="79" height="40">
+            <text id="4:397" name="Semua" x="21" y="12" width="37" height="16" />
+          </frame>
+          <frame id="4:398" name="Aktif" x="87" y="0" width="79" height="40">
+            <text id="4:399" name="Aktif" x="26.5" y="12" width="26" height="16" />
+          </frame>
+          <frame id="4:400" name="Selesai" x="174" y="0" width="79" height="40">
+            <text id="4:401" name="Selesai" x="20.5" y="12" width="38" height="16" />
+          </frame>
+          <frame id="4:402" name="Ditolak" x="261" y="0" width="79" height="40">
+            <text id="4:403" name="Ditolak" x="20.5" y="12" width="38" height="16" />
+          </frame>
+        </frame>
+        <text id="4:404" name="Pengajuan aktif" x="24" y="193" width="135" height="24" />
+        <instance id="4:405" name="DonationCard" x="24" y="237" width="342" height="118" />
+        <instance id="4:415" name="DonationCard" x="24" y="375" width="342" height="118" />
+        <text id="4:425" name="Riwayat donasi" x="24" y="513" width="133" height="24" />
+        <instance id="4:426" name="DonationCard" x="24" y="557" width="342" height="118" />
+        <instance id="4:436" name="DonationCard" x="24" y="695" width="342" height="118" />
+        <instance id="4:446" name="Cek pakaian lainnya" x="24" y="833" width="342" height="52" />
+        <text id="4:448" name="Tarik untuk memperbarui status terbaru." x="24" y="905" width="342" height="18" />
+      </frame>
+    </frame>
+    <instance id="4:449" name="UserNav" x="0" y="762" width="390" height="82" />
+  </frame>
+  <frame id="2:94" name="S09 · Donation Detail" x="562" y="2236" width="390" height="844">
+    <frame id="4:475" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:476" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:477" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:478" name="App bar" x="0" y="28" width="390" height="72">
+      <instance id="4:479" name="Icon/arrow-left" x="24" y="24" width="24" height="24" />
+      <text id="4:483" name="Detail donasi" x="60" y="24" width="114" height="24" />
+    </frame>
+    <frame id="4:484" name="Scrollable content" x="0" y="100" width="390" height="662">
+      <frame id="4:485" name="Content" x="0" y="0" width="390" height="770">
+        <text id="4:486" name="#LP024 · 3 pakaian" x="24" y="8" width="111" height="18" />
+        <text id="4:487" name="Kebaikanmu
+sedang diproses." x="24" y="46" width="342" height="64" />
+        <instance id="4:488" name="Pending" x="24" y="130" width="122" height="32" />
+        <text id="4:490" name="Pengajuan terkirim. Admin akan memeriksa pakaian dan mengonf" x="24" y="182" width="342" height="42" />
+        <frame id="4:491" name="Status timeline" x="24" y="244" width="342" height="244">
+          <frame id="4:492" name="Pengajuan terkirim" x="20" y="20" width="302" height="42">
+            <instance id="4:493" name="Icon/circle-check" x="0" y="0" width="22" height="22" />
+            <frame id="4:497" name="Step" x="34" y="0" width="268" height="42">
+              <text id="4:498" name="Pengajuan terkirim" x="0" y="0" width="268" height="20" />
+              <text id="4:499" name="11 Okt · 09.35" x="0" y="24" width="268" height="18" />
+            </frame>
+          </frame>
+          <frame id="4:500" name="Penjemputan dijadwalkan" x="20" y="74" width="302" height="42">
+            <instance id="4:501" name="Icon/calendar-days" x="0" y="0" width="22" height="22" />
+            <frame id="4:513" name="Step" x="34" y="0" width="268" height="42">
+              <text id="4:514" name="Penjemputan dijadwalkan" x="0" y="0" width="268" height="20" />
+              <text id="4:515" name="Menunggu konfirmasi admin" x="0" y="24" width="268" height="18" />
+            </frame>
+          </frame>
+          <frame id="4:516" name="Pakaian dijemput" x="20" y="128" width="302" height="42">
+            <instance id="4:517" name="Icon/package" x="0" y="0" width="22" height="22" />
+            <frame id="4:523" name="Step" x="34" y="0" width="268" height="42">
+              <text id="4:524" name="Pakaian dijemput" x="0" y="0" width="268" height="20" />
+              <text id="4:525" name="Belum dilakukan" x="0" y="24" width="268" height="18" />
+            </frame>
+          </frame>
+          <frame id="4:526" name="Donasi selesai" x="20" y="182" width="302" height="42">
+            <instance id="4:527" name="Icon/gift" x="0" y="0" width="22" height="22" />
+            <frame id="4:533" name="Step" x="34" y="0" width="268" height="42">
+              <text id="4:534" name="Donasi selesai" x="0" y="0" width="268" height="20" />
+              <text id="4:535" name="+10 poin setelah penerimaan dikonfirmasi" x="0" y="24" width="268" height="18" />
+            </frame>
+          </frame>
+        </frame>
+        <frame id="4:536" name="Preferensi: 14 Oktober · Pagi" x="24" y="508" width="342" height="90">
+          <frame id="4:537" name="Title" x="20" y="20" width="302" height="20">
+            <instance id="4:538" name="Icon/calendar-days" x="0" y="0" width="20" height="20" />
+            <text id="4:550" name="Preferensi: 14 Oktober · Pagi" x="28" y="0" width="191" height="20" />
+          </frame>
+          <text id="4:551" name="Belum jadwal final. Tunggu konfirmasi admin." x="20" y="52" width="302" height="18" />
+        </frame>
+        <frame id="4:552" name="Alamat penjemputan" x="24" y="618" width="342" height="90">
+          <frame id="4:553" name="Title" x="20" y="20" width="302" height="20">
+            <instance id="4:554" name="Icon/map-pin" x="0" y="0" width="20" height="20" />
+            <text id="4:558" name="Alamat penjemputan" x="28" y="0" width="141" height="20" />
+          </frame>
+          <text id="4:559" name="Jl. Contoh No. 12, Malang · alamat ilustrasi." x="20" y="52" width="302" height="18" />
+        </frame>
+        <text id="4:560" name="Poin diberikan satu kali setelah status donasi selesai." x="24" y="728" width="342" height="18" />
+      </frame>
+    </frame>
+    <instance id="4:561" name="UserNav" x="0" y="762" width="390" height="82" />
+  </frame>
+  <frame id="2:95" name="S10 · Rewards" x="984" y="2236" width="390" height="844">
+    <frame id="4:584" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:585" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:586" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:587" name="App bar" x="0" y="28" width="390" height="84">
+      <text id="4:588" name="Rewards" x="24" y="30" width="77" height="24" />
+      <frame id="4:589" name="Spacer" x="113" y="37" width="201" height="10" />
+      <frame id="4:590" name="Account" x="326" y="24" width="40" height="36">
+        <text id="4:591" name="A" x="15" y="8" width="10" height="20" />
+      </frame>
+    </frame>
+    <frame id="4:592" name="Scrollable content" x="0" y="112" width="390" height="650">
+      <frame id="4:593" name="Content" x="0" y="0" width="390" height="900">
+        <frame id="4:594" name="Points balance" x="24" y="8" width="342" height="136">
+          <text id="4:595" name="LOOPY POINTS" x="20" y="20" width="82" height="16" />
+          <text id="4:596" name="20 poin" x="20" y="48" width="118" height="38" />
+          <text id="4:597" name="Dari donasi yang sudah selesai." x="20" y="98" width="177" height="18" />
+        </frame>
+        <frame id="4:598" name="Filters" x="24" y="164" width="342" height="40">
+          <frame id="4:599" name="Katalog" x="0" y="0" width="167" height="40">
+            <text id="4:600" name="Katalog" x="62.5" y="12" width="42" height="16" />
+          </frame>
+          <frame id="4:601" name="Reward-ku" x="175" y="0" width="167" height="40">
+            <text id="4:602" name="Reward-ku" x="53.5" y="12" width="60" height="16" />
+          </frame>
+        </frame>
+        <text id="4:603" name="Kebaikan yang
+kembali padamu." x="24" y="224" width="342" height="64" />
+        <frame id="4:604" name="Eco Supporter Badge" x="24" y="308" width="342" height="176">
+          <frame id="4:605" name="Reward heading" x="20" y="20" width="302" height="42">
+            <instance id="4:606" name="Icon/leaf" x="0" y="0" width="32" height="32" />
+            <frame id="4:610" name="Reward label" x="44" y="0" width="258" height="42">
+              <text id="4:611" name="Eco Supporter Badge" x="0" y="0" width="258" height="20" />
+              <text id="4:612" name="10 poin" x="0" y="24" width="42" height="18" />
+            </frame>
+          </frame>
+          <text id="4:613" name="Badge digital untuk langkah baikmu." x="20" y="74" width="302" height="18" />
+          <instance id="4:614" name="Tukar 10 poin" x="20" y="104" width="302" height="52" />
+        </frame>
+        <frame id="4:616" name="Loopy Digital Wallpaper" x="24" y="504" width="342" height="176">
+          <frame id="4:617" name="Reward heading" x="20" y="20" width="302" height="42">
+            <instance id="4:618" name="Icon/image" x="0" y="0" width="32" height="32" />
+            <frame id="4:623" name="Reward label" x="44" y="0" width="258" height="42">
+              <text id="4:624" name="Loopy Digital Wallpaper" x="0" y="0" width="258" height="20" />
+              <text id="4:625" name="20 poin" x="0" y="24" width="44" height="18" />
+            </frame>
+          </frame>
+          <text id="4:626" name="Warna baru untuk layar ponselmu." x="20" y="74" width="302" height="18" />
+          <instance id="4:627" name="Tukar 20 poin" x="20" y="104" width="302" height="52" />
+        </frame>
+        <frame id="4:629" name="Voucher Demo" x="24" y="700" width="342" height="176">
+          <frame id="4:630" name="Reward heading" x="20" y="20" width="302" height="42">
+            <instance id="4:631" name="Icon/gift" x="0" y="0" width="32" height="32" />
+            <frame id="4:637" name="Reward label" x="44" y="0" width="258" height="42">
+              <text id="4:638" name="Voucher Demo" x="0" y="0" width="258" height="20" />
+              <text id="4:639" name="30 poin" x="0" y="24" width="44" height="18" />
+            </frame>
+          </frame>
+          <text id="4:640" name="SIMULASI · tidak berlaku di merchant." x="20" y="74" width="302" height="18" />
+          <instance id="4:641" name="Butuh 10 poin lagi" x="20" y="104" width="302" height="52" />
+        </frame>
+      </frame>
+    </frame>
+    <instance id="4:643" name="UserNav" x="0" y="762" width="390" height="82" />
+  </frame>
+  <frame id="2:98" name="A01 · Dashboard" x="140" y="3168" width="390" height="844">
+    <frame id="4:666" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:667" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:668" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:669" name="App bar" x="0" y="28" width="390" height="84">
+      <text id="4:670" name="loopy ↻" x="24" y="26" width="109" height="32" />
+      <frame id="4:671" name="Spacer" x="145" y="37" width="120" height="10" />
+      <text id="4:672" name="ADMIN" x="277" y="34" width="37" height="16" />
+      <frame id="4:673" name="Account" x="326" y="24" width="40" height="36">
+        <text id="4:674" name="A" x="15" y="8" width="10" height="20" />
+      </frame>
+    </frame>
+    <frame id="4:675" name="Scrollable content" x="0" y="112" width="390" height="650">
+      <frame id="4:676" name="Content" x="0" y="0" width="390" height="911">
+        <text id="4:677" name="ADMIN / RINGKASAN" x="24" y="8" width="111" height="16" />
+        <text id="4:678" name="Kebaikan,
+terorganisir." x="24" y="44" width="342" height="64" />
+        <text id="4:679" name="Ringkasan pengajuan dan penjemputan." x="24" y="128" width="342" height="21" />
+        <frame id="4:680" name="Priority pending requests" x="24" y="169" width="342" height="164">
+          <text id="4:681" name="MENUNGGU VERIFIKASI" x="20" y="20" width="127" height="16" />
+          <text id="4:682" name="8 pengajuan" x="20" y="48" width="155" height="32" />
+          <instance id="4:683" name="Review pengajuan" x="20" y="92" width="302" height="52" />
+        </frame>
+        <frame id="4:685" name="Total requests" x="24" y="353" width="342" height="108">
+          <text id="4:686" name="Total pengajuan" x="20" y="20" width="91" height="18" />
+          <text id="4:687" name="32" x="20" y="50" width="39" height="38" />
+        </frame>
+        <frame id="4:688" name="Metrics" x="24" y="481" width="342" height="102">
+          <frame id="4:689" name="Dijadwalkan" x="0" y="0" width="165" height="102">
+            <text id="4:690" name="Dijadwalkan" x="20" y="20" width="125" height="18" />
+            <text id="4:691" name="6" x="20" y="50" width="16" height="32" />
+          </frame>
+          <frame id="4:692" name="Selesai" x="177" y="0" width="165" height="102">
+            <text id="4:693" name="Selesai" x="20" y="20" width="125" height="18" />
+            <text id="4:694" name="16" x="20" y="50" width="26" height="32" />
+          </frame>
+        </frame>
+        <frame id="4:695" name="Metrics" x="24" y="603" width="342" height="102">
+          <frame id="4:696" name="Ditolak" x="0" y="0" width="165" height="102">
+            <text id="4:697" name="Ditolak" x="20" y="20" width="125" height="18" />
+            <text id="4:698" name="2" x="20" y="50" width="16" height="32" />
+          </frame>
+          <frame id="4:699" name="Sudah dijemput" x="177" y="0" width="165" height="102">
+            <text id="4:700" name="Sudah dijemput" x="20" y="20" width="125" height="18" />
+            <text id="4:701" name="0" x="20" y="50" width="19" height="32" />
+          </frame>
+        </frame>
+        <text id="4:702" name="Perlu ditangani" x="24" y="725" width="131" height="24" />
+        <instance id="4:703" name="DonationCard" x="24" y="769" width="342" height="118" />
+      </frame>
+    </frame>
+    <instance id="4:713" name="AdminNav" x="0" y="762" width="390" height="82" />
+  </frame>
+  <frame id="2:99" name="A02 · Donation Requests" x="562" y="3168" width="390" height="844">
+    <frame id="4:728" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:729" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:730" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:731" name="App bar" x="0" y="28" width="390" height="84">
+      <text id="4:732" name="Pengajuan" x="24" y="30" width="92" height="24" />
+      <frame id="4:733" name="Spacer" x="128" y="37" width="137" height="10" />
+      <text id="4:734" name="ADMIN" x="277" y="34" width="37" height="16" />
+      <frame id="4:735" name="Account" x="326" y="24" width="40" height="36">
+        <text id="4:736" name="A" x="15" y="8" width="10" height="20" />
+      </frame>
+    </frame>
+    <frame id="4:737" name="Scrollable content" x="0" y="112" width="390" height="650">
+      <frame id="4:738" name="Content" x="0" y="0" width="390" height="846">
+        <text id="4:739" name="Antrian donasi" x="24" y="8" width="342" height="32" />
+        <text id="4:740" name="Review pengajuan yang paling lama menunggu." x="24" y="60" width="342" height="21" />
+        <instance id="4:741" name="Field" x="24" y="101" width="342" height="81" />
+        <frame id="4:745" name="Filters" x="24" y="202" width="342" height="40">
+          <frame id="4:746" name="Pending" x="0" y="0" width="108" height="40">
+            <text id="4:747" name="Pending" x="32" y="12" width="44" height="16" />
+          </frame>
+          <frame id="4:748" name="Terjadwal" x="116" y="0" width="108" height="40">
+            <text id="4:749" name="Terjadwal" x="28.5" y="12" width="51" height="16" />
+          </frame>
+          <frame id="4:750" name="Selesai" x="232" y="0" width="108" height="40">
+            <text id="4:751" name="Selesai" x="35" y="12" width="38" height="16" />
+          </frame>
+        </frame>
+        <text id="4:752" name="8 menunggu verifikasi" x="24" y="262" width="125" height="18" />
+        <instance id="4:753" name="DonationCard" x="24" y="300" width="342" height="118" />
+        <instance id="4:763" name="DonationCard" x="24" y="438" width="342" height="118" />
+        <instance id="4:773" name="DonationCard" x="24" y="576" width="342" height="118" />
+        <frame id="4:783" name="Prioritaskan yang lebih lama" x="24" y="714" width="342" height="108">
+          <frame id="4:784" name="Title" x="20" y="20" width="302" height="20">
+            <instance id="4:785" name="Icon/clock" x="0" y="0" width="20" height="20" />
+            <text id="4:789" name="Prioritaskan yang lebih lama" x="28" y="0" width="187" height="20" />
+          </frame>
+          <text id="4:790" name="Urutkan dari tanggal pengajuan terlama agar review merata." x="20" y="52" width="302" height="36" />
+        </frame>
+      </frame>
+    </frame>
+    <instance id="4:791" name="AdminNav" x="0" y="762" width="390" height="82" />
+  </frame>
+  <frame id="2:100" name="A03 · Donation Detail" x="984" y="3168" width="390" height="844">
+    <frame id="4:806" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="4:807" name="09:41" x="24" y="12" width="30" height="16" />
+      <text id="4:808" name="•••  ▰" x="330" y="12" width="36" height="16" />
+    </frame>
+    <frame id="4:809" name="App bar" x="0" y="28" width="390" height="72">
+      <instance id="4:810" name="Icon/arrow-left" x="24" y="24" width="24" height="24" />
+      <text id="4:814" name="Verifikasi donasi" x="60" y="24" width="142" height="24" />
+    </frame>
+    <frame id="4:815" name="Scrollable content" x="0" y="100" width="390" height="584">
+      <frame id="4:816" name="Content" x="0" y="0" width="390" height="1169">
+        <text id="4:817" name="#LP024 · Diajukan 11 Okt, 09.35" x="24" y="8" width="180" height="18" />
+        <instance id="4:818" name="Pending" x="24" y="46" width="122" height="32" />
+        <instance id="4:820" name="ClothingSample" x="24" y="98" width="342" height="155" />
+        <frame id="4:825" name="AI assessment" x="24" y="273" width="342" height="112">
+          <text id="4:826" name="Berpotensi layak" x="20" y="20" width="146" height="24" />
+          <text id="4:827" name="Kaus · tidak tampak sobekan besar pada foto. Hasil ini merup" x="20" y="56" width="302" height="36" />
+        </frame>
+        <text id="4:828" name="Data pengajuan" x="24" y="405" width="137" height="24" />
+        <frame id="4:829" name="Donor information" x="24" y="449" width="342" height="394">
+          <text id="4:830" name="Donatur" x="20" y="20" width="43" height="16" />
+          <text id="4:831" name="Arsyad Setiawan" x="20" y="48" width="302" height="21" />
+          <text id="4:832" name="Jumlah" x="20" y="81" width="37" height="16" />
+          <text id="4:833" name="3 pakaian" x="20" y="109" width="302" height="21" />
+          <text id="4:834" name="Telepon" x="20" y="142" width="43" height="16" />
+          <text id="4:835" name="0812 3456 7890" x="20" y="170" width="302" height="21" />
+          <text id="4:836" name="Alamat" x="20" y="203" width="38" height="16" />
+          <text id="4:837" name="Jl. Contoh No. 12, Malang" x="20" y="231" width="302" height="21" />
+          <text id="4:838" name="Preferensi" x="20" y="264" width="55" height="16" />
+          <text id="4:839" name="14 Okt · Pagi" x="20" y="292" width="302" height="21" />
+          <text id="4:840" name="Catatan" x="20" y="325" width="43" height="16" />
+          <text id="4:841" name="Pakaian telah dicuci" x="20" y="353" width="302" height="21" />
+        </frame>
+        <text id="4:842" name="Jadwal final" x="24" y="863" width="101" height="24" />
+        <instance id="4:843" name="Field" x="24" y="907" width="342" height="81" />
+        <instance id="4:847" name="Field" x="24" y="1008" width="342" height="81" />
+        <text id="4:851" name="Admin wajib menentukan jadwal saat menerima pengajuan. Penol" x="24" y="1109" width="342" height="36" />
+      </frame>
+    </frame>
+    <frame id="4:852" name="Verification actions" x="0" y="684" width="390" height="160">
+      <instance id="4:853" name="Setujui &amp; jadwalkan" x="24" y="24" width="342" height="52" />
+      <instance id="4:855" name="Tolak pengajuan" x="24" y="84" width="342" height="52" />
+    </frame>
+  </frame>
+  <text id="2:77" name="loopy ↻" x="140" y="140" width="135" height="38" />
+  <text id="2:78" name="Give your clothes a second life." x="140" y="210" width="272" height="24" />
+  <text id="2:79" name="Mobile UI / Eco-playful / 390 × 844 / PRD v2.1" x="140" y="266" width="256" height="18" />
+  <text id="2:80" name="01 / Kenalan &amp; akun" x="140" y="316" width="168" height="24" />
+  <text id="2:85" name="02 / Mulai donasi" x="140" y="1248" width="148" height="24" />
+  <text id="2:91" name="03 / Donasi &amp; rewards" x="140" y="2180" width="192" height="24" />
+  <text id="2:96" name="04 / Admin" x="140" y="3112" width="97" height="24" />
+  <frame id="6:663" name="PickupSuccess" x="140" y="4196" width="390" height="306">
+    <instance id="6:664" name="Icon/circle-check" x="20" y="20" width="40" height="40" />
+    <text id="6:668" name="Pengajuan terkirim!" x="20" y="72" width="350" height="32" />
+    <text id="6:669" name="Admin akan memeriksa pakaian dan mengonfirmasi jadwal penjem" x="20" y="116" width="350" height="42" />
+    <instance id="6:670" name="Lihat donasiku" x="20" y="170" width="350" height="52" />
+    <instance id="6:672" name="Kembali ke beranda" x="20" y="234" width="350" height="52" />
+  </frame>
+  <frame id="6:674" name="RedeemConfirm" x="562" y="4196" width="390" height="327">
+    <instance id="6:675" name="Icon/gift" x="20" y="20" width="40" height="40" />
+    <text id="6:681" name="Tukar 10 poin?" x="20" y="72" width="350" height="32" />
+    <text id="6:682" name="Eco Supporter Badge
+Saldo sekarang: 20 poin
+Saldo setelah pe" x="20" y="116" width="350" height="63" />
+    <instance id="6:683" name="Konfirmasi penukaran" x="20" y="191" width="350" height="52" />
+    <instance id="6:685" name="Batal" x="20" y="255" width="350" height="52" />
+  </frame>
+  <frame id="6:687" name="RejectRequest" x="984" y="4196" width="390" height="399">
+    <instance id="6:688" name="Icon/circle-alert" x="20" y="20" width="40" height="40" />
+    <text id="6:693" name="Tolak pengajuan?" x="20" y="72" width="350" height="32" />
+    <text id="6:694" name="Jelaskan alasan agar donatur memahami keputusanmu." x="20" y="116" width="350" height="42" />
+    <instance id="6:695" name="Field" x="20" y="170" width="350" height="81" />
+    <instance id="6:699" name="Konfirmasi penolakan" x="20" y="263" width="350" height="52" />
+    <instance id="6:701" name="Batal" x="20" y="327" width="350" height="52" />
+  </frame>
+  <frame id="6:703" name="Schedule confirmation" x="1406" y="4196" width="390" height="305">
+    <text id="6:704" name="Konfirmasi jadwal" x="20" y="20" width="350" height="32" />
+    <text id="6:705" name="#LP024 · 3 pakaian
+14 Oktober 2026 · 09.00
+Jl. Contoh No. 12" x="20" y="64" width="350" height="63" />
+    <text id="6:706" name="Pengajuan berubah menjadi Dijadwalkan." x="20" y="139" width="350" height="18" />
+    <instance id="6:707" name="Setujui &amp; simpan jadwal" x="20" y="169" width="350" height="52" />
+    <instance id="6:709" name="Batal" x="20" y="233" width="350" height="52" />
+  </frame>
+  <frame id="6:712" name="NeedsRecheck" x="140" y="4627" width="390" height="272">
+    <instance id="6:713" name="Icon/circle-alert" x="20" y="20" width="40" height="40" />
+    <text id="6:718" name="Perlu foto ulang" x="20" y="72" width="350" height="32" />
+    <text id="6:719" name="Foto terlalu gelap untuk pemeriksaan awal. Ambil ulang denga" x="20" y="116" width="350" height="42" />
+    <instance id="6:720" name="Ambil foto lagi" x="20" y="170" width="350" height="52" />
+    <text id="6:722" name="State alternatif untuk S06 · Check Result" x="20" y="234" width="350" height="18" />
+  </frame>
+  <frame id="6:723" name="NotRecommended" x="562" y="4627" width="390" height="272">
+    <instance id="6:724" name="Icon/circle-alert" x="20" y="20" width="40" height="40" />
+    <text id="6:729" name="Tidak direkomendasikan" x="20" y="72" width="350" height="32" />
+    <text id="6:730" name="Kerusakan terlihat cukup besar. Pertimbangkan perbaikan atau" x="20" y="116" width="350" height="42" />
+    <instance id="6:731" name="Ambil foto lagi" x="20" y="170" width="350" height="52" />
+    <text id="6:733" name="State alternatif untuk S06 · Check Result" x="20" y="234" width="350" height="18" />
+  </frame>
+  <frame id="6:734" name="Reward-ku" x="984" y="4627" width="390" height="342">
+    <text id="6:735" name="Reward-ku" x="20" y="20" width="350" height="32" />
+    <text id="6:736" name="Riwayat penukaran digital" x="20" y="64" width="147" height="18" />
+    <instance id="6:737" name="Icon/leaf" x="20" y="94" width="44" height="44" />
+    <text id="6:741" name="Eco Supporter Badge" x="20" y="150" width="350" height="24" />
+    <text id="6:742" name="Ditukar 5 Okt · 10 poin
+Reward digital · contoh riwayat" x="20" y="186" width="350" height="42" />
+    <instance id="6:743" name="Kembali ke katalog" x="20" y="240" width="350" height="52" />
+    <text id="6:745" name="Tab di S10 · bukan screen utama tambahan" x="20" y="304" width="350" height="18" />
+  </frame>
+  <text id="6:661" name="05 / Dialog &amp; state pendukung" x="140" y="4140" width="265" height="24" />
+  <frame id="19:472" name="S11 · Profil user" x="140" y="5109" width="390" height="844">
+    <frame id="19:473" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="19:474" name="09:41" x="24" y="12" width="48" height="16" />
+      <text id="19:475" name="•••  ▰" x="318" y="12" width="48" height="16" />
+    </frame>
+    <frame id="19:476" name="App bar" x="0" y="28" width="390" height="92">
+      <frame id="19:477" name="Kembali" x="24" y="24" width="44" height="44">
+        <instance id="19:478" name="Loopy/Icon/arrow-left" x="10" y="10" width="24" height="24" />
+      </frame>
+      <text id="19:482" name="Profil kamu" x="80" y="34" width="274" height="24" />
+    </frame>
+    <frame id="19:483" name="Scrollable content" x="0" y="120" width="390" height="724">
+      <frame id="19:484" name="Content" x="0" y="0" width="390" height="745">
+        <frame id="19:545" name="Identitas akun" x="24" y="8" width="342" height="241">
+          <frame id="19:546" name="Avatar" x="20" y="20" width="64" height="64">
+            <instance id="19:547" name="Loopy/Icon/user" x="16" y="16" width="32" height="32" />
+          </frame>
+          <text id="19:551" name="USER" x="20" y="96" width="302" height="16" />
+          <text id="19:552" name="Arsyad Setiawan" x="20" y="124" width="302" height="32" />
+          <text id="19:553" name="@arsyad" x="20" y="168" width="302" height="20" />
+          <text id="19:554" name="arsyad@email.com" x="20" y="200" width="302" height="21" />
+        </frame>
+        <frame id="19:555" name="Poin terkumpul" x="24" y="269" width="342" height="134">
+          <text id="19:556" name="20 poin" x="20" y="20" width="302" height="32" />
+          <text id="19:557" name="Poin yang terkumpul" x="20" y="64" width="302" height="20" />
+          <text id="19:558" name="Setiap donasi kecil membawa perubahan besar." x="20" y="96" width="302" height="18" />
+        </frame>
+        <frame id="19:559" name="Teruskan langkah baikmu" x="24" y="423" width="342" height="90">
+          <text id="19:560" name="Teruskan langkah baikmu" x="20" y="20" width="302" height="20" />
+          <text id="19:561" name="Lihat donasimu dan tukarkan poin di Rewards." x="20" y="52" width="302" height="18" />
+        </frame>
+        <instance id="19:562" name="Settings" x="24" y="533" width="342" height="52" />
+        <instance id="19:564" name="Lihat Rewards" x="24" y="605" width="342" height="52" />
+        <frame id="19:566" name="Keluar dari akun" x="24" y="677" width="342" height="44">
+          <text id="19:567" name="Keluar dari akun" x="12" y="12" width="318" height="20" />
+        </frame>
+      </frame>
+    </frame>
+  </frame>
+  <frame id="19:485" name="S12 · Settings" x="562" y="5109" width="390" height="844">
+    <frame id="19:486" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="19:487" name="09:41" x="24" y="12" width="48" height="16" />
+      <text id="19:488" name="•••  ▰" x="318" y="12" width="48" height="16" />
+    </frame>
+    <frame id="19:489" name="App bar" x="0" y="28" width="390" height="92">
+      <frame id="19:490" name="Kembali" x="24" y="24" width="44" height="44">
+        <instance id="19:491" name="Loopy/Icon/arrow-left" x="10" y="10" width="24" height="24" />
+      </frame>
+      <text id="19:495" name="Settings" x="80" y="34" width="274" height="24" />
+    </frame>
+    <frame id="19:496" name="Scrollable content" x="0" y="120" width="390" height="598">
+      <frame id="19:497" name="Content" x="0" y="0" width="390" height="911">
+        <text id="19:591" name="Akunmu,
+versi terbaru." x="24" y="8" width="342" height="64" />
+        <text id="19:592" name="Ubah nama dan username. Password bisa diganti saat" x="24" y="92" width="342" height="42" />
+        <instance id="19:593" name="Field / Username" x="24" y="154" width="342" height="81" />
+        <text id="19:597" name="3–20 karakter: huruf, angka, atau underscore." x="24" y="255" width="342" height="18" />
+        <instance id="19:598" name="Field / Nama lengkap" x="24" y="293" width="342" height="81" />
+        <frame id="19:602" name="Email terverifikasi" x="24" y="394" width="342" height="90">
+          <text id="19:603" name="Email terverifikasi" x="20" y="20" width="302" height="20" />
+          <text id="19:604" name="arsyad@email.com" x="20" y="52" width="302" height="18" />
+        </frame>
+        <text id="19:605" name="Ganti password" x="24" y="504" width="342" height="24" />
+        <text id="19:606" name="Kosongkan bagian ini jika hanya mengubah nama atau" x="24" y="548" width="342" height="36" />
+        <instance id="19:607" name="Field / Password saat ini" x="24" y="604" width="342" height="81" />
+        <instance id="19:611" name="Field / Password baru" x="24" y="705" width="342" height="81" />
+        <instance id="19:615" name="Field / Konfirmasi password baru" x="24" y="806" width="342" height="81" />
+      </frame>
+    </frame>
+    <frame id="19:619" name="Bottom action" x="0" y="718" width="390" height="126">
+      <text id="19:620" name="Nama lengkap dan username adalah dua field terpisa" x="24" y="24" width="342" height="18" />
+      <instance id="19:621" name="Simpan perubahan" x="24" y="50" width="342" height="52" />
+    </frame>
+  </frame>
+  <frame id="19:498" name="A04 · Profil admin" x="984" y="5109" width="390" height="844">
+    <frame id="19:499" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="19:500" name="09:41" x="24" y="12" width="48" height="16" />
+      <text id="19:501" name="•••  ▰" x="318" y="12" width="48" height="16" />
+    </frame>
+    <frame id="19:502" name="App bar" x="0" y="28" width="390" height="92">
+      <frame id="19:503" name="Kembali" x="24" y="24" width="44" height="44">
+        <instance id="19:504" name="Loopy/Icon/arrow-left" x="10" y="10" width="24" height="24" />
+      </frame>
+      <text id="19:508" name="Profil admin" x="80" y="34" width="274" height="24" />
+    </frame>
+    <frame id="19:509" name="Scrollable content" x="0" y="120" width="390" height="724">
+      <frame id="19:510" name="Content" x="0" y="0" width="390" height="745">
+        <frame id="19:568" name="Identitas akun" x="24" y="8" width="342" height="241">
+          <frame id="19:569" name="Avatar" x="20" y="20" width="64" height="64">
+            <instance id="19:570" name="Loopy/Icon/user" x="16" y="16" width="32" height="32" />
+          </frame>
+          <text id="19:574" name="ADMIN" x="20" y="96" width="302" height="16" />
+          <text id="19:575" name="Admin Loopy" x="20" y="124" width="302" height="32" />
+          <text id="19:576" name="@admin_loopy" x="20" y="168" width="302" height="20" />
+          <text id="19:577" name="admin@loopy.example" x="20" y="200" width="302" height="21" />
+        </frame>
+        <frame id="19:578" name="Poin terkumpul" x="24" y="269" width="342" height="134">
+          <text id="19:579" name="0 poin" x="20" y="20" width="302" height="32" />
+          <text id="19:580" name="Poin yang terkumpul" x="20" y="64" width="302" height="20" />
+          <text id="19:581" name="Poin mengikuti donasi dari akun ini." x="20" y="96" width="302" height="18" />
+        </frame>
+        <frame id="19:582" name="Akun pengelola" x="24" y="423" width="342" height="90">
+          <text id="19:583" name="Akun pengelola" x="20" y="20" width="302" height="20" />
+          <text id="19:584" name="Kelola pengajuan donasi melalui dashboard admin." x="20" y="52" width="302" height="18" />
+        </frame>
+        <instance id="19:585" name="Settings" x="24" y="533" width="342" height="52" />
+        <instance id="19:587" name="Buka dashboard" x="24" y="605" width="342" height="52" />
+        <frame id="19:589" name="Keluar dari akun" x="24" y="677" width="342" height="44">
+          <text id="19:590" name="Keluar dari akun" x="12" y="12" width="318" height="20" />
+        </frame>
+      </frame>
+    </frame>
+  </frame>
+  <frame id="19:511" name="S13 · Verifikasi email" x="1406" y="5109" width="390" height="844">
+    <frame id="19:512" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="19:513" name="09:41" x="24" y="12" width="48" height="16" />
+      <text id="19:514" name="•••  ▰" x="318" y="12" width="48" height="16" />
+    </frame>
+    <frame id="19:515" name="App bar" x="0" y="28" width="390" height="92">
+      <frame id="19:516" name="Kembali" x="24" y="24" width="44" height="44">
+        <instance id="19:517" name="Loopy/Icon/arrow-left" x="10" y="10" width="24" height="24" />
+      </frame>
+      <text id="19:521" name="Verifikasi email" x="80" y="34" width="274" height="24" />
+    </frame>
+    <frame id="19:522" name="Scrollable content" x="0" y="120" width="390" height="598">
+      <frame id="19:523" name="Content" x="0" y="0" width="390" height="478">
+        <instance id="19:655" name="Loopy/Icon/check" x="24" y="8" width="40" height="40" />
+        <text id="19:658" name="Cek emailmu 👋" x="24" y="68" width="342" height="32" />
+        <text id="19:659" name="Masukkan 6 digit kode yang dikirim ke a***@email.c" x="24" y="120" width="342" height="42" />
+        <frame id="19:660" name="Kode email / 6 digit" x="24" y="182" width="342" height="60">
+          <frame id="19:661" name="Digit 1" x="0" y="0" width="50" height="60">
+            <text id="19:662" name="|" x="13" y="18" width="24" height="24" />
+          </frame>
+          <frame id="19:663" name="Digit 2" x="58" y="0" width="50" height="60">
+            <text id="19:664" name="–" x="13" y="18" width="24" height="24" />
+          </frame>
+          <frame id="19:665" name="Digit 3" x="116" y="0" width="50" height="60">
+            <text id="19:666" name="–" x="13" y="18" width="24" height="24" />
+          </frame>
+          <frame id="19:667" name="Digit 4" x="174" y="0" width="50" height="60">
+            <text id="19:668" name="–" x="13" y="18" width="24" height="24" />
+          </frame>
+          <frame id="19:669" name="Digit 5" x="232" y="0" width="50" height="60">
+            <text id="19:670" name="–" x="13" y="18" width="24" height="24" />
+          </frame>
+          <frame id="19:671" name="Digit 6" x="290" y="0" width="50" height="60">
+            <text id="19:672" name="–" x="13" y="18" width="24" height="24" />
+          </frame>
+        </frame>
+        <frame id="19:673" name="Kode berlaku 5 menit" x="24" y="262" width="342" height="90">
+          <text id="19:674" name="Kode berlaku 5 menit" x="20" y="20" width="302" height="20" />
+          <text id="19:675" name="Pastikan juga folder spam sudah dicek." x="20" y="52" width="302" height="18" />
+        </frame>
+        <text id="19:676" name="Kirim ulang kode dalam 00:60" x="24" y="372" width="342" height="18" />
+        <frame id="19:677" name="Email salah? Ubah email" x="24" y="410" width="342" height="44">
+          <text id="19:678" name="Email salah? Ubah email" x="12" y="12" width="318" height="20" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="19:679" name="Bottom action" x="0" y="718" width="390" height="126">
+      <text id="19:680" name="Akun aktif setelah kode email terverifikasi." x="24" y="24" width="342" height="18" />
+      <instance id="19:681" name="Verifikasi &amp; lanjut" x="24" y="50" width="342" height="52" />
+    </frame>
+  </frame>
+  <frame id="19:524" name="State · Settings admin" x="140" y="6073" width="390" height="844">
+    <frame id="19:525" name="Status bar" x="0" y="0" width="390" height="28">
+      <text id="19:526" name="09:41" x="24" y="12" width="48" height="16" />
+      <text id="19:527" name="•••  ▰" x="318" y="12" width="48" height="16" />
+    </frame>
+    <frame id="19:528" name="App bar" x="0" y="28" width="390" height="92">
+      <frame id="19:529" name="Kembali" x="24" y="24" width="44" height="44">
+        <instance id="19:530" name="Loopy/Icon/arrow-left" x="10" y="10" width="24" height="24" />
+      </frame>
+      <text id="19:534" name="Settings" x="80" y="34" width="274" height="24" />
+    </frame>
+    <frame id="19:535" name="Scrollable content" x="0" y="120" width="390" height="598">
+      <frame id="19:536" name="Content" x="0" y="0" width="390" height="911">
+        <text id="19:623" name="Akunmu,
+versi terbaru." x="24" y="8" width="342" height="64" />
+        <text id="19:624" name="Ubah nama dan username. Password bisa diganti saat" x="24" y="92" width="342" height="42" />
+        <instance id="19:625" name="Field / Username" x="24" y="154" width="342" height="81" />
+        <text id="19:629" name="3–20 karakter: huruf, angka, atau underscore." x="24" y="255" width="342" height="18" />
+        <instance id="19:630" name="Field / Nama lengkap" x="24" y="293" width="342" height="81" />
+        <frame id="19:634" name="Email terverifikasi" x="24" y="394" width="342" height="90">
+          <text id="19:635" name="Email terverifikasi" x="20" y="20" width="302" height="20" />
+          <text id="19:636" name="admin@loopy.example" x="20" y="52" width="302" height="18" />
+        </frame>
+        <text id="19:637" name="Ganti password" x="24" y="504" width="342" height="24" />
+        <text id="19:638" name="Kosongkan bagian ini jika hanya mengubah nama atau" x="24" y="548" width="342" height="36" />
+        <instance id="19:639" name="Field / Password saat ini" x="24" y="604" width="342" height="81" />
+        <instance id="19:643" name="Field / Password baru" x="24" y="705" width="342" height="81" />
+        <instance id="19:647" name="Field / Konfirmasi password baru" x="24" y="806" width="342" height="81" />
+      </frame>
+    </frame>
+    <frame id="19:651" name="Bottom action" x="0" y="718" width="390" height="126">
+      <text id="19:652" name="Nama lengkap dan username adalah dua field terpisa" x="24" y="24" width="342" height="18" />
+      <instance id="19:653" name="Simpan perubahan" x="24" y="50" width="342" height="52" />
+    </frame>
+  </frame>
+  <frame id="19:537" name="State · Perubahan tersimpan" x="562" y="6073" width="342" height="246">
+    <instance id="19:538" name="Loopy/Icon/check" x="24" y="24" width="32" height="32" />
+    <text id="19:541" name="Perubahan tersimpan" x="24" y="72" width="294" height="24" />
+    <text id="19:542" name="Data akun berhasil diperbarui. Password baru berla" x="24" y="112" width="294" height="42" />
+    <instance id="19:543" name="Selesai" x="24" y="170" width="294" height="52" />
+  </frame>
+  <frame id="19:683" name="State · OTP dan validasi Settings" x="984" y="6073" width="390" height="702">
+    <text id="19:684" name="State validasi" x="24" y="24" width="342" height="32" />
+    <frame id="19:685" name="Kode tidak cocok" x="24" y="76" width="342" height="90">
+      <text id="19:686" name="Kode tidak cocok" x="20" y="20" width="302" height="20" />
+      <text id="19:687" name="Kode belum benar. Coba periksa 6 digitnya lagi." x="20" y="52" width="302" height="18" />
+    </frame>
+    <frame id="19:688" name="Kode kedaluwarsa" x="24" y="186" width="342" height="90">
+      <text id="19:689" name="Kode kedaluwarsa" x="20" y="20" width="302" height="20" />
+      <text id="19:690" name="Minta kode baru untuk melanjutkan." x="20" y="52" width="302" height="18" />
+    </frame>
+    <instance id="19:691" name="Kirim ulang kode" x="24" y="296" width="342" height="52" />
+    <frame id="19:693" name="Username sudah dipakai" x="24" y="368" width="342" height="90">
+      <text id="19:694" name="Username sudah dipakai" x="20" y="20" width="302" height="20" />
+      <text id="19:695" name="Coba username lain." x="20" y="52" width="302" height="18" />
+    </frame>
+    <frame id="19:696" name="Password belum cocok" x="24" y="478" width="342" height="90">
+      <text id="19:697" name="Password belum cocok" x="20" y="20" width="302" height="20" />
+      <text id="19:698" name="Konfirmasi harus sama dengan password baru." x="20" y="52" width="302" height="18" />
+    </frame>
+    <frame id="19:699" name="Password saat ini salah" x="24" y="588" width="342" height="90">
+      <text id="19:700" name="Password saat ini salah" x="20" y="20" width="302" height="20" />
+      <text id="19:701" name="Periksa password saat ini sebelum menyimpan." x="20" y="52" width="302" height="18" />
+    </frame>
+  </frame>
+</canvas>

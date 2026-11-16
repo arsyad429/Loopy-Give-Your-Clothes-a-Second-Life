@@ -1,0 +1,46 @@
+name: loopy
+services:
+  db:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-loopy}
+      POSTGRES_USER: ${POSTGRES_USER:-loopy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-loopy_local_only}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    ports:
+      - "127.0.0.1:${API_PORT:-8080}:8080"
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-loopy}
+      DATABASE_USER: ${POSTGRES_USER:-loopy}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-loopy_local_only}
+      AI_VISION_API_KEY: ${AI_VISION_API_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+  android-dev:
+    profiles: ["tools"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /workspace/android
+    volumes:
+      - .:/workspace
+      - android-gradle-cache:/root/.gradle
+    environment:
+      LOOPY_API_BASE_URL: ${LOOPY_API_BASE_URL:-http://10.0.2.2:8080/}
+    # SDK host di local.properties tidak dipakai; batasi override ke proses container.
+    entrypoint: ["sh", "/workspace/scripts/android-container.sh"]
+    command: ["assembleDebug"]
+volumes:
+  postgres-data:
+  android-gradle-cache:

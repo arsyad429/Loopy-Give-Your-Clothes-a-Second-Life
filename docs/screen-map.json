@@ -1,0 +1,172 @@
+[
+  {
+    "id": "S01",
+    "feature": "landing",
+    "name": "Landing",
+    "title": "Landing Page",
+    "nodeId": "2:82",
+    "requirements": "F01",
+    "todo": "Hero dan tagline; About Loopy; tiga benefit; empat langkah; Get Started → Register; Login → Login.",
+    "scope": "MVP"
+  },
+  {
+    "id": "S02",
+    "feature": "auth",
+    "name": "Login",
+    "title": "Login",
+    "nodeId": "2:83",
+    "requirements": "F02",
+    "todo": "Email/password; validasi; pesan gagal; loading; login user → Home, admin → Admin Dashboard; cegah double submit.",
+    "scope": "MVP"
+  },
+  {
+    "id": "S03",
+    "feature": "auth",
+    "name": "Register",
+    "title": "Register",
+    "nodeId": "2:84",
+    "requirements": "F02",
+    "todo": "Nama/email/password; email unik; role user otomatis; saldo awal 0; admin tidak melalui registrasi publik.",
+    "scope": "MVP"
+  },
+  {
+    "id": "S04",
+    "feature": "home",
+    "name": "Home",
+    "title": "Home Dashboard",
+    "nodeId": "2:87",
+    "requirements": "F03/F09",
+    "todo": "Greeting; Check Your Clothes; donasi terakhir; saldo server; My Donations; Rewards; akun dan logout.",
+    "scope": "MVP"
+  },
+  {
+    "id": "S05",
+    "feature": "clothingcheck",
+    "name": "ClothingDetector",
+    "title": "AI Clothing Detector",
+    "nodeId": "2:88",
+    "requirements": "F04",
+    "todo": "Photo Picker dan kamera Activity Result + FileProvider; validasi MIME/ukuran/kejelasan; upload ke backend AI; loading/error/retry; gagal tidak boleh lanjut.",
+    "scope": "MVP"
+  },
+  {
+    "id": "S06",
+    "feature": "clothingcheck",
+    "name": "CheckResult",
+    "title": "Clothing Check Result",
+    "nodeId": "2:89",
+    "requirements": "F05",
+    "todo": "Foto, jenis, hasil, deskripsi; tiga kategori; eligible saja boleh pickup; konfirmasi pakaian bersih dan aman; hasil AI estimasi awal.",
+    "scope": "MVP"
+  },
+  {
+    "id": "S07",
+    "feature": "pickup",
+    "name": "PickupRequest",
+    "title": "Pickup Request Form",
+    "nodeId": "2:90",
+    "requirements": "F06",
+    "todo": "Nama akun; telepon; alamat; kota; foto/jenis dari check; quantity >= 1; tanggal tidak lampau; preferensi waktu; notes opsional; Pending Review; konfirmasi sukses.",
+    "scope": "MVP"
+  },
+  {
+    "id": "S08",
+    "feature": "donations",
+    "name": "MyDonations",
+    "title": "My Donations",
+    "nodeId": "2:93",
+    "requirements": "F08",
+    "todo": "Daftar donasi user aktif saja; loading/empty/error; refresh status terbaru; klik ID ke detail; filter/pencarian reaktif Flow.",
+    "scope": "MVP"
+  },
+  {
+    "id": "S09",
+    "feature": "donations",
+    "name": "DonationDetail",
+    "title": "Donation Detail",
+    "nodeId": "2:94",
+    "requirements": "F08",
+    "todo": "Timeline lima status; jadwal preferensi dan jadwal final dibedakan; alasan rejected; foto/detail; pengguna tidak dapat mengubah status.",
+    "scope": "MVP"
+  },
+  {
+    "id": "S10",
+    "feature": "rewards",
+    "name": "Rewards",
+    "title": "Rewards & My Rewards",
+    "nodeId": "2:95",
+    "requirements": "F09/F10",
+    "todo": "Saldo server; katalog 10/20/30 poin; tombol disable jika tidak cukup; dialog konfirmasi; idempotency; riwayat My Rewards; voucher berlabel demo.",
+    "scope": "MVP"
+  },
+  {
+    "id": "A01",
+    "feature": "admin",
+    "name": "AdminDashboard",
+    "title": "Admin Dashboard",
+    "nodeId": "2:98",
+    "requirements": "F07",
+    "todo": "Guard admin server; metrik total/pending/scheduled/completed/rejected; navigasi requests; logout.",
+    "scope": "MVP"
+  },
+  {
+    "id": "A02",
+    "feature": "admin",
+    "name": "DonationRequests",
+    "title": "Donation Requests",
+    "nodeId": "2:99",
+    "requirements": "F07",
+    "todo": "Guard admin; daftar/filter/pencarian requests; empty/error/loading; buka detail dengan ID.",
+    "scope": "MVP"
+  },
+  {
+    "id": "A03",
+    "feature": "admin",
+    "name": "AdminDonationDetail",
+    "title": "Admin Donation Detail",
+    "nodeId": "2:100",
+    "requirements": "F07/F08/F09",
+    "todo": "Foto + hasil AI + alamat; accept wajib jadwal; reject wajib alasan; Pending → Scheduled → Picked Up → Completed; audit history; completed +10 sekali secara atomik di backend.",
+    "scope": "MVP"
+  },
+  {
+    "id": "S11",
+    "feature": "profile",
+    "name": "UserProfile",
+    "title": "Profil User",
+    "nodeId": "19:472",
+    "requirements": "F03 extension",
+    "todo": "Informasi akun/logout. Penyuntingan profil lengkap perlu kesepakatan tim.",
+    "scope": "design-extension"
+  },
+  {
+    "id": "S12",
+    "feature": "settings",
+    "name": "Settings",
+    "title": "Settings",
+    "nodeId": "19:485",
+    "requirements": "Design extension",
+    "todo": "Preferensi non-sensitif DataStore; ganti password/username memerlukan kontrak backend dan persetujuan scope.",
+    "scope": "design-extension"
+  },
+  {
+    "id": "A04",
+    "feature": "profile",
+    "name": "AdminProfile",
+    "title": "Profil Admin",
+    "nodeId": "19:498",
+    "requirements": "Design extension",
+    "todo": "Informasi admin/logout; jangan menyediakan eskalasi role dari UI.",
+    "scope": "design-extension"
+  },
+  {
+    "id": "S13",
+    "feature": "verification",
+    "name": "EmailVerification",
+    "title": "Verifikasi Email",
+    "nodeId": "19:511",
+    "requirements": "Design extension",
+    "todo": "OTP expiry/resend/rate limit/percobaan gagal; alur belum diwajibkan PRD 2.1, sepakati sebelum implementasi.",
+    "scope": "design-extension"
+  }
+]

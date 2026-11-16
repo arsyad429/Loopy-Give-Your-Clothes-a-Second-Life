@@ -1,0 +1,25 @@
+# docs
+
+Dokumentasi arsitektur, PAPB, Figma, API, data model, backlog dan acceptance criteria. Isi dokumen menjadi acuan pengisian template tim.
+
+## Isi file dan perannya
+
+| File/folder | Peran dan isi yang diharapkan |
+| --- | --- |
+| `acceptance-tests.md` | Dokumen acuan acceptance-tests; baca isi untuk spesifikasi/TODO. |
+| `api-contract.md` | Dokumen acuan api-contract; baca isi untuk spesifikasi/TODO. |
+| `architecture.md` | Dokumen acuan architecture; baca isi untuk spesifikasi/TODO. |
+| `backlog.md` | Dokumen acuan backlog; baca isi untuk spesifikasi/TODO. |
+| `data-model.md` | Dokumen acuan data-model; baca isi untuk spesifikasi/TODO. |
+| `development.md` | Dokumen acuan development; baca isi untuk spesifikasi/TODO. |
+| `papb-mapping.md` | Dokumen acuan papb-mapping; baca isi untuk spesifikasi/TODO. |
+| `reference/` | Baca README di subfolder reference untuk peran file dan TODO. |
+| `screen-map.json` | Mapping machine-readable 13 MVP+4 desain, node ID dan TODO. |
+| `screen-map.md` | Dokumen acuan screen-map; baca isi untuk spesifikasi/TODO. |
+| `verification.md` | Dokumen acuan verification; baca isi untuk spesifikasi/TODO. |
+
+## TODO
+
+- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
+- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
+- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
