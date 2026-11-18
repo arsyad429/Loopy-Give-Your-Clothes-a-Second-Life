@@ -1,0 +1,732 @@
+[
+  {
+    "guid": {
+      "sessionID": 2,
+      "localID": 88
+    },
+    "type": "FRAME",
+    "name": "S05 · AI Clothing Detector",
+    "size": {
+      "x": 390,
+      "y": 844
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 562,
+      "m10": 0,
+      "m11": 1,
+      "m12": 1304
+    },
+    "rectangleTopLeftCornerRadius": 32
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 234
+    },
+    "type": "FRAME",
+    "name": "Status bar",
+    "size": {
+      "x": 390,
+      "y": 28
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 0,
+      "m10": 0,
+      "m11": 1,
+      "m12": 0
+    },
+    "stackHorizontalPadding": 24,
+    "stackVerticalPadding": 12,
+    "stackPaddingRight": 24
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 235
+    },
+    "type": "TEXT",
+    "name": "09:41",
+    "styleIdForText": {
+      "guid": {
+        "sessionID": 2,
+        "localID": 50
+      }
+    },
+    "textData": {
+      "characters": "09:41",
+      "lines": [
+        {
+          "lineType": "PLAIN",
+          "styleId": 0,
+          "indentationLevel": 0,
+          "sourceDirectionality": "AUTO",
+          "listStartOffset": 0,
+          "isFirstLineOfList": false
+        }
+      ]
+    },
+    "size": {
+      "x": 30,
+      "y": 16
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 24,
+      "m10": 0,
+      "m11": 1,
+      "m12": 12
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 236
+    },
+    "type": "TEXT",
+    "name": "•••  ▰",
+    "styleIdForText": {
+      "guid": {
+        "sessionID": 2,
+        "localID": 50
+      }
+    },
+    "textData": {
+      "characters": "•••  ▰",
+      "lines": [
+        {
+          "lineType": "PLAIN",
+          "styleId": 0,
+          "indentationLevel": 0,
+          "sourceDirectionality": "AUTO",
+          "listStartOffset": 0,
+          "isFirstLineOfList": false
+        }
+      ]
+    },
+    "size": {
+      "x": 36,
+      "y": 16
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 330,
+      "m10": 0,
+      "m11": 1,
+      "m12": 12
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 237
+    },
+    "type": "FRAME",
+    "name": "App bar",
+    "size": {
+      "x": 390,
+      "y": 72
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 0,
+      "m10": 0,
+      "m11": 1,
+      "m12": 28
+    },
+    "stackSpacing": 12,
+    "stackHorizontalPadding": 24,
+    "stackVerticalPadding": 24,
+    "stackPaddingRight": 24,
+    "stackPaddingBottom": 24
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 238
+    },
+    "type": "INSTANCE",
+    "name": "Icon/arrow-left",
+    "size": {
+      "x": 24,
+      "y": 24
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 24,
+      "m10": 0,
+      "m11": 1,
+      "m12": 24
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 242
+    },
+    "type": "TEXT",
+    "name": "Cek pakaian",
+    "styleIdForText": {
+      "guid": {
+        "sessionID": 2,
+        "localID": 46
+      }
+    },
+    "textData": {
+      "characters": "Cek pakaian",
+      "lines": [
+        {
+          "lineType": "PLAIN",
+          "styleId": 0,
+          "indentationLevel": 0,
+          "sourceDirectionality": "AUTO",
+          "listStartOffset": 0,
+          "isFirstLineOfList": false
+        }
+      ]
+    },
+    "size": {
+      "x": 108,
+      "y": 24
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 60,
+      "m10": 0,
+      "m11": 1,
+      "m12": 24
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 243
+    },
+    "type": "FRAME",
+    "name": "Scrollable content",
+    "size": {
+      "x": 390,
+      "y": 644
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 0,
+      "m10": 0,
+      "m11": 1,
+      "m12": 100
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 244
+    },
+    "type": "FRAME",
+    "name": "Content",
+    "size": {
+      "x": 390,
+      "y": 610
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 0,
+      "m10": 0,
+      "m11": 1,
+      "m12": 0
+    },
+    "stackSpacing": 20,
+    "stackHorizontalPadding": 24,
+    "stackVerticalPadding": 8,
+    "stackPaddingRight": 24,
+    "stackPaddingBottom": 24
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 245
+    },
+    "type": "TEXT",
+    "name": "Satu foto,\nlangkah pertama.",
+    "styleIdForText": {
+      "guid": {
+        "sessionID": 2,
+        "localID": 45
+      }
+    },
+    "textData": {
+      "characters": "Satu foto,\nlangkah pertama.",
+      "lines": [
+        {
+          "lineType": "PLAIN",
+          "styleId": 0,
+          "indentationLevel": 0,
+          "sourceDirectionality": "AUTO",
+          "listStartOffset": 0,
+          "isFirstLineOfList": false
+        },
+        {
+          "lineType": "PLAIN",
+          "styleId": 0,
+          "indentationLevel": 0,
+          "sourceDirectionality": "AUTO",
+          "listStartOffset": 0,
+          "isFirstLineOfList": false
+        }
+      ]
+    },
+    "size": {
+      "x": 342,
+      "y": 64
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 24,
+      "m10": 0,
+      "m11": 1,
+      "m12": 8
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 246
+    },
+    "type": "TEXT",
+    "name": "Bentangkan satu pakaian dan tampilkan seluruh bagiannya.",
+    "styleIdForText": {
+      "guid": {
+        "sessionID": 2,
+        "localID": 47
+      }
+    },
+    "textData": {
+      "characters": "Bentangkan satu pakaian dan tampilkan seluruh bagiannya.",
+      "lines": [
+        {
+          "lineType": "PLAIN",
+          "styleId": 0,
+          "indentationLevel": 0,
+          "sourceDirectionality": "AUTO",
+          "listStartOffset": 0,
+          "isFirstLineOfList": false
+        }
+      ]
+    },
+    "size": {
+      "x": 342,
+      "y": 42
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 24,
+      "m10": 0,
+      "m11": 1,
+      "m12": 92
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 247
+    },
+    "type": "FRAME",
+    "name": "Photo preview",
+    "size": {
+      "x": 342,
+      "y": 176
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 24,
+      "m10": 0,
+      "m11": 1,
+      "m12": 154
+    },
+    "rectangleTopLeftCornerRadius": 24,
+    "stackSpacing": 12,
+    "stackHorizontalPadding": 20,
+    "stackVerticalPadding": 20,
+    "stackPaddingRight": 20,
+    "stackPaddingBottom": 20
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 248
+    },
+    "type": "INSTANCE",
+    "name": "Icon/shirt",
+    "size": {
+      "x": 106,
+      "y": 106
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 118,
+      "m10": 0,
+      "m11": 1,
+      "m12": 20
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 251
+    },
+    "type": "TEXT",
+    "name": "kaus-hijau.jpg · contoh foto",
+    "styleIdForText": {
+      "guid": {
+        "sessionID": 2,
+        "localID": 49
+      }
+    },
+    "textData": {
+      "characters": "kaus-hijau.jpg · contoh foto",
+      "lines": [
+        {
+          "lineType": "PLAIN",
+          "styleId": 0,
+          "indentationLevel": 0,
+          "sourceDirectionality": "AUTO",
+          "listStartOffset": 0,
+          "isFirstLineOfList": false
+        }
+      ]
+    },
+    "size": {
+      "x": 159,
+      "y": 18
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 91.5,
+      "m10": 0,
+      "m11": 1,
+      "m12": 138
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 252
+    },
+    "type": "FRAME",
+    "name": "Photo sources",
+    "size": {
+      "x": 342,
+      "y": 52
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 24,
+      "m10": 0,
+      "m11": 1,
+      "m12": 350
+    },
+    "stackSpacing": 12
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 253
+    },
+    "type": "INSTANCE",
+    "name": "Ambil foto",
+    "size": {
+      "x": 165,
+      "y": 52
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 0,
+      "m10": 0,
+      "m11": 1,
+      "m12": 0
+    },
+    "rectangleTopLeftCornerRadius": 16,
+    "stackSpacing": 8,
+    "stackHorizontalPadding": 16,
+    "stackVerticalPadding": 16,
+    "stackPaddingRight": 16,
+    "stackPaddingBottom": 16
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 255
+    },
+    "type": "INSTANCE",
+    "name": "Pilih galeri",
+    "size": {
+      "x": 165,
+      "y": 52
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 177,
+      "m10": 0,
+      "m11": 1,
+      "m12": 0
+    },
+    "rectangleTopLeftCornerRadius": 16,
+    "stackSpacing": 8,
+    "stackHorizontalPadding": 16,
+    "stackVerticalPadding": 16,
+    "stackPaddingRight": 16,
+    "stackPaddingBottom": 16
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 257
+    },
+    "type": "FRAME",
+    "name": "Biar hasilnya lebih jelas",
+    "size": {
+      "x": 342,
+      "y": 108
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 24,
+      "m10": 0,
+      "m11": 1,
+      "m12": 422
+    },
+    "rectangleTopLeftCornerRadius": 24,
+    "stackSpacing": 12,
+    "stackHorizontalPadding": 20,
+    "stackVerticalPadding": 20,
+    "stackPaddingRight": 20,
+    "stackPaddingBottom": 20
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 258
+    },
+    "type": "FRAME",
+    "name": "Title",
+    "size": {
+      "x": 302,
+      "y": 20
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 20,
+      "m10": 0,
+      "m11": 1,
+      "m12": 20
+    },
+    "stackSpacing": 8
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 259
+    },
+    "type": "INSTANCE",
+    "name": "Icon/camera",
+    "size": {
+      "x": 20,
+      "y": 20
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 0,
+      "m10": 0,
+      "m11": 1,
+      "m12": 0
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 263
+    },
+    "type": "TEXT",
+    "name": "Biar hasilnya lebih jelas",
+    "styleIdForText": {
+      "guid": {
+        "sessionID": 2,
+        "localID": 48
+      }
+    },
+    "textData": {
+      "characters": "Biar hasilnya lebih jelas",
+      "lines": [
+        {
+          "lineType": "PLAIN",
+          "styleId": 0,
+          "indentationLevel": 0,
+          "sourceDirectionality": "AUTO",
+          "listStartOffset": 0,
+          "isFirstLineOfList": false
+        }
+      ]
+    },
+    "size": {
+      "x": 152,
+      "y": 20
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 28,
+      "m10": 0,
+      "m11": 1,
+      "m12": 0
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 264
+    },
+    "type": "TEXT",
+    "name": "Cahaya cukup · pakaian terlihat utuh · latar sederhana.",
+    "styleIdForText": {
+      "guid": {
+        "sessionID": 2,
+        "localID": 49
+      }
+    },
+    "textData": {
+      "characters": "Cahaya cukup · pakaian terlihat utuh · latar sederhana.",
+      "lines": [
+        {
+          "lineType": "PLAIN",
+          "styleId": 0,
+          "indentationLevel": 0,
+          "sourceDirectionality": "AUTO",
+          "listStartOffset": 0,
+          "isFirstLineOfList": false
+        }
+      ]
+    },
+    "size": {
+      "x": 302,
+      "y": 36
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 20,
+      "m10": 0,
+      "m11": 1,
+      "m12": 52
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 265
+    },
+    "type": "TEXT",
+    "name": "AI menilai kondisi yang terlihat pada foto. Bau dan kerusaka",
+    "styleIdForText": {
+      "guid": {
+        "sessionID": 2,
+        "localID": 49
+      }
+    },
+    "textData": {
+      "characters": "AI menilai kondisi yang terlihat pada foto. Bau dan kerusakan tersembunyi tetap perlu kamu periksa.",
+      "lines": [
+        {
+          "lineType": "PLAIN",
+          "styleId": 0,
+          "indentationLevel": 0,
+          "sourceDirectionality": "AUTO",
+          "listStartOffset": 0,
+          "isFirstLineOfList": false
+        }
+      ]
+    },
+    "size": {
+      "x": 342,
+      "y": 36
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 24,
+      "m10": 0,
+      "m11": 1,
+      "m12": 550
+    }
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 266
+    },
+    "type": "FRAME",
+    "name": "Bottom action",
+    "size": {
+      "x": 390,
+      "y": 100
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 0,
+      "m10": 0,
+      "m11": 1,
+      "m12": 744
+    },
+    "stackSpacing": 8,
+    "stackHorizontalPadding": 24,
+    "stackVerticalPadding": 24,
+    "stackPaddingRight": 24,
+    "stackPaddingBottom": 24
+  },
+  {
+    "guid": {
+      "sessionID": 4,
+      "localID": 267
+    },
+    "type": "INSTANCE",
+    "name": "Periksa pakaian",
+    "size": {
+      "x": 342,
+      "y": 52
+    },
+    "transform": {
+      "m00": 1,
+      "m01": 0,
+      "m02": 24,
+      "m10": 0,
+      "m11": 1,
+      "m12": 24
+    },
+    "rectangleTopLeftCornerRadius": 16,
+    "stackSpacing": 8,
+    "stackHorizontalPadding": 16,
+    "stackVerticalPadding": 16,
+    "stackPaddingRight": 16,
+    "stackPaddingBottom": 16
+  }
+]

@@ -1,6 +1,14 @@
 package id.ac.loopy.feature.clothingcheck
 
-// TEMPLATE S05 (F04) — belum ada implementasi bisnis.
-// TODO: buat ClothingDetectorUiState: data class immutable berisi nilai form/data, field errors, loading, error, serta event sukses tanpa menyimpan NavController.
-// Kebutuhan: Photo Picker dan kamera Activity Result + FileProvider; validasi MIME/ukuran/kejelasan; upload ke backend AI; loading/error/retry; gagal tidak boleh lanjut.
-// Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus.
+import androidx.compose.ui.graphics.ImageBitmap
+
+/** Immutable presentation state. A sample illustration is never treated as an uploaded photo. */
+data class ClothingDetectorUiState(
+    val photo: ImageBitmap? = null,
+    val photoName: String? = null,
+    val isLoading: Boolean = false,
+    val isAnalyzing: Boolean = false,
+    val error: String? = null,
+) {
+    val canAnalyze: Boolean get() = photo != null && !isLoading && !isAnalyzing && error == null
+}
