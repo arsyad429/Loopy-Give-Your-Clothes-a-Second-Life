@@ -1,5 +1,8 @@
 # model
 
+`ClothingType.kt`: enum 20 jenis pakaian untuk dropdown S05, dengan label UI dan `backendValue`.
+TODO: gunakan value ini pada request upload dan sepakati validasinya dengan backend.
+
 Model domain sesuai tujuh entitas PRD §8. DonationStatus aktif, data class lain TODO.
 
 ## Isi file dan perannya

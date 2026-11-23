@@ -1,24 +1,27 @@
 # clothingcheck
 
-Fitur S05 AI Clothing Detector dan S06 Clothing Check Result. UI S05 dan input foto lokal sudah diimplementasikan; S06 serta integrasi backend AI masih template. Kerjakan Screen/UiState/ViewModel terpisah.
+Fitur S05 AI Clothing Detector dan S06 Clothing Check Result. Kedua layar sudah terhubung ke ViewModel masing-masing. Integrasi backend AI masih menunggu implementasi repository dan penyambungannya ke aplikasi.
 
 ## Isi file dan perannya
 
 | File/folder | Peran dan isi yang diharapkan |
 | --- | --- |
-| `CheckResultScreen.kt` | Template S06: Foto, jenis, hasil, deskripsi; tiga kategori; eligible saja boleh pickup; konfirmasi pakaian bersih dan aman; hasil AI estimasi awal. |
-| `CheckResultUiState.kt` | TEMPLATE S06 (F05) — belum ada implementasi bisnis. TODO: buat CheckResultUiState: data class immutable berisi nilai form/data, field errors, loading, error, serta event sukses tanpa menyimpan NavController. Kebutuhan: Foto, jenis, hasil, deskripsi; tiga kategori; eligible saja boleh pickup; konfirmasi pakaian bersih dan aman; hasil AI estimasi awal. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
-| `CheckResultViewModel.kt` | TEMPLATE S06 (F05) — belum ada implementasi bisnis. TODO: buat CheckResultViewModel: ViewModel dengan private MutableStateFlow, StateFlow immutable, viewModelScope, cancellation, loading/success/error dan cegah request berulang. Kebutuhan: Foto, jenis, hasil, deskripsi; tiga kategori; eligible saja boleh pickup; konfirmasi pakaian bersih dan aman; hasil AI estimasi awal. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
+| `CheckResultScreen.kt` | S06 menampilkan foto, jenis, deskripsi, dan saran dari hasil AI. Menangani kondisi memuat, gagal, dan tanpa hasil. Memerlukan konfirmasi bersih dan aman sebelum membuka penjemputan. |
+| `CheckResultUiState.kt` | State S06 untuk hasil pemeriksaan, loading, error, dan konfirmasi bersih serta aman. Menentukan kapan pengguna bisa melanjutkan ke pickup. |
+| `CheckResultViewModel.kt` | Memuat hasil berdasarkan checkId lewat repository, menyediakan coba ulang saat gagal, dan menerima konfirmasi untuk hasil yang berpotensi layak. Digunakan oleh rute S06 dengan checkId. |
 | `ClothingDetectorScreen.kt` | UI S05 sesuai desain: route kamera/Photo Picker, pratinjau foto, tips, dan tombol pemeriksaan. `ClothingDetectorContent` menerima state/callback. TODO: hubungkan analisis melalui ViewModel/repository. |
 | `ClothingDetectorUiState.kt` | State immutable untuk bitmap pratinjau, nama foto, loading, analisis, dan error. `canAnalyze` menentukan apakah tombol pemeriksaan aktif. TODO: sesuaikan dengan hasil integrasi backend. |
-| `ClothingPhotoLoader.kt` | Membaca foto dari URI di `Dispatchers.IO`; memvalidasi JPEG/PNG dan batas 10 MiB, menyiapkan pratinjau maksimal 1600px, serta mengoreksi orientasi EXIF. TODO: sepakati batas upload dengan backend dan uji variasi foto/provider pada perangkat. |
+| `ClothingPhotoLoader.kt` | Membaca foto dari URI di `Dispatchers.IO`; memvalidasi JPEG/PNG dan batas 10 MiB, menyiapkan pratinjau maksimal 1600px, serta mengoreksi orientasi EXIF. Khusus S05, menjalankan pemeriksaan kualitas pada sampel hingga 128px. |
+| `ClothingPhotoQuality.kt` | Memeriksa konten transparan, kegelapan, dan detail yang sangat rendah lewat perubahan luminans. Ambang awal ini perlu diuji dengan foto pakaian asli. |
 | `ClothingDetectorViewModel.kt` | TEMPLATE S05 (F04) — belum ada implementasi bisnis. TODO: buat ClothingDetectorViewModel: ViewModel dengan private MutableStateFlow, StateFlow immutable, viewModelScope, cancellation, loading/success/error dan cegah request berulang. Kebutuhan: Photo Picker dan kamera Activity Result + FileProvider; validasi MIME/ukuran/kejelasan; upload ke backend AI; loading/error/retry; gagal tidak boleh lanjut. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
 
 ## TODO
 
 - [x] **S05 / F04 — input lokal**: UI, Photo Picker, kamera Activity Result + FileProvider, pratinjau, validasi MIME/ukuran, serta loading/error pembacaan foto.
-- [ ] **S05 / F04 — integrasi AI**: pemeriksaan kejelasan/objek foto, upload melalui ViewModel/repository, loading/error/retry analisis; kegagalan tidak boleh membuka hasil sukses.
-- [ ] **S06 / F05**: Foto, jenis, hasil, deskripsi; tiga kategori; eligible saja boleh pickup; konfirmasi pakaian bersih dan aman; hasil AI estimasi awal.
+- [x] **S05 / F04 — pemeriksaan kualitas awal**: blokir foto yang terlalu gelap atau tampak sangat buram, pertahankan pratinjau, dan minta pengguna mengganti foto.
+- [ ] **S05 / F04 — integrasi AI**: verifikasi objek dan foto yang meragukan, upload melalui ViewModel/repository, loading/error/retry analisis; kegagalan tidak boleh membuka hasil sukses.
+- [x] **S06 / F05 — UI**: Foto, jenis, hasil, deskripsi dan saran; tiga kategori; konfirmasi sebelum melanjutkan ke penjemputan.
+- [ ] **S06 / F05 — integrasi**: Verifikasi pemuatan hasil dan signed URL dari backend aktual. S07 perlu mengambil `checkId` dari rute dan mengirim pengajuan sesuai aturan server.
 - [ ] Screen stateless menerima state/callback; UiState immutable; ViewModel via repository, StateFlow dan viewModelScope.
 - [ ] Loading/error/empty, cancellation/retry dan anti double-submit, sesuai fitur.
 - [ ] Cocokkan node di docs/screen-map.md dan lengkapi AC terkait sebelum menandai selesai.
@@ -37,8 +40,38 @@ Fitur S05 AI Clothing Detector dan S06 Clothing Check Result. UI S05 dan input f
 - Ilustrasi kaus bukan hasil upload; tombol analisis aktif setelah foto valid dipilih.
   Tombol menampilkan pesan layanan AI belum terhubung, tanpa hasil palsu atau navigasi sukses.
 
-TODO: ViewModel/repository, upload, retry/cancellation analisis, navigasi S06 via checkId,
-pembersihan cache setelah pemeriksaan, uji kamera/galeri pada perangkat.
+TODO: Hubungkan repository dan upload ke backend, bersihkan cache setelah pemeriksaan,
+dan uji kamera/galeri pada perangkat.
+
+### Pemeriksaan kualitas foto S05
+
+Pemeriksaan dijalankan setelah dekode dan koreksi EXIF. Foto yang ditolak tetap tampil bersama pesan
+foto ulang. Perkiraan ketajaman membandingkan perubahan luminans lokal pada dua jarak.
+Foto dengan sedikit tekstur saja tetap bisa diteruskan ke AI jika kegelapan atau blur berat tidak
+terdeteksi. Teknik gradien mengacu pada prinsip penilaian fokus dalam
+[Pertuz dkk.](https://www.sciencedirect.com/science/article/pii/S0031320312004736), dengan ambang
+awal khusus aplikasi yang diuji memakai citra sintetis.
+
+## Implementasi S06
+
+- Rute `s06/{checkId}` membuat `CheckResultViewModel` dari repository yang sama dengan S05.
+- Foto dapat berasal dari URI lokal `content://` atau signed URL HTTPS, dibaca di IO dengan batas 10 MiB dan koreksi orientasi EXIF. Jika foto tidak dapat dimuat, hasil pemeriksaan tetap terlihat.
+- Hasil Perlu foto ulang dan Tidak direkomendasikan dapat kembali ke S05. Hasil Berpotensi layak dapat membuka `s07/{checkId}` setelah dikonfirmasi. Formulir S07 masih template.
+- `CheckResultScreenTest` mencakup tiga kategori, pembacaan foto dari FileProvider, konfirmasi dan ID pemeriksaan, serta percobaan ulang setelah gagal memuat hasil.
+
+## Dropdown jenis pakaian (19 November 2026)
+
+- Field Jenis pakaian ditempatkan setelah pratinjau dan sebelum tombol kamera/galeri.
+- `domain/model/ClothingType.kt` mendefinisikan 20 label dan value backend yang disepakati.
+  Pilihan awal Kaos (`TSHIRT`); gunakan `clothingType.backendValue` saat membangun request API.
+- `ClothingDetectorUiState.clothingType` menyediakan pilihan untuk UI. Route menyimpan value
+  memakai rememberSaveable, sehingga pilihan bertahan saat rotasi dan pemilihan foto ulang.
+- Dropdown nonaktif ketika foto dimuat atau analisis berjalan; daftar dapat digulir.
+- TODO: teruskan clothingType bersama foto melalui repository saat endpoint upload diimplementasikan.
+- Screenshot `docs/reference/s05-android.png` berasal dari versi 16 November, sebelum dropdown ditambahkan.
+- Pemeriksaan perubahan dropdown: `assembleDebug`, `testDebugUnitTest`, dan
+  `assembleDebugAndroidTest` berhasil. Tes interaksi dropdown ditambahkan, tetapi belum
+  dijalankan di perangkat/emulator pada perubahan ini.
 
 ## Pemeriksaan implementasi
 

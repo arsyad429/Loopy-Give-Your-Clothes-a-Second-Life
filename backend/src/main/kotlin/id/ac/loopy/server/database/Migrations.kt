@@ -1,4 +1,13 @@
 package id.ac.loopy.server.database
 
-// TEMPLATE — TODO: jalankan migrasi berurutan sebelum menerima traffic; jangan mengubah SQL yang telah diterapkan.
-// Lihat docs/api-contract.md, docs/data-model.md dan docs/acceptance-tests.md.
+import javax.sql.DataSource
+import org.flywaydb.core.Flyway
+
+fun migrateDatabase(database: DataSource) {
+    Flyway.configure()
+        .dataSource(database)
+        .locations("classpath:db/migration")
+        .cleanDisabled(true)
+        .load()
+        .migrate()
+}

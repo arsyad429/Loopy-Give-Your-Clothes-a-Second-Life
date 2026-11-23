@@ -1,21 +1,31 @@
 package id.ac.loopy.ui
 
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import id.ac.loopy.BuildConfig
+import id.ac.loopy.domain.repository.ClothingCheckRepository
 import id.ac.loopy.feature.landing.LandingScreen
 import id.ac.loopy.feature.auth.LoginScreen
 import id.ac.loopy.feature.auth.RegisterScreen
 import id.ac.loopy.feature.home.HomeScreen
 import id.ac.loopy.feature.clothingcheck.ClothingDetectorScreen
+import id.ac.loopy.feature.clothingcheck.ClothingDetectorViewModel
 import id.ac.loopy.feature.clothingcheck.CheckResultScreen
+import id.ac.loopy.feature.clothingcheck.CheckResultViewModel
 import id.ac.loopy.feature.pickup.PickupRequestScreen
 import id.ac.loopy.feature.donations.MyDonationsScreen
 import id.ac.loopy.feature.donations.DonationDetailScreen
@@ -30,7 +40,14 @@ import id.ac.loopy.feature.verification.EmailVerificationScreen
 
 /** Harness debug untuk menelusuri template, bukan alur login atau otorisasi aplikasi final. */
 @Composable
-fun LoopyApp(state: TemplateUiState, onTheme: (Boolean) -> Unit, onHealth: () -> Unit, onSave: () -> Unit, onClear: () -> Unit) {
+fun LoopyApp(
+    state: TemplateUiState,
+    onTheme: (Boolean) -> Unit,
+    onHealth: () -> Unit,
+    onSave: () -> Unit,
+    onClear: () -> Unit,
+    clothingCheckRepository: ClothingCheckRepository? = null,
+) {
     val nav = rememberNavController()
     Surface(Modifier.fillMaxSize()) {
         Box(Modifier.safeDrawingPadding()) {
@@ -39,9 +56,69 @@ fun LoopyApp(state: TemplateUiState, onTheme: (Boolean) -> Unit, onHealth: () ->
         composable("s02") { LoginScreen { nav.popBackStack() } }
         composable("s03") { RegisterScreen { nav.popBackStack() } }
         composable("s04") { HomeScreen { nav.popBackStack() } }
-        composable("s05") { ClothingDetectorScreen { nav.popBackStack() } }
-        composable("s06") { CheckResultScreen { nav.popBackStack() } }
+        composable("s05") { entry ->
+            val model = clothingCheckRepository?.let { repository ->
+                val factory = remember(repository) {
+                    viewModelFactory {
+                        initializer { ClothingDetectorViewModel(repository) }
+                    }
+                }
+                viewModel<ClothingDetectorViewModel>(
+                    viewModelStoreOwner = entry,
+                    factory = factory,
+                )
+            }
+
+            ClothingDetectorScreen(
+                viewModel = model,
+                onCheckReady = { checkId ->
+                    nav.navigate("s06/${Uri.encode(checkId)}") {
+                        launchSingleTop = true
+                    }
+                },
+                onBack = { nav.popBackStack() },
+            )
+        }
+        if (BuildConfig.DEBUG) composable("s06") {
+            CheckResultScreen(
+                viewModel = null,
+                onBack = { nav.popBackStack() },
+                onRecheck = { nav.navigate("s05") },
+                onPickup = {},
+                emptyMessage = "Lakukan pemeriksaan pakaian untuk melihat hasilnya.",
+            )
+        }
+        composable(
+            route = "s06/{checkId}",
+            arguments = listOf(navArgument("checkId") { type = NavType.StringType }),
+        ) { entry ->
+            val model = clothingCheckRepository?.let { repository ->
+                val checkId = entry.arguments?.getString("checkId").orEmpty()
+                val factory = remember(repository, checkId) {
+                    viewModelFactory {
+                        initializer { CheckResultViewModel(checkId, repository) }
+                    }
+                }
+                viewModel<CheckResultViewModel>(viewModelStoreOwner = entry, factory = factory)
+            }
+            CheckResultScreen(
+                viewModel = model,
+                onBack = { nav.popBackStack() },
+                onRecheck = {
+                    if (!nav.popBackStack("s05", inclusive = false)) nav.navigate("s05")
+                },
+                onPickup = { checkId ->
+                    nav.navigate("s07/${Uri.encode(checkId)}") { launchSingleTop = true }
+                },
+            )
+        }
         composable("s07") { PickupRequestScreen { nav.popBackStack() } }
+        composable(
+            route = "s07/{checkId}",
+            arguments = listOf(navArgument("checkId") { type = NavType.StringType }),
+        ) {
+            PickupRequestScreen { nav.popBackStack() }
+        }
         composable("s08") { MyDonationsScreen { nav.popBackStack() } }
         composable("s09") { DonationDetailScreen { nav.popBackStack() } }
         composable("s10") { RewardsScreen { nav.popBackStack() } }

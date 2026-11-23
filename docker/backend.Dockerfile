@@ -11,5 +11,5 @@ WORKDIR /app
 COPY --from=build --chown=loopy:loopy /src/build/install/loopy-backend/ /app/
 USER loopy
 EXPOSE 8080
-HEALTHCHECK --interval=10s --timeout=3s --start-period=15s --retries=10 CMD curl -fsS http://localhost:8080/health || exit 1
+HEALTHCHECK --interval=10s --timeout=4s --start-period=15s --retries=10 CMD curl -fsS http://localhost:8080/ready || exit 1
 ENTRYPOINT ["/app/bin/loopy-backend"]

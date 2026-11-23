@@ -23,7 +23,9 @@ services:
       DATABASE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-loopy}
       DATABASE_USER: ${POSTGRES_USER:-loopy}
       DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-loopy_local_only}
-      AI_VISION_API_KEY: ${AI_VISION_API_KEY:-}
+      GROQ_API_KEY: "${GROQ_API_KEY:-}"
+      GROQ_MODEL: "${GROQ_MODEL:-qwen/qwen3.8-27b}"
+      GROQ_RESPONSE_MODE: "${GROQ_RESPONSE_MODE:-json_schema}"
     depends_on:
       db:
         condition: service_healthy

@@ -8,8 +8,9 @@
 | POST /v1/auth/login | Public | email,password → access/refresh token, expiresAt,user | F02 |
 | POST /v1/auth/logout | Login | revoke session/refresh token →204 | F02 |
 | GET /v1/auth/me | Login | userId,name,email,role,totalPoints | F02/F03 |
-| POST /v1/checks | User | multipart image → checkId,photo,type,aiResult,aiDescription,createdAt | F04/F05 |
-| GET /v1/checks/{id} | Owner/admin | check tersimpan | F05 |
+| POST /v1/checks | USER | Bearer + Idempotency-Key; multipart `image`, `clothingType` → objek pemeriksaan (201 baru, 200 replay) | F04/F05 |
+| GET /v1/checks/{id} | Owner/admin | Bearer → objek pemeriksaan tersimpan | F05 |
+| GET /v1/checks/{id}/photo | Owner/admin | Bearer → JPEG privat | F05 |
 | POST /v1/donations | User | Idempotency-Key; checkId,cleanAndSafeConfirmed,phoneNumber,pickupAddress,city,quantity,preferredDate,preferredTime,notes → donationId/PENDING_REVIEW | F06 |
 | GET /v1/donations | User | status/query/cursor → items,nextCursor milik user token | F03/F08 |
 | GET /v1/donations/{id} | Owner | detail+history+jadwal final+rejectionReason | F08 |
