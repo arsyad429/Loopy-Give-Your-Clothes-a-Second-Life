@@ -23,6 +23,7 @@ fun RegisterScreen(
     onLogin: () -> Unit,
     onRegister: (name: String, email: String, password: String) -> Unit,
     feedback: String? = null,
+    isSubmitting: Boolean = false,
 ) {
     var name by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -50,16 +51,17 @@ fun RegisterScreen(
         title = "Buat akun",
         onBack = onBack,
         footer = {
-            LoopyButton("Buat akun", onClick = {
-                submitted = true
-
-                if (nameError == null && emailError == null && passwordError == null) {
-                    focusManager.clearFocus()
-                    onRegister(trimmedName, email.trim(), password)
-                    password = ""
-                    submitted = false
-                }
-            })
+            LoopyButton(
+                label = if (isSubmitting) "Membuat akun…" else "Buat akun",
+                enabled = !isSubmitting,
+                onClick = {
+                    submitted = true
+                    if (nameError == null && emailError == null && passwordError == null) {
+                        focusManager.clearFocus()
+                        onRegister(trimmedName, email.trim(), password)
+                    }
+                },
+            )
         },
     ) {
         LoopyIntro("Mulai langkah\nbaikmu.", "Pakaian yang jarang dipakai bisa berarti bagi orang lain.")
@@ -97,7 +99,7 @@ fun RegisterScreen(
             LoopyInfo("Status pendaftaran", feedback)
         }
 
-        TextButton(onClick = onLogin) {
+        TextButton(onClick = onLogin, enabled = !isSubmitting) {
             Text("Sudah punya akun? Masuk")
         }
 

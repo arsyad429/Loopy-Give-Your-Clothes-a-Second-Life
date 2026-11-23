@@ -5,10 +5,10 @@ PRD belum membagi pemilik implementasi. Neva/Rio/Alex/Arsyad tetap mengikuti tan
 | Urutan | Pekerjaan | Tempat awal | Selesai bila |
 | --- | --- | --- | --- |
 | 1 | Backend Go/auth sudah dipilih; sepakati AI, wilayah/waktu pickup dan scope tambahan | API/data model/screen map | Kontrak tim disetujui |
-| 2 | Auth Go + migrasi akun/sesi + CLI admin tersedia; lanjut integrasi Android dan ownership fitur bisnis | backend/go, docs/auth-go.md | Backend auth teruji; isolasi bisnis diverifikasi saat route tersedia |
+| 2 | Auth Go, CLI admin, login/register Android, dan refresh sesi di memori | backend/go, docs/auth-go.md | Backend auth teruji; isolasi bisnis diverifikasi saat route tersedia |
 | 3 | Landing/login/register+session graph | feature landing/auth, navigation | AC01–04,19–20 |
 | 4 | Home ringkasan/status/saldo | feature home, repositories | Loading/empty/error dan data benar |
-| 5 | Kamera/galeri+AI proof of concept | clothingcheck, PhotoValidator, backend checks/storage | AC05–07, tiga hasil/error |
+| 5 | Sambungkan pemeriksaan Android ke API | clothingcheck, repository Android, backend checks/storage | Retrofit memakai access token Go untuk upload, detail, dan foto privat. Uji pada perangkat untuk memverifikasi kamera dan navigasi. |
 | 6 | Pickup submit idempotent | pickup, backend donations | AC07–08, request/history atomik |
 | 7 | API Go untuk ringkasan, antrean, detail, jadwal, dan penolakan sudah tersedia. Lanjut integrasi Android dan penyediaan foto privat. | admin Android, backend/go, docs/donation-review-go.md | AC09–11 teruji dengan data sungguhan |
 | 8 | My Donations+tracking detail | donations | AC12,19 tanpa GPS |
@@ -17,6 +17,6 @@ PRD belum membagi pemilik implementasi. Neva/Rio/Alex/Arsyad tetap mengikuti tan
 | 11 | UI Figma final+integrasi/demo | components/theme/features | AC01–20+aksesibilitas |
 | Setelah MVP | Profil/settings/OTP | profile/settings/verification | Kontrak/scope disepakati |
 
-TODO visual: ambil high-fidelity Figma context, token/font Plus Jakarta Sans dan aset resmi ketika akses tersedia. Screenshot acuan tidak dipakai sebagai aset UI. UI placeholder bukan implementasi desain final.
+S05 dan S06 menggunakan font Plus Jakarta Sans dan ikon dari desain. Layar lain mengikuti peta Figma saat diimplementasikan.
 
 Di luar MVP: kurir terpisah, GPS live, pembayaran, push notification, voucher merchant nyata, hadiah fisik, marketplace dan optimasi rute. Pickup/reward simulasi akademik.

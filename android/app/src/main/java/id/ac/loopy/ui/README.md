@@ -1,19 +1,13 @@
 # ui
 
-Direktori ui mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
+NavHost Compose, komponen tampilan yang dipakai ulang, tema, dan state demo fondasi.
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `LoopyApp.kt` | NavHost katalog debug 13+4 layar, tema/draft/health. Release hanya placeholder landing. |
-| `TemplateViewModel.kt` | StateFlow combine/stateIn, coroutine scope, loading/error/cancellation untuk demo fondasi. |
-| `components/` | Baca README di subfolder components untuk peran file dan TODO. |
-| `navigation/` | Baca README di subfolder navigation untuk peran file dan TODO. |
-| `theme/` | Baca README di subfolder theme untuk peran file dan TODO. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`LoopyApp.kt`](LoopyApp.kt) | NavHost untuk katalog debug, autentikasi Go, navigasi berdasarkan role, serta alur S05–S07 dengan checkId. |
+| [`TemplateViewModel.kt`](TemplateViewModel.kt) | StateFlow combine/stateIn, coroutine scope, loading/error/cancellation untuk demo fondasi. |
+| [`components/`](components/README.md) | Komponen Compose bersama untuk input, tombol, tata letak, dan feedback, beserta template komponen fitur. |
+| [`navigation/`](navigation/README.md) | Rute aktif berada di LoopyApp.kt. S05 dan S06 memerlukan sesi USER dan hanya meneruskan checkId melalui navigasi. |
+| [`theme/`](theme/README.md) | Warna, tipografi, bentuk, dan tema Material 3 untuk Compose. |

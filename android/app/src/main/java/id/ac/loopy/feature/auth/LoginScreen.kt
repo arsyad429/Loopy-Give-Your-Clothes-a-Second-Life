@@ -37,6 +37,7 @@ fun LoginScreen(
     onRegister: () -> Unit,
     onLogin: (email: String, password: String) -> Unit,
     feedback: String? = null,
+    isSubmitting: Boolean = false,
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -50,14 +51,17 @@ fun LoginScreen(
         title = "loopy ↻",
         onBack = onBack,
         footer = {
-            LoopyButton("Masuk", onClick = {
-                submitted = true
-
-                if (emailError == null && passwordError == null) {
-                    focusManager.clearFocus()
-                    onLogin(email.trim(), password)
-                }
-            })
+            LoopyButton(
+                label = if (isSubmitting) "Sedang masuk…" else "Masuk",
+                enabled = !isSubmitting,
+                onClick = {
+                    submitted = true
+                    if (emailError == null && passwordError == null) {
+                        focusManager.clearFocus()
+                        onLogin(email.trim(), password)
+                    }
+                },
+            )
         },
     ) {
         val colors = MaterialTheme.colorScheme
@@ -102,7 +106,7 @@ fun LoginScreen(
             LoopyInfo("Status masuk", feedback)
         }
 
-        TextButton(onClick = onRegister) {
+        TextButton(onClick = onRegister, enabled = !isSubmitting) {
             Text("Belum punya akun? Daftar")
         }
 

@@ -1,6 +1,0 @@
--- TEMPLATE: belum dijalankan dan belum membuat tabel.
--- TODO PRD §8: users, clothing_checks, donation_requests, donation_status_history,
--- point_transactions, rewards, redemptions; idempotency records sesuai docs/data-model.md.
--- Sertakan PK/FK, unique email, unique earn donation_id, CHECK saldo >= 0,
--- quantity >= 1, signed ledger dan index owner_id/status/created_at.
--- Implementasikan migration runner di DatabaseFactory sebelum mengaktifkan route bisnis.

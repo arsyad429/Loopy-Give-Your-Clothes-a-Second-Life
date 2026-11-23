@@ -105,7 +105,9 @@ POSTGRES_USER=loopy
 POSTGRES_PASSWORD=<generated-password>
 API_PORT=8080
 API_BIND_ADDRESS=192.168.1.50
-AI_VISION_API_KEY=
+GROQ_API_KEY=
+GROQ_MODEL=qwen/qwen3.8-27b
+GROQ_RESPONSE_MODE=json_schema
 ```
 
 The bind address is the **LXC's IP**, not its Proxmox host's IP or Docker bridge IP. A loopback-published port is reachable from the LXC itself; another machine needs the LAN binding. See [Docker port publishing](https://docs.docker.com/engine/network/port-publishing/).

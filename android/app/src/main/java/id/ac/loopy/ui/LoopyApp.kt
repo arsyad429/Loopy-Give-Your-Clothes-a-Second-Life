@@ -1,5 +1,6 @@
 package id.ac.loopy.ui
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,16 +18,25 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import id.ac.loopy.BuildConfig
+import id.ac.loopy.di.AppContainer
 import id.ac.loopy.domain.model.DonationStatus
 import id.ac.loopy.feature.admin.AdminDashboardScreen
 import id.ac.loopy.feature.admin.AdminDonationDetailScreen
@@ -34,9 +44,12 @@ import id.ac.loopy.feature.admin.DonationRequestsScreen
 import id.ac.loopy.feature.admin.SampleDonationReviews
 import id.ac.loopy.feature.admin.formatPickupSchedule
 import id.ac.loopy.feature.auth.LoginScreen
+import id.ac.loopy.feature.auth.LoginViewModel
 import id.ac.loopy.feature.auth.RegisterScreen
 import id.ac.loopy.feature.clothingcheck.CheckResultScreen
+import id.ac.loopy.feature.clothingcheck.CheckResultViewModel
 import id.ac.loopy.feature.clothingcheck.ClothingDetectorScreen
+import id.ac.loopy.feature.clothingcheck.ClothingDetectorViewModel
 import id.ac.loopy.feature.donations.DonationDetailScreen
 import id.ac.loopy.feature.donations.MyDonationsScreen
 import id.ac.loopy.feature.home.HomeScreen
@@ -75,9 +88,30 @@ fun LoopyApp(
     onHealth: () -> Unit,
     onSave: () -> Unit,
     onClear: () -> Unit,
+    container: AppContainer,
 ) {
     val nav = rememberNavController()
     val goBack: () -> Unit = { nav.popBackStack() }
+    val clothingCheckRepository = container.clothingCheckRepository
+    val authFactory = remember(container) {
+        viewModelFactory { initializer { LoginViewModel(container.authRepository) } }
+    }
+    val authModel: LoginViewModel = viewModel(factory = authFactory)
+    val session by authModel.session.collectAsStateWithLifecycle()
+    val submitting by authModel.busy.collectAsStateWithLifecycle()
+    val authFeedback by authModel.feedback.collectAsStateWithLifecycle()
+
+    fun goToAccountScreen(role: String?) {
+        val route = when (role) {
+            "USER" -> "s04"
+            "ADMIN" -> "a01"
+            else -> "s02"
+        }
+        nav.navigate(route) {
+            popUpTo(nav.graph.startDestinationId)
+            launchSingleTop = true
+        }
+    }
 
     var verificationEmail by rememberSaveable { mutableStateOf("a***@email.com") }
     var schedules by rememberSaveable { mutableStateOf(hashMapOf<String, Long>()) }
@@ -109,40 +143,128 @@ fun LoopyApp(
                 }
 
                 composable("s02") {
-                    var feedback by rememberSaveable { mutableStateOf<String?>(null) }
-
+                    val role = session?.user?.role
+                    LaunchedEffect(role) {
+                        if (role != null) goToAccountScreen(role)
+                    }
                     LoginScreen(
                         onBack = goBack,
-                        onRegister = { nav.navigate("s03") },
-                        onLogin = { _, _ -> feedback = "Layanan masuk belum terhubung." },
-                        feedback = feedback,
+                        onRegister = {
+                            authModel.clearFeedback()
+                            nav.navigate("s03")
+                        },
+                        onLogin = authModel::login,
+                        feedback = authFeedback,
+                        isSubmitting = submitting,
                     )
                 }
 
                 composable("s03") {
-                    var feedback by rememberSaveable { mutableStateOf<String?>(null) }
-
+                    val role = session?.user?.role
+                    LaunchedEffect(role) {
+                        if (role != null) goToAccountScreen(role)
+                    }
                     RegisterScreen(
                         onBack = goBack,
                         onLogin = {
+                            authModel.clearFeedback()
                             if (!nav.popBackStack("s02", inclusive = false)) nav.navigate("s02")
                         },
-                        onRegister = { _, email, _ ->
-                            if (BuildConfig.DEBUG) {
-                                verificationEmail = "${email.first()}***@${email.substringAfter('@')}"
-                                nav.navigate("s13")
-                            } else {
-                                feedback = "Layanan pendaftaran belum terhubung."
-                            }
-                        },
-                        feedback = feedback,
+                        onRegister = authModel::register,
+                        feedback = authFeedback,
+                        isSubmitting = submitting,
                     )
                 }
 
-                composable("s04") { HomeScreen(goBack) }
-                composable("s05") { ClothingDetectorScreen(goBack) }
-                composable("s06") { CheckResultScreen(goBack) }
+                composable("s04") {
+                    val user = session?.user
+                    val role = user?.role
+                    if (user?.role != "USER") {
+                        LaunchedEffect(role) { goToAccountScreen(role) }
+                    } else {
+                        HomeScreen(
+                            name = user.name,
+                            onBack = goBack,
+                            onCheckClothing = { nav.navigate("s05") },
+                        )
+                    }
+                }
+                composable("s05") { entry ->
+                    val role = session?.user?.role
+                    if (role != "USER") {
+                        LaunchedEffect(role) { goToAccountScreen(role) }
+                        return@composable
+                    }
+                    val factory = remember(clothingCheckRepository) {
+                        viewModelFactory {
+                            initializer { ClothingDetectorViewModel(clothingCheckRepository) }
+                        }
+                    }
+                    val model = viewModel<ClothingDetectorViewModel>(
+                        viewModelStoreOwner = entry,
+                        factory = factory,
+                    )
+
+                    ClothingDetectorScreen(
+                        viewModel = model,
+                        onCheckReady = { checkId ->
+                            nav.navigate("s06/${Uri.encode(checkId)}") {
+                                launchSingleTop = true
+                            }
+                        },
+                        onBack = goBack,
+                    )
+                }
+                if (BuildConfig.DEBUG) composable("s06") {
+                    CheckResultScreen(
+                        viewModel = null,
+                        onBack = goBack,
+                        onRecheck = { nav.navigate("s05") },
+                        onPickup = {},
+                        emptyMessage = "Lakukan pemeriksaan pakaian untuk melihat hasilnya.",
+                    )
+                }
+                composable(
+                    route = "s06/{checkId}",
+                    arguments = listOf(navArgument("checkId") { type = NavType.StringType }),
+                ) { entry ->
+                    val role = session?.user?.role
+                    if (role != "USER") {
+                        LaunchedEffect(role) { goToAccountScreen(role) }
+                        return@composable
+                    }
+                    val checkId = entry.arguments?.getString("checkId").orEmpty()
+                    val factory = remember(clothingCheckRepository, checkId) {
+                        viewModelFactory {
+                            initializer { CheckResultViewModel(checkId, clothingCheckRepository) }
+                        }
+                    }
+                    val model = viewModel<CheckResultViewModel>(
+                        viewModelStoreOwner = entry,
+                        factory = factory,
+                    )
+                    CheckResultScreen(
+                        viewModel = model,
+                        loadPrivatePhoto = clothingCheckRepository::downloadPhoto,
+                        onBack = goBack,
+                        onRecheck = {
+                            nav.navigate("s05") {
+                                popUpTo("s05") { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        },
+                        onPickup = { checkId ->
+                            nav.navigate("s07/${Uri.encode(checkId)}") { launchSingleTop = true }
+                        },
+                    )
+                }
                 composable("s07") { PickupRequestScreen(goBack) }
+                composable(
+                    route = "s07/{checkId}",
+                    arguments = listOf(navArgument("checkId") { type = NavType.StringType }),
+                ) {
+                    PickupRequestScreen(goBack)
+                }
                 composable("s08") { MyDonationsScreen(goBack) }
                 composable("s09") { DonationDetailScreen(goBack) }
                 composable("s10") { RewardsScreen(goBack) }

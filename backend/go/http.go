@@ -18,6 +18,7 @@ import (
 type api struct {
 	auth      *authService
 	donations donationRepository
+	checks    *clothingCheckService
 	limiter   *authLimiter
 	hashSlots chan struct{}
 }
@@ -53,10 +54,17 @@ func (a *api) routes() http.Handler {
 	if a.donations != nil {
 		a.mountDonationRoutes(mux)
 	}
+	if a.checks != nil {
+		a.mountClothingCheckRoutes(mux)
+	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "no-store")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
-		ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
+		timeout := 10 * time.Second
+		if r.Method == http.MethodPost && r.URL.Path == "/v1/checks" {
+			timeout = checkTimeout
+		}
+		ctx, cancel := context.WithTimeout(r.Context(), timeout)
 		defer cancel()
 		mux.ServeHTTP(w, r.WithContext(ctx))
 	})

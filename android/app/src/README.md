@@ -1,18 +1,12 @@
 # src
 
-Direktori src mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
+Source set Android memisahkan kode utama, konfigurasi debug, unit test JVM, dan tes instrumentasi.
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `androidTest/` | Baca README di subfolder androidTest untuk peran file dan TODO. |
-| `debug/` | Baca README di subfolder debug untuk peran file dan TODO. |
-| `main/` | Baca README di subfolder main untuk peran file dan TODO. |
-| `test/` | Baca README di subfolder test untuk peran file dan TODO. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`androidTest/`](androidTest/README.md) | Tes instrumentasi Android dijalankan pada perangkat atau emulator dengan connectedDebugAndroidTest. |
+| [`debug/`](debug/README.md) | Manifest khusus debug mengizinkan HTTP untuk API lokal yang diakses lewat ADB reverse. |
+| [`main/`](main/README.md) | Source set utama memuat manifest, kode Kotlin aplikasi, dan resource UI. |
+| [`test/`](test/README.md) | Unit test Android yang berjalan pada JVM melalui testDebugUnitTest. |

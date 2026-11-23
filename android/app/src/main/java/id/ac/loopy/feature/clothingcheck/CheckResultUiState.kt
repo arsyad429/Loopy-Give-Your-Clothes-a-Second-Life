@@ -1,6 +1,17 @@
 package id.ac.loopy.feature.clothingcheck
 
-// TEMPLATE S06 (F05) — belum ada implementasi bisnis.
-// TODO: buat CheckResultUiState: data class immutable berisi nilai form/data, field errors, loading, error, serta event sukses tanpa menyimpan NavController.
-// Kebutuhan: Foto, jenis, hasil, deskripsi; tiga kategori; eligible saja boleh pickup; konfirmasi pakaian bersih dan aman; hasil AI estimasi awal.
-// Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus.
+import id.ac.loopy.domain.model.AiResult
+import id.ac.loopy.domain.model.ClothingCheck
+
+data class CheckResultUiState(
+    val check: ClothingCheck? = null,
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val cleanAndSafeConfirmed: Boolean = false,
+) {
+    val isEligibleForPickup: Boolean
+        get() = check?.aiResult == AiResult.POTENTIALLY_ELIGIBLE
+
+    val canContinueToPickup: Boolean
+        get() = isEligibleForPickup && cleanAndSafeConfirmed && !isLoading && error == null
+}

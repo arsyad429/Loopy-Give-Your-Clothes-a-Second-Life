@@ -1,15 +1,10 @@
 # loopy
 
-Area tes perilaku PRD. Tulis assertions bermakna untuk validasi/error/role/transaksi dan persistence.
+Unit test model domain dan validasi kualitas foto pada fitur pemeriksaan.
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `domain/` | Baca README di subfolder domain untuk peran file dan TODO. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`domain/`](domain/README.md) | DonationStatusTest memeriksa transisi status donasi yang dipakai UI. |
+| [`feature`](feature/README.md) | Tes fitur menurut layar yang diuji. |

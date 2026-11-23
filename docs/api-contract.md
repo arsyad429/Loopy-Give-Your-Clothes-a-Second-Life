@@ -1,8 +1,8 @@
 # Kontrak API Loopy
 
-Backend Docker memakai Go dan PostgreSQL. Lihat [panduan backend](backend.md), [kontrak autentikasi](auth-go.md), dan [kontrak verifikasi donasi](donation-review-go.md) untuk detail request, respons, dan error.
+Akun, pemeriksaan pakaian, dan admin berjalan pada satu API Go. Gunakan base URL yang sama untuk login, hasil pemeriksaan, dan foto privat. [Panduan backend](backend.md) · [Kontrak autentikasi Go](auth-go.md) · [Kontrak peninjauan donasi Go](donation-review-go.md)
 
-**Endpoint yang tersedia** mencakup `GET /health`, `GET /ready`, lima endpoint auth, serta lima endpoint admin untuk ringkasan, antrean, detail, jadwal, dan penolakan. Tabel ini juga mencakup rencana endpoint untuk fitur lanjutan.
+**Endpoint yang tersedia** mencakup `GET /health`, `GET /ready`, lima endpoint auth, lima endpoint admin, serta tiga endpoint pemeriksaan. Tabel ini juga mencakup rencana endpoint untuk fitur lanjutan.
 
 | Metode/path | Akses | Request → respons target | Fitur |
 | --- | --- | --- | --- |
@@ -11,8 +11,9 @@ Backend Docker memakai Go dan PostgreSQL. Lihat [panduan backend](backend.md), [
 | POST /v1/auth/refresh | Refresh token | refreshToken → token pair baru, expiresAt,refreshExpiresAt,user; pair lama tidak berlaku | F02 |
 | POST /v1/auth/logout | Login | revoke session/refresh token →204 | F02 |
 | GET /v1/auth/me | Login | userId,name,email,role,totalPoints | F02/F03 |
-| POST /v1/checks | User | multipart image → checkId,photo,type,aiResult,aiDescription,createdAt | F04/F05 |
-| GET /v1/checks/{id} | Owner/admin | check tersimpan | F05 |
+| POST /v1/checks | USER | Bearer + Idempotency-Key; multipart `image`, `clothingType` → objek pemeriksaan (201 baru, 200 replay) | F04/F05 |
+| GET /v1/checks/{id} | Owner/admin | Bearer → objek pemeriksaan tersimpan | F05 |
+| GET /v1/checks/{id}/photo | Owner/admin | Bearer → JPEG privat | F05 |
 | POST /v1/donations | User | Idempotency-Key; checkId,cleanAndSafeConfirmed,phoneNumber,pickupAddress,city,quantity,preferredDate,preferredTime,notes → donationId/PENDING_REVIEW | F06 |
 | GET /v1/donations | User | status/query/cursor → items,nextCursor milik user token | F03/F08 |
 | GET /v1/donations/{id} | Owner | detail+history+jadwal final+rejectionReason | F08 |
@@ -33,4 +34,12 @@ Enum status: PENDING_REVIEW/PICKUP_SCHEDULED/PICKED_UP/COMPLETED/REJECTED. AI: P
 
 Rencana idempotency untuk pengajuan dan redemption memakai actor, operation, key, dan hash payload. Pada peninjauan admin, `expectedVersion` mencegah keputusan yang sama diterapkan dua kali. Klien membaca detail terbaru setelah `409`.
 
-Pekerjaan berikutnya mencakup DTO Retrofit untuk auth dan admin, endpoint pengajuan pengguna, pengambilan foto privat, dan fitur lanjutan di tabel. AI dipanggil server dan hasilnya menjadi penilaian awal. OTP, settings, dan profil tambahan memerlukan kontrak tersendiri.
+Android telah menggunakan kontrak auth dan pemeriksaan di atas. DTO admin, endpoint pengajuan pengguna, dan fitur lanjutan masih direncanakan. AI dipanggil server dan hasilnya menjadi penilaian awal. OTP, settings, dan profil tambahan memerlukan kontrak tersendiri.
+
+## Kontrak pemeriksaan pakaian Go
+
+- POST memerlukan role `USER`, access token dari `POST /v1/auth/login`, serta `Idempotency-Key`. Kirim tepat satu file `image` JPEG/PNG maksimal 10 MiB dan satu `clothingType`, misalnya `TSHIRT`.
+- Objek hasil berisi `checkId`, `userId`, `clothingPhoto`, `clothingType`, `aiResult`, `aiDescription`, `actionRecommendation`, dan `createdAt`. `clothingPhoto` menunjuk ke route foto privat pada host API yang sama. Klien menyertakan access token Go saat mengunduhnya.
+- Key dan payload yang sama mendapat hasil lama setelah tersimpan. Key dengan isi berbeda atau request yang masih diproses menghasilkan `409`.
+- Pemilik dan admin dapat membaca detail dan foto. Akun lain mendapat `404`. Request tanpa sesi Go yang valid mendapat `401`.
+- Upload tidak valid menerima `400`, `413`, `415`, atau `422`. Gangguan Groq menghasilkan `502` atau `503` dan tidak menyimpan hasil pemeriksaan.
