@@ -1,6 +1,68 @@
 package id.ac.loopy.feature.admin
 
-// TEMPLATE A03 (F07/F08/F09) — belum ada implementasi bisnis.
-// TODO: buat AdminDonationDetailUiState: data class immutable berisi nilai form/data, field errors, loading, error, serta event sukses tanpa menyimpan NavController.
-// Kebutuhan: Foto + hasil AI + alamat; accept wajib jadwal; reject wajib alasan; Pending → Scheduled → Picked Up → Completed; audit history; completed +10 sekali secara atomik di backend.
-// Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus.
+import id.ac.loopy.domain.model.DonationStatus
+
+internal data class DonationReview(
+    val id: String,
+    val submittedAt: String,
+    val donor: String,
+    val city: String,
+    val phone: String,
+    val address: String,
+    val clothing: String,
+    val quantity: Int,
+    val assessment: String,
+    val assessmentDescription: String,
+    val preference: String,
+    val notes: String,
+    val status: DonationStatus = DonationStatus.PENDING_REVIEW,
+    val schedule: String? = null,
+    val rejectionReason: String? = null,
+)
+
+internal val SampleDonationReviews = listOf(
+    DonationReview(
+        id = "LP024",
+        submittedAt = "11 Okt, 09.35",
+        donor = "Arsyad Setiawan",
+        city = "Malang",
+        phone = "0812 3456 7890",
+        address = "Jl. Contoh No. 12",
+        clothing = "Kaus",
+        quantity = 3,
+        assessment = "Berpotensi layak",
+        assessmentDescription = "Tidak tampak sobekan besar pada foto. Hasil AI merupakan pemeriksaan awal.",
+        preference = "Pagi",
+        notes = "Pakaian telah dicuci",
+    ),
+    DonationReview(
+        id = "LP025",
+        submittedAt = "12 Okt, 10.15",
+        donor = "Nadia Putri",
+        city = "Malang",
+        phone = "0812 3456 7891",
+        address = "Jl. Contoh No. 23",
+        clothing = "Kemeja",
+        quantity = 2,
+        assessment = "Berpotensi layak",
+        assessmentDescription = "Kancing tampak lengkap pada foto. Hasil AI merupakan pemeriksaan awal.",
+        preference = "Siang",
+        notes = "",
+    ),
+    DonationReview(
+        id = "LP026",
+        submittedAt = "12 Okt, 14.10",
+        donor = "Raka Pratama",
+        city = "Batu",
+        phone = "0812 3456 7892",
+        address = "Jl. Contoh No. 34",
+        clothing = "Jaket",
+        quantity = 1,
+        assessment = "Berpotensi layak",
+        assessmentDescription = "Tidak tampak kerusakan besar pada foto. Hasil AI merupakan pemeriksaan awal.",
+        preference = "Sore",
+        notes = "",
+        status = DonationStatus.COMPLETED,
+        schedule = "16 Okt, 13.00 WIB",
+    ),
+)
