@@ -79,7 +79,7 @@ func testAuth(t *testing.T, store repository) *authService {
 func TestPostgresAuthFlow(t *testing.T) {
 	store := integrationStore(t)
 	a := testAuth(t, store)
-	handler := newAPI(a).routes()
+	handler := newAPI(a, store).routes()
 	var requestID atomic.Uint32
 	request := func(method, path, body, token string) *httptest.ResponseRecorder {
 		r := httptest.NewRequest(method, path, strings.NewReader(body))
@@ -154,7 +154,7 @@ func TestPostgresAuthFlow(t *testing.T) {
 	assertStatus(request("POST", "/v1/auth/refresh", fmt.Sprintf(`{"refreshToken":%q}`, refreshed.RefreshToken), ""), 401)
 	assertStatus(request("GET", "/v1/auth/me", "", second.AccessToken), 200)
 	// A fresh server instance reads the same durable sessions and live role/points.
-	handler = newAPI(testAuth(t, store)).routes()
+	handler = newAPI(testAuth(t, store), store).routes()
 	if _, err := store.pool.Exec(context.Background(), "UPDATE users SET total_points=10 WHERE user_id=$1", registered.User.ID); err != nil {
 		t.Fatal(err)
 	}
@@ -188,7 +188,7 @@ func TestPostgresAuthFlow(t *testing.T) {
 	if adminSession.User.Role != "ADMIN" {
 		t.Fatal("admin login did not return current role")
 	}
-	guard := newAPI(a).authenticate(requireRole("ADMIN", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(204) })))
+	guard := newAPI(a, store).authenticate(requireRole("ADMIN", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(204) })))
 	for token, status := range map[string]int{second.AccessToken: 403, adminSession.AccessToken: 204} {
 		r := httptest.NewRequest("GET", "/admin", nil)
 		r.Header.Set("Authorization", "Bearer "+token)

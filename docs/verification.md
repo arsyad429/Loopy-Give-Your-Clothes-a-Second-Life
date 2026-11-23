@@ -1,5 +1,19 @@
 # Hasil verifikasi scaffold
 
+## Verifikasi donasi dan jadwal pickup Go — 23 November 2026
+
+Diverifikasi pada Windows amd64 dengan Go dan PostgreSQL 17 lokal yang dibuat khusus untuk pengujian. [Kontrak dan contoh pengujian manual](donation-review-go.md)
+
+| Pemeriksaan | Hasil |
+| --- | --- |
+| `go test ./...`, `go vet ./...`, dan `go build -trimpath` | Lulus |
+| `TEST_DATABASE_URL=... go test -count=1 -cover ./...` | Lulus dengan cakupan 75,7% statement, termasuk tes autentikasi yang sudah ada |
+| Migrasi akun versi 1 ke versi 2 | Akun dan sesi yang sudah ada tetap bisa dipakai. Startup ulang tidak menerapkan ulang migrasi. |
+| Akses, antrean, dan detail | Anonim mendapat 401, role USER mendapat 403, dan admin dapat membaca ringkasan, filter, pencarian, halaman lanjutan, serta detail. |
+| Persetujuan dan penolakan | Jadwal WIB dikonversi ke UTC dengan benar. Tanggal lampau dan alasan kosong ditolak. Status, alasan, jadwal, dan pelaku tercatat. |
+| Transaksi PostgreSQL | Dua keputusan bersamaan menghasilkan satu perubahan dan satu konflik. Kegagalan insert riwayat membatalkan perubahan pengajuan. |
+| Binary HTTP dan contoh SQL | Health, login admin, fixture dokumentasi, antrean, penjadwalan, dan penolakan lulus. Jadwal serta alasan tetap tersedia setelah server dimulai ulang. |
+
 ## Backend auth Go — 17 November 2026
 
 Diverifikasi pada Windows amd64 dengan Go 1.27.4 dan PostgreSQL 17 lokal sementara. Implementasi ada di `backend/go/`; alur, kode dan teori ada di [auth-go.md](auth-go.md). Ini bukti backend F02; acceptance criteria produk tetap memerlukan integrasi Android dan fitur bisnis.
@@ -17,7 +31,7 @@ Diverifikasi pada Windows amd64 dengan Go 1.27.4 dan PostgreSQL 17 lokal sementa
 | Compose dan CI YAML | Berhasil diparse; Docker CLI tidak tersedia pada host ini sehingga image/Compose belum dijalankan ulang |
 | Pemeriksaan struktur repository | Terhenti oleh README yang belum tersedia di folder lokal `.github/modernize/`; bukan kegagalan test auth |
 
-Database dan server sementara dihentikan setelah pemeriksaan. CI Go menyediakan PostgreSQL dan menjalankan race detector; race detector belum dijalankan lokal karena toolchain C Windows belum dikonfigurasi. Android auth, endpoint bisnis, email verification, password recovery dan MFA belum diimplementasikan.
+Database dan server sementara dihentikan setelah pemeriksaan. CI Go menyediakan PostgreSQL dan menjalankan race detector. Pemeriksaan lokal ini memakai tes Go tanpa race detector karena toolchain C Windows belum dikonfigurasi. Lihat [status backend terkini](backend.md).
 
 ## Konfigurasi deployment LXC — 17 November 2026
 

@@ -68,7 +68,7 @@ func TestPasswordHashing(t *testing.T) {
 }
 
 func TestHTTPInputBoundary(t *testing.T) {
-	handler := newAPI(&authService{}).routes()
+	handler := newAPI(&authService{}, nil).routes()
 	for _, test := range []struct {
 		name, path, body, contentType string
 		status                        int
@@ -133,7 +133,7 @@ func TestBearerAndRoleGuard(t *testing.T) {
 		{"admin", "bearer " + token, "ADMIN", 204},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			a := newAPI(&authService{store: principalStore{p: principal{User: user{ID: "account", Role: test.role}}}})
+			a := newAPI(&authService{store: principalStore{p: principal{User: user{ID: "account", Role: test.role}}}}, nil)
 			h := a.authenticate(requireRole("ADMIN", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(204) })))
 			r := httptest.NewRequest("GET", "/admin", nil)
 			r.Header.Set("Authorization", test.header)
@@ -153,7 +153,7 @@ func TestBearerAndRoleGuard(t *testing.T) {
 }
 
 func TestAuthRateLimit(t *testing.T) {
-	a := newAPI(&authService{})
+	a := newAPI(&authService{}, nil)
 	h := a.routes()
 	for i := 0; i < 21; i++ {
 		r := httptest.NewRequest("POST", "/v1/auth/login", strings.NewReader(`{}`))

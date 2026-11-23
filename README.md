@@ -20,7 +20,7 @@ docker compose --profile tools run --rm android-dev assembleDebug testDebugUnitT
 
 PowerShell: ganti perintah pertama dengan `Copy-Item .env.example .env`; perintah Docker sama. Ganti password lokal di `.env` bila perlu; file ini diabaikan Git. Default hanya untuk development lokal.
 
-Backend: http://localhost:8080/health → `{"status":"ok","mode":"go-auth"}`; `/ready` memeriksa PostgreSQL. Migrasi users/auth_sessions dijalankan saat startup. APK hasil Docker: `artifacts/outputs/apk/debug/app-debug.apk`; laporan: `artifacts/reports/`. Base URL emulator bawaan Android Studio: `http://10.0.2.2:8080/`.
+Backend Go melayani autentikasi dan keputusan admin untuk donasi. `/health` tersedia di `http://localhost:8080` dan `/ready` memeriksa PostgreSQL. Migrasi akun, sesi, pengajuan, dan riwayat berjalan saat startup. APK Docker tersedia di `artifacts/outputs/apk/debug/app-debug.apk` dan laporan di `artifacts/reports/`. Emulator Android Studio menggunakan `http://10.0.2.2:8080/`. [Panduan backend](docs/backend.md)
 
 Untuk menjalankan API di server LXC, ikuti [panduan deployment LXC](docs/deploy-lxc.md) dan gunakan `compose.lxc.yaml` (API + PostgreSQL, tanpa build Android).
 
@@ -39,7 +39,7 @@ Docker menyiapkan JDK/SDK dan build konsisten di Linux, Windows, dan macOS. **AP
 | Folder/file | Peran |
 | --- | --- |
 | [`android/`](android/README.md) | Project Android Studio, modul app, wrapper, dependency catalog |
-| [`backend/`](backend/README.md) | Go auth aktif di backend/go; scaffold Kotlin/Ktor lama tetap tersedia |
+| [`backend/`](backend/README.md) | API Go untuk autentikasi dan verifikasi donasi, serta scaffold Kotlin/Ktor |
 | [`docker/`](docker/README.md), Dockerfile, compose.yaml | Build Android, backend runtime dan PostgreSQL |
 | [`docs/`](docs/README.md) | Arsitektur, pemetaan 10 materi PAPB, screen map, API/data model, backlog dan 20 AC |
 | [`scripts/`](scripts/README.md) | Build container dan pemeriksaan struktur |
