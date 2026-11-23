@@ -9,6 +9,7 @@ This is the active Docker backend: Go `net/http`, PostgreSQL via pgx, Argon2id p
 - `password.go`, `auth.go`: password hashing and account/session rules.
 - `http.go`: routes, middleware, bounded JSON input, errors, rate limits.
 - `donation.go`, `donation_http.go`, `donation_store.go`: admin review, pickup scheduling, and audit history.
+- `rewards.go`, `rewards_http.go`, `rewards_store.go`, `schema_rewards.sql`: donation completion, unique point credits, ownership, reward catalog, atomic redemptions and snapshots. See [the completion and rewards guide](../../docs/completion-rewards.md).
 - `*_test.go`: unit tests and real PostgreSQL verification.
 
 Use Go 1.27.4+ (or automatic toolchain selection), set `DATABASE_URL` to a PostgreSQL URL and run `go run .`. Default `HTTP_ADDR` is `127.0.0.1:8080`; Compose sets `:8080` inside the container. From the repo root, `docker compose up --build -d --wait` starts both services. Public routes: `/health`, `/ready`, register/login/refresh. `/v1/auth/me` and logout require a Bearer access token.

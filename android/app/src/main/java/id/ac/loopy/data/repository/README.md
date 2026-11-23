@@ -1,5 +1,7 @@
 # repository
 
+`CompletionDemoRepository.kt` menangani transaksi Room untuk PRD 6.5–6.6, seed data ilustrasi, kredit unik per donasi, validasi saldo ulang, dan idempotensi redemption. Hanya untuk demo debug; repository API produksi yang masih berupa TEMPLATE belum dihubungkan.
+
 Implementasi akses data melalui repository. FoundationRepository aktif; repository fitur masih template.
 
 ## Isi file dan perannya

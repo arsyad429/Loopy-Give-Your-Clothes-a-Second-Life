@@ -38,4 +38,4 @@ Dari `backend/go`, jalankan `go test ./...`, `go vet ./...`, dan `go build ./...
 
 ## Status fitur
 
-Backend aktif menyediakan autentikasi dasar serta keputusan admin dari `PENDING_REVIEW` ke `PICKUP_SCHEDULED` atau `REJECTED`. Android masih memakai pratinjau lokal. Email OTP, pengajuan pickup dari pengguna, analisis dan unduhan foto, pelacakan pengguna, penyelesaian pickup, poin, dan rewards masih menunggu implementasi pada API Go. [Peta endpoint dan rencana lanjutan](api-contract.md)
+Backend aktif menyediakan autentikasi, verifikasi/jadwal/penolakan, transisi `PICKUP_SCHEDULED → PICKED_UP → COMPLETED` dengan 10 poin satu kali, pembacaan donasi milik pengguna, saldo, katalog, penukaran idempoten, dan riwayat reward. [Panduan penyelesaian dan reward](completion-rewards.md). Android untuk alur ini memakai demo Room lokal yang terpisah; integrasi akun/API dan deployment VM belum dikerjakan. Email OTP, pengajuan pickup dari pengguna, analisis AI, dan unduhan foto masih menunggu implementasi. [Peta endpoint](api-contract.md)

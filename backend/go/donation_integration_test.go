@@ -215,8 +215,8 @@ func TestPickupMigrationPreservesAuth(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = store.pool.Exec(ctx, `DROP TABLE donation_status_history, donation_requests, clothing_checks;
-		DELETE FROM schema_migrations WHERE version=2`, pgx.QueryExecModeSimpleProtocol)
+	_, err = store.pool.Exec(ctx, `DROP TABLE point_transactions, redemptions, rewards, donation_status_history, donation_requests, clothing_checks;
+		DELETE FROM schema_migrations WHERE version>=2`, pgx.QueryExecModeSimpleProtocol)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -42,8 +42,9 @@ func (s *pgStore) ListDonations(ctx context.Context, filter donationFilter) ([]d
 		AND ($2 = '' OR strpos(lower(d.donation_id::text), lower($2)) > 0
 			OR strpos(lower(u.name), lower($2)) > 0 OR strpos(lower(d.city), lower($2)) > 0)
 		AND ($3::timestamptz IS NULL OR (d.created_at, d.donation_id) > ($3::timestamptz, $4::uuid))
+		AND ($6 = '' OR d.user_id = NULLIF($6, '')::uuid)
 		ORDER BY d.created_at, d.donation_id
-		LIMIT $5`, filter.Status, filter.Query, afterTime, afterID, filter.Limit+1)
+		LIMIT $5`, filter.Status, filter.Query, afterTime, afterID, filter.Limit+1, filter.OwnerID)
 	if err != nil {
 		return nil, err
 	}
@@ -79,12 +80,12 @@ func readDonationDetail(ctx context.Context, tx pgx.Tx, id string) (donationDeta
 	var detail donationDetail
 	check := &detail.ClothingCheck
 	fields := append(donationItemFields(&detail.donationItem),
-		&detail.PhoneNumber, &detail.PickupAddress, &detail.PreferredDate, &detail.PreferredTime, &detail.Notes,
+		&detail.UserID, &detail.PhoneNumber, &detail.PickupAddress, &detail.PreferredDate, &detail.PreferredTime, &detail.Notes,
 		&detail.ScheduledAt, &detail.RejectionReason, &check.CheckID, &check.PhotoKey, &check.ClothingType,
 		&check.AIResult, &check.AIDescription,
 	)
 	err := tx.QueryRow(ctx, `SELECT `+donationItemColumns+`,
-		d.phone_number, d.pickup_address, to_char(d.preferred_date, 'YYYY-MM-DD'), d.preferred_time, d.notes,
+		d.user_id::text, d.phone_number, d.pickup_address, to_char(d.preferred_date, 'YYYY-MM-DD'), d.preferred_time, d.notes,
 		d.scheduled_at, d.rejection_reason, c.check_id::text, c.photo_key, c.clothing_type, c.ai_result, c.ai_description
 		FROM donation_requests d
 		JOIN users u ON u.user_id = d.user_id

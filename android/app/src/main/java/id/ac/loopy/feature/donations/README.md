@@ -1,6 +1,6 @@
 # donations
 
-Template fitur S08 My Donations, S09 Donation Detail. UI bisnis belum diimplementasikan; kerjakan Screen/UiState/ViewModel terpisah.
+S08 My Donations dan S09 Donation Detail menampilkan daftar, filter status, detail per ID, serta timeline dari state demo Room. Pengguna hanya membaca status; konfirmasi penyelesaian tersedia pada demo admin terpisah. Data akun/API produksi belum terintegrasi. ViewModel/UiState lama tetap menjadi template untuk integrasi tersebut.
 
 ## Isi file dan perannya
 

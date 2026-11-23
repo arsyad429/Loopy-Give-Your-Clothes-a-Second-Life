@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.loopy.BuildConfig
 import id.ac.loopy.domain.model.DonationStatus
 import id.ac.loopy.feature.admin.AdminDashboardScreen
@@ -45,10 +46,16 @@ import id.ac.loopy.feature.pickup.PickupRequestScreen
 import id.ac.loopy.feature.profile.AdminProfileScreen
 import id.ac.loopy.feature.profile.UserProfileScreen
 import id.ac.loopy.feature.rewards.RewardsScreen
+import id.ac.loopy.feature.rewards.CompletionViewModel
+import id.ac.loopy.feature.rewards.CompletionUiState
+import id.ac.loopy.feature.rewards.CompletionAdminScreen
+import id.ac.loopy.feature.rewards.toAdminReview
+import id.ac.loopy.ui.components.TemplateScreen
 import id.ac.loopy.feature.settings.SettingsScreen
 import id.ac.loopy.feature.verification.EmailVerificationScreen
 
 private val PreviewScreens = listOf(
+    "completion-admin" to "Demo E–F · Admin penyelesaian donasi & poin",
     "s01" to "S01 · Landing Page",
     "s02" to "S02 · Login",
     "s03" to "S03 · Register",
@@ -75,9 +82,22 @@ fun LoopyApp(
     onHealth: () -> Unit,
     onSave: () -> Unit,
     onClear: () -> Unit,
+    completion: CompletionViewModel? = null,
 ) {
     val nav = rememberNavController()
-    val goBack: () -> Unit = { nav.popBackStack() }
+    val goBack: () -> Unit = { completion?.dismissMessage(); nav.popBackStack() }
+    val completionState = completion?.state?.collectAsStateWithLifecycle()?.value ?: CompletionUiState()
+    val userNavigate: (String) -> Unit = { route ->
+        completion?.dismissMessage()
+        nav.navigate(route) {
+            popUpTo(if (BuildConfig.DEBUG) "templates" else "s04") { saveState = true }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+    val openDonation: (String) -> Unit = { nav.navigate("s09/$it") }
+    val account: () -> Unit = { nav.navigate("s11") }
+    val refreshCompletion: () -> Unit = { completion?.prepare() }
 
     var verificationEmail by rememberSaveable { mutableStateOf("a***@email.com") }
     var schedules by rememberSaveable { mutableStateOf(hashMapOf<String, Long>()) }
@@ -97,7 +117,7 @@ fun LoopyApp(
         }
     }
 
-    Surface(Modifier.fillMaxSize()) {
+    Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Box(Modifier.safeDrawingPadding()) {
             NavHost(navController = nav, startDestination = if (BuildConfig.DEBUG) "templates" else "s01") {
                 composable("s01") {
@@ -139,19 +159,41 @@ fun LoopyApp(
                     )
                 }
 
-                composable("s04") { HomeScreen(goBack) }
+                composable("s04") {
+                    if (completion != null) HomeScreen(completionState, userNavigate, openDonation, { nav.navigate("s05") }, account, refreshCompletion)
+                    else TemplateScreen("Home", "Integrasi akun dan server belum terhubung.", goBack)
+                }
                 composable("s05") { ClothingDetectorScreen(goBack) }
                 composable("s06") { CheckResultScreen(goBack) }
                 composable("s07") { PickupRequestScreen(goBack) }
-                composable("s08") { MyDonationsScreen(goBack) }
-                composable("s09") { DonationDetailScreen(goBack) }
-                composable("s10") { RewardsScreen(goBack) }
+                composable("s08") {
+                    if (completion != null) MyDonationsScreen(completionState, userNavigate, openDonation, account, refreshCompletion)
+                    else TemplateScreen("Donasiku", "Integrasi akun dan server belum terhubung.", goBack)
+                }
+                composable("s09") { DonationDetailScreen(completionState.donations.firstOrNull(), goBack, userNavigate) }
+                composable("s09/{id}") { entry -> DonationDetailScreen(completionState.donations.find { it.id == entry.arguments?.getString("id") }, goBack, userNavigate) }
+                composable("s10") {
+                    if (completion != null) RewardsScreen(completionState, userNavigate, account, completion::redeem, refreshCompletion, completion::dismissMessage)
+                    else TemplateScreen("Rewards", "Integrasi akun dan server belum terhubung.", goBack)
+                }
                 composable("a01") { AdminDashboardScreen(goBack) }
                 composable("s11") { UserProfileScreen(goBack) }
                 composable("s12") { SettingsScreen(goBack) }
                 composable("a04") { AdminProfileScreen(goBack) }
 
                 if (BuildConfig.DEBUG) {
+                    composable("completion-admin") {
+                        CompletionAdminScreen(completionState, goBack, { nav.navigate("completion-admin/$it") }, refreshCompletion)
+                    }
+                    composable("completion-admin/{id}") { entry ->
+                        val donation = completionState.donations.find { it.id == entry.arguments?.getString("id") }
+                        if (donation == null) Text("Pengajuan tidak ditemukan.")
+                        else AdminDonationDetailScreen(
+                            review = donation.toAdminReview(), onBack = goBack, onSchedule = {}, onReject = {},
+                            onAdvance = { completion?.advance(donation.id, it) }, busy = completionState.busy,
+                            completionMessage = completionState.message, completionError = completionState.error,
+                        )
+                    }
                     composable("s13") {
                         EmailVerificationScreen(
                             maskedEmail = verificationEmail,
@@ -201,6 +243,7 @@ fun LoopyApp(
 
                     composable("templates") {
                         TemplateMenu(state, onTheme, onHealth, onSave, onClear) { route ->
+                            completion?.dismissMessage()
                             if (route == "s13") verificationEmail = "a***@email.com"
                             nav.navigate(route)
                         }

@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import id.ac.loopy.BuildConfig
 import id.ac.loopy.data.local.LoopyDatabase
+import id.ac.loopy.data.local.CompletionDemoDatabase
+import id.ac.loopy.data.repository.CompletionDemoRepository
 import id.ac.loopy.data.local.preferences.UserPreferencesDataSource
 import id.ac.loopy.data.remote.api.HealthApi
 import id.ac.loopy.data.repository.FoundationRepository
@@ -20,5 +22,9 @@ class AppContainer(context: Context) {
     private val api = Retrofit.Builder().baseUrl(BuildConfig.API_BASE_URL).client(http)
         .addConverterFactory(GsonConverterFactory.create()).build().create(HealthApi::class.java)
     val foundationRepository = FoundationRepository(UserPreferencesDataSource(context), database.pickupDraftDao(), api)
+    val completionDemoRepository by lazy {
+        check(BuildConfig.DEBUG) { "Demo data is available only in debug builds." }
+        CompletionDemoRepository(Room.databaseBuilder(context.applicationContext, CompletionDemoDatabase::class.java, "loopy-completion-demo.db").build())
+    }
     // TODO: wiring repository auth/check/donation/admin/reward setelah kontrak diimplementasikan.
 }

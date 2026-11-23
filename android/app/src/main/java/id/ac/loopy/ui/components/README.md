@@ -2,6 +2,8 @@
 
 Direktori components mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
 
+`CompletionComponents.kt` menyediakan kartu, saldo, navigasi bawah, ikon lokal, dan feedback untuk alur E–F. `LoopyScreen` mendukung slot navigasi bawah serta avatar akun. `LoopyButton` memiliki varian primary, secondary sage, dan outlined. Komponen ini digunakan oleh Home, Donasiku, Rewards, dan konfirmasi penyelesaian.
+
 ## Isi file dan perannya
 
 | File/folder | Peran dan isi yang diharapkan |

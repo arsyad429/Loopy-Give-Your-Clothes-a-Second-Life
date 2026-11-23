@@ -2,7 +2,7 @@
 
 Backend Docker memakai Go dan PostgreSQL. Lihat [panduan backend](backend.md), [kontrak autentikasi](auth-go.md), dan [kontrak verifikasi donasi](donation-review-go.md) untuk detail request, respons, dan error.
 
-**Endpoint yang tersedia** mencakup `GET /health`, `GET /ready`, lima endpoint auth, serta lima endpoint admin untuk ringkasan, antrean, detail, jadwal, dan penolakan. Tabel ini juga mencakup rencana endpoint untuk fitur lanjutan.
+**Endpoint yang tersedia** mencakup health/readiness, autentikasi, admin review/status, daftar/detail donasi milik pengguna, saldo, katalog, penukaran, dan riwayat reward. [Kontrak penyelesaian dan reward](completion-rewards.md). Endpoint checks dan POST pengajuan donasi pada tabel masih berupa rencana.
 
 | Metode/path | Akses | Request → respons target | Fitur |
 | --- | --- | --- | --- |
@@ -23,8 +23,8 @@ Backend Docker memakai Go dan PostgreSQL. Lihat [panduan backend](backend.md), [
 | POST /v1/admin/donations/{id}/reject | Admin | rejectionReason,expectedVersion → detail ditolak dan riwayat | F07 |
 | POST /v1/admin/donations/{id}/status | Admin | targetStatus PICKED_UP/COMPLETED,expectedVersion →status+history; completed+10 atomik | F07/F09 |
 | GET /v1/points/balance | User | balance,updatedAt | F09 |
-| GET /v1/rewards | User | katalog rewardId,name,description,image,requiredPoints,type,isActive | F10 |
-| POST /v1/redemptions | User | Idempotency-Key+rewardId → redemption,remainingBalance | F10 |
+| GET /v1/rewards | User | items: rewardId,name,description,icon,requiredPoints,type,isActive | F10 |
+| POST /v1/redemptions | User | Idempotency-Key+rewardId → redemption,remainingBalance,replayed; 201 baru/200 replay | F10 |
 | GET /v1/redemptions | User | history milik user, reward snapshot/details/pointsUsed/redeemedAt | F10 |
 
 Nama akun/foto/jenis pakaian diambil server dari akun/check, bukan dipercaya dari klien. Konfirmasi cleanAndSafeConfirmed wajib. Check gagal/ineligible atau bukan milik user ditolak. Semua endpoint admin memverifikasi role server; ownership di query/service. User tidak mengubah status/poin.

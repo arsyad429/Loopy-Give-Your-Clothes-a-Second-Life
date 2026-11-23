@@ -10,6 +10,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.loopy.ui.LoopyApp
 import id.ac.loopy.ui.TemplateViewModel
 import id.ac.loopy.ui.theme.LoopyTheme
+import id.ac.loopy.feature.rewards.CompletionViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,8 +20,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             val model: TemplateViewModel = viewModel(factory = TemplateViewModel.factory(container))
             val state = model.state.collectAsStateWithLifecycle().value
+            val completion: CompletionViewModel? = if (BuildConfig.DEBUG) viewModel(factory = CompletionViewModel.factory(container.completionDemoRepository)) else null
             LoopyTheme(darkTheme = state.darkTheme) {
-                LoopyApp(state, model::setDarkTheme, model::refreshHealth, model::saveDemoDraft, model::clearDemoDrafts)
+                LoopyApp(state, model::setDarkTheme, model::refreshHealth, model::saveDemoDraft, model::clearDemoDrafts, completion)
             }
         }
     }

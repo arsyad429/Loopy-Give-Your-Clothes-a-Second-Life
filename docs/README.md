@@ -16,6 +16,7 @@ Dokumentasi arsitektur, PAPB, Figma, API, data model, backlog dan acceptance cri
 | `development.md` | Dokumen acuan development; baca isi untuk spesifikasi/TODO. |
 | `deploy-lxc.md` | Deployment API Go/PostgreSQL dengan Docker di LXC: instalasi, jaringan, admin, HTTPS dan backup. |
 | `donation-review-go.md` | Kontrak API admin, aturan jadwal WIB, riwayat keputusan, penanganan konflik, dan contoh pengujian manual. |
+| `completion-rewards.md` | PRD 6.5–6.6: demo Android Room, frontend Figma, API Go untuk penyelesaian/poin/reward, serta batas integrasi VM. |
 | `papb-mapping.md` | Dokumen acuan papb-mapping; baca isi untuk spesifikasi/TODO. |
 | `reference/` | Baca README di subfolder reference untuk peran file dan TODO. |
 | `screen-map.json` | Mapping machine-readable 13 MVP+4 desain, node ID dan TODO. |

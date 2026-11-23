@@ -74,6 +74,7 @@ type donationHistory struct {
 
 type donationDetail struct {
 	donationItem
+	UserID          string            `json:"-"`
 	PhoneNumber     string            `json:"phoneNumber"`
 	PickupAddress   string            `json:"pickupAddress"`
 	PreferredDate   string            `json:"preferredDate"`
@@ -89,10 +90,11 @@ type donationDetail struct {
 }
 
 type donationFilter struct {
-	Status string
-	Query  string
-	Limit  int
-	After  donationCursor
+	OwnerID string
+	Status  string
+	Query   string
+	Limit   int
+	After   donationCursor
 }
 
 type donationCursor struct {

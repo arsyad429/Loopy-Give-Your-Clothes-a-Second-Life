@@ -74,6 +74,10 @@ func donationListFilter(q url.Values) (donationFilter, error) {
 }
 
 func (a *api) listDonations(w http.ResponseWriter, r *http.Request) {
+	a.listDonationsFor(w, r, "")
+}
+
+func (a *api) listDonationsFor(w http.ResponseWriter, r *http.Request, owner string) {
 	query, err := url.ParseQuery(r.URL.RawQuery)
 	if err != nil {
 		writeError(w, &apiError{Status: 400, Code: "INVALID_QUERY", Message: "Check query parameter encoding."})
@@ -84,6 +88,7 @@ func (a *api) listDonations(w http.ResponseWriter, r *http.Request) {
 		writeError(w, err)
 		return
 	}
+	filter.OwnerID = owner
 	items, err := a.donations.ListDonations(r.Context(), filter)
 	if err != nil {
 		writeError(w, err)

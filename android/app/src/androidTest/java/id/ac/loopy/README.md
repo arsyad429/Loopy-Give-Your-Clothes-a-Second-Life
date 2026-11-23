@@ -1,5 +1,7 @@
 # loopy
 
+`CompletionPersistenceTest.kt` menguji transaksi, rollback, idempotensi, saldo kurang, dan persistensi Room demo E–F. `CompletionFlowTest.kt` menguji alur Compose admin → completion → batal/konfirmasi redeem → Reward-ku → Home → detail dan menyimpan screenshot ke external files aplikasi.
+
 Area tes perilaku PRD. Tulis assertions bermakna untuk validasi/error/role/transaksi dan persistence.
 
 ## Isi file dan perannya

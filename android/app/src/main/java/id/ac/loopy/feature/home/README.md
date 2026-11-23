@@ -1,6 +1,6 @@
 # home
 
-Template fitur S04 Home Dashboard. UI bisnis belum diimplementasikan; kerjakan Screen/UiState/ViewModel terpisah.
+S04 Home Dashboard memakai layout Figma dan state demo lokal yang sama dengan Rewards: saldo diperbarui setelah penyelesaian atau redeem, kartu donasi membuka detail, dan navigasi bawah terhubung. Data akun/API produksi belum terintegrasi; mode ini hanya tersedia melalui harness debug. ViewModel/UiState lama tetap menjadi template integrasi selanjutnya.
 
 ## Isi file dan perannya
 
