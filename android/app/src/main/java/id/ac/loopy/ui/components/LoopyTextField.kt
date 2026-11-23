@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.error as accessibilityError
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -33,6 +34,8 @@ internal fun LoopyTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     singleLine: Boolean = true,
     secret: Boolean = false,
+    hint: String? = null,
+    enabled: Boolean = true,
 ) {
     var isVisible by remember { mutableStateOf(false) }
     val colors = MaterialTheme.colorScheme
@@ -43,9 +46,13 @@ internal fun LoopyTextField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth().semantics { contentDescription = label },
+            modifier = Modifier.fillMaxWidth().semantics {
+                contentDescription = label
+                if (error != null) accessibilityError(error)
+            },
+            enabled = enabled,
             placeholder = { Text(placeholder) },
-            supportingText = error?.let { message -> { Text(message) } },
+            supportingText = (error ?: hint)?.let { message -> { Text(message) } },
             isError = error != null,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             singleLine = singleLine,

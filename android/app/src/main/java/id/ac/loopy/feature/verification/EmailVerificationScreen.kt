@@ -88,7 +88,7 @@ fun EmailVerificationScreen(
             )
         },
     ) {
-        LoopyIntro("Cek emailmu", "Masukkan 6 digit kode untuk $maskedEmail.")
+        LoopyIntro("Masukkan kode", "Gunakan 6 digit kode untuk $maskedEmail.")
 
         VerificationCodeField(code, isError = incorrectCode || expired) {
             code = it
@@ -96,9 +96,9 @@ fun EmailVerificationScreen(
         }
 
         when {
-            expired -> LoopyInfo("Kode kedaluwarsa", "Minta kode baru untuk melanjutkan.", isError = true)
-            incorrectCode -> LoopyInfo("Kode tidak cocok", "Periksa kembali keenam digit kode.", isError = true)
-            else -> LoopyInfo("Kode berlaku 5 menit", "Pada pratinjau, gunakan kode $DemoCode.")
+            expired -> LoopyInfo("Kode kedaluwarsa", "Tekan Kirim ulang kode untuk mendapatkan kode baru.", isError = true)
+            incorrectCode -> LoopyInfo("Kode belum tepat", "Untuk pratinjau ini, coba masukkan $DemoCode.", isError = true)
+            else -> LoopyInfo("Kode pratinjau", "Gunakan $DemoCode. Kode berlaku selama 5 menit.")
         }
 
         TextButton(

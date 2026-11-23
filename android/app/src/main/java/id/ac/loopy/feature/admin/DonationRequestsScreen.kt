@@ -72,7 +72,11 @@ internal fun DonationRequestsScreen(
         Text("${visibleReviews.size} pengajuan", style = MaterialTheme.typography.labelLarge)
 
         if (visibleReviews.isEmpty()) {
-            LoopyInfo("Belum ada hasil", "Coba kata kunci atau filter yang lain.")
+            if (needle.isEmpty()) {
+                LoopyInfo("Belum ada pengajuan", "Pilih status lain untuk melihat pengajuan lainnya.")
+            } else {
+                LoopyInfo("Pengajuan tidak ditemukan", "Coba kata kunci atau pilih status lain.")
+            }
         }
 
         visibleReviews.forEach { review ->

@@ -27,6 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -154,9 +157,10 @@ internal fun LoopyInfo(title: String, description: String, isError: Boolean = fa
     val colors = MaterialTheme.colorScheme
     val background = if (isError) colors.errorContainer else colors.primaryContainer
     val foreground = if (isError) colors.onErrorContainer else colors.onPrimaryContainer
+    val announcement = if (isError) Modifier.semantics { liveRegion = LiveRegionMode.Polite } else Modifier
 
     Column(
-        modifier = Modifier.fillMaxWidth().background(background, RoundedCornerShape(20.dp)).padding(20.dp),
+        modifier = announcement.fillMaxWidth().background(background, RoundedCornerShape(20.dp)).padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Text(title, color = foreground, style = MaterialTheme.typography.titleMedium)
