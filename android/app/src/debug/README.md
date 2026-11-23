@@ -4,9 +4,9 @@ Direktori debug mengelompokkan source/config Loopy. README subfolder menjelaskan
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `AndroidManifest.xml` | Activity/application/permission. Main menolak cleartext, overlay debug mengizinkan HTTP lokal. |
+| [`AndroidManifest.xml`](AndroidManifest.xml) | Activity/application/permission. Main menolak cleartext, overlay debug mengizinkan HTTP lokal. |
 
 ## TODO
 

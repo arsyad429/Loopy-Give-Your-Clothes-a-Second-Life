@@ -4,11 +4,11 @@ Workflow CI Android/backend serta template issue/PR untuk kerja tim. Jangan meny
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `ISSUE_TEMPLATE/` | Baca README di subfolder ISSUE_TEMPLATE untuk peran file dan TODO. |
-| `pull_request_template.md` | Template deskripsi perubahan, kaitan PRD, hasil cek dan batasan. |
-| `workflows/` | Baca README di subfolder workflows untuk peran file dan TODO. |
+| [`ISSUE_TEMPLATE/`](ISSUE_TEMPLATE/README.md) | Baca README di subfolder ISSUE_TEMPLATE untuk peran file dan TODO. |
+| [`pull_request_template.md`](pull_request_template.md) | Template deskripsi perubahan, kaitan PRD, hasil cek dan batasan. |
+| [`workflows/`](workflows/README.md) | Baca README di subfolder workflows untuk peran file dan TODO. |
 
 ## TODO
 

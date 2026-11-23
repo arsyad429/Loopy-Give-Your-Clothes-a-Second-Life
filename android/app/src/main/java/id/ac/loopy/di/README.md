@@ -4,9 +4,9 @@ Direktori di mengelompokkan source/config Loopy. README subfolder menjelaskan im
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `AppContainer.kt` | Manual dependency injection: singleton database, DataStore, OkHttp, Retrofit, repository. |
+| [`AppContainer.kt`](AppContainer.kt) | Menyediakan Room, DataStore, Retrofit HealthApi, dan FoundationRepository. Repository bisnis masih perlu dihubungkan. |
 
 ## TODO
 

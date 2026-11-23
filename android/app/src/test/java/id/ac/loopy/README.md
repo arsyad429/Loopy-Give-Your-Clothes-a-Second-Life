@@ -4,9 +4,10 @@ Area tes perilaku PRD. Tulis assertions bermakna untuk validasi/error/role/trans
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `domain/` | Baca README di subfolder domain untuk peran file dan TODO. |
+| [`domain/`](domain/README.md) | Baca README di subfolder domain untuk peran file dan TODO. |
+| [`feature`](feature/README.md) | Tes fitur menurut layar yang diuji. |
 
 ## TODO
 

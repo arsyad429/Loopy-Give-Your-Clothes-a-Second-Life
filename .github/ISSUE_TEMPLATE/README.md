@@ -4,9 +4,9 @@ Template issue untuk menghubungkan pekerjaan tim dengan Fxx/ACxx dan node Figma.
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `feature.md` | Template pengambilan tugas fitur/AC, pemilik/dependensi, definisi selesai. |
+| [`feature.md`](feature.md) | Template pengambilan tugas fitur/AC, pemilik/dependensi, definisi selesai. |
 
 ## TODO
 

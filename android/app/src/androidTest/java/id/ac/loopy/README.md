@@ -4,9 +4,10 @@ Area tes perilaku PRD. Tulis assertions bermakna untuk validasi/error/role/trans
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `FoundationPersistenceTest.kt` | Instrumented test draft Room bertahan setelah database ditutup/dibuka. |
+| [`FoundationPersistenceTest.kt`](FoundationPersistenceTest.kt) | Instrumented test draft Room bertahan setelah database ditutup/dibuka. |
+| [`feature`](feature/README.md) | Tes fitur menurut layar yang diuji. |
 
 ## TODO
 

@@ -4,9 +4,9 @@ Berkas .fig asli pengguna; buka/import di Figma. Node map ada di docs/screen-map
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `Loopy — Mobile UI · 13 Screens.fig` | Referensi desain asli. |
+| [`Loopy — Mobile UI · 13 Screens.fig`](Loopy%20%E2%80%94%20Mobile%20UI%20%C2%B7%2013%20Screens.fig) | Referensi desain asli. |
 
 ## TODO
 

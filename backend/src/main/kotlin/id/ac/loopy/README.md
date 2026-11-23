@@ -4,9 +4,9 @@ Direktori loopy mengelompokkan source/config Loopy. README subfolder menjelaskan
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `server/` | Baca README di subfolder server untuk peran file dan TODO. |
+| [`server/`](server/README.md) | Baca README di subfolder server untuk peran file dan TODO. |
 
 ## TODO
 

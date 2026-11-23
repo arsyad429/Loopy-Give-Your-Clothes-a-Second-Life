@@ -1,4 +1,19 @@
-# Hasil verifikasi scaffold
+# Hasil verifikasi Loopy
+
+## Penggabungan Go dan Ktor — 24 November 2026
+
+Diuji di Linux dengan dua proyek Compose dan database terpisah.
+
+| Pemeriksaan | Hasil |
+| --- | --- |
+| Android `assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest` | Lulus. Enam unit test lulus dan lint melaporkan 0 error. APK instrumentasi berhasil dibangun. |
+| Ktor `test installDist` | Tujuh tes lulus, termasuk store dan route dengan PostgreSQL. Smoke test Groq opt-in dilewati pada run Gradle terkontrol. |
+| Go `go test -race -count=1 ./...`, `go vet`, dan `go build` | Lulus dengan PostgreSQL khusus pengujian. |
+| HTTP dari container aktual | 23 pemeriksaan sesuai harapan mencakup login Go, pencabutan sesi, akses admin, validasi upload, POST Groq, replay, dan privasi detail serta foto. |
+| POST pemeriksaan + Groq | Sesi Ktor valid menerima `201`. Groq mengembalikan `NEEDS_RECHECK` untuk ilustrasi kaos sintetis. |
+| Satu login untuk kedua API | Login Go berhasil dan token Go diterima di `/v1/auth/me`, tetapi GET dan POST pemeriksaan Ktor menjawab `401`. Sesi Ktor untuk tes HTTP dibuat sebagai fixture di database uji. |
+
+Pengujian di atas mencakup dua API dan build Android. Alur login dan pemeriksaan dari perangkat Android masih menunggu wiring repository dan strategi akun bersama.
 
 ## Verifikasi donasi dan jadwal pickup Go — 23 November 2026
 
@@ -64,8 +79,7 @@ Build awal sempat gagal karena disk host, cache Gradle yang dipakai bersamaan li
 
 ## Yang belum dibuktikan/diimplementasikan
 
-- Runtime UI, instrumented persistence test dan flow emulator/perangkat belum dijalankan.
-- Visual final Figma belum diimplementasikan/diverifikasi; design context terkena kuota Starter, metadata dan referensi tersimpan.
-- UI bisnis PRD, AI, transaksi poin/redeem dan isolasi data bisnis masih template; backend auth dan migrasi akun/sesi sudah tersedia di Go.
+- Verifikasi produk lengkap, termasuk login serta pengiriman pemeriksaan dan foto dari Android ke backend, masih tertunda.
+- Pickup dari donatur, penyelesaian donasi, poin, dan redemption masih dalam backlog.
 - macOS/ARM belum diuji langsung; Windows telah diuji untuk backend Go di atas. Panduan dan batas tools Linux x86_64 ada di development.md.
 - Sebelum release: lengkapi ikon, kebijakan ekstraksi/backup data, HTTPS deployment, auth/Keystore, UI final serta semua AC.

@@ -4,9 +4,9 @@ Area tes perilaku PRD. Tulis assertions bermakna untuk validasi/error/role/trans
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `loopy/` | Baca README di subfolder loopy untuk peran file dan TODO. |
+| [`loopy/`](loopy/README.md) | Baca README di subfolder loopy untuk peran file dan TODO. |
 
 ## TODO
 

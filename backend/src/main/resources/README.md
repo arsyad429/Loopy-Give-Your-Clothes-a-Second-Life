@@ -4,9 +4,9 @@ Direktori resources mengelompokkan source/config Loopy. README subfolder menjela
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `db/` | Baca README di subfolder db untuk peran file dan TODO. |
+| [`db/`](db/README.md) | Baca README di subfolder db untuk peran file dan TODO. |
 
 ## TODO
 

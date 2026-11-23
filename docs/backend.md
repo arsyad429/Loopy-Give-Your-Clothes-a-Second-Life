@@ -1,6 +1,6 @@
 # Backend Loopy
 
-Docker menjalankan API Go di [backend/go](../backend/go/README.md) dengan PostgreSQL 17. API menyediakan autentikasi akun dan peninjauan pengajuan pickup oleh admin. [Backend Kotlin/Ktor](../backend/README.md) merupakan scaffold terpisah.
+Compose utama menjalankan [API Go](../backend/go/README.md) untuk akun dan peninjauan pickup. [API pemeriksaan Ktor](../backend/README.md) dijalankan dengan `compose.vision.yaml` dan memakai database serta sesi terpisah.
 
 ## Cara kerja
 
@@ -39,3 +39,16 @@ Dari `backend/go`, jalankan `go test ./...`, `go vet ./...`, dan `go build ./...
 ## Status fitur
 
 Backend aktif menyediakan autentikasi dasar serta keputusan admin dari `PENDING_REVIEW` ke `PICKUP_SCHEDULED` atau `REJECTED`. Android masih memakai pratinjau lokal. Email OTP, pengajuan pickup dari pengguna, analisis dan unduhan foto, pelacakan pengguna, penyelesaian pickup, poin, dan rewards masih menunggu implementasi pada API Go. [Peta endpoint dan rencana lanjutan](api-contract.md)
+
+## Pemeriksaan pakaian Ktor
+
+Ktor menerima JPEG atau PNG dan jenis pakaian melalui multipart, menormalkan gambar menjadi JPEG sebelum analisis Groq, dan menyimpan hasil serta foto privat dalam transaksi PostgreSQL. Pemilik dan admin dapat mengakses hasil dan foto dengan bearer token Ktor. Key idempotensi dipertahankan saat request yang sama diulang.
+
+Dari root repository, isi kredensial Groq di `.env` lokal, lalu jalankan:
+
+```sh
+docker compose -f compose.vision.yaml up --build -d --wait
+curl -fsS http://127.0.0.1:8081/ready
+```
+
+Token hasil login Go saat ini ditolak oleh API Ktor karena token dan pengguna berasal dari database sesi yang berbeda. Penerbitan sesi Ktor sudah tersedia di server untuk pengujian; route login publik dan wiring Android masih diperlukan untuk alur pengguna. [Kontrak API](api-contract.md) · [Cara menjalankan tes Ktor](../backend/README.md#uji-ktor)

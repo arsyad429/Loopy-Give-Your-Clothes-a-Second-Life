@@ -4,9 +4,9 @@ Direktori gradle mengelompokkan source/config Loopy. README subfolder menjelaska
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `wrapper/` | Baca README di subfolder wrapper untuk peran file dan TODO. |
+| [`wrapper/`](wrapper/README.md) | Baca README di subfolder wrapper untuk peran file dan TODO. |
 
 ## TODO
 

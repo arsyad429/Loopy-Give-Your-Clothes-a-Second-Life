@@ -4,13 +4,13 @@ Direktori mapper mengelompokkan source/config Loopy. README subfolder menjelaska
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `AdminMapper.kt` | TEMPLATE — TODO: AdminMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
-| `AuthMapper.kt` | TEMPLATE — TODO: AuthMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
-| `ClothingCheckMapper.kt` | TEMPLATE — TODO: ClothingCheckMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
-| `DonationMapper.kt` | TEMPLATE — TODO: DonationMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
-| `RewardMapper.kt` | TEMPLATE — TODO: RewardMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
+| [`AdminMapper.kt`](AdminMapper.kt) | TEMPLATE — TODO: AdminMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
+| [`AuthMapper.kt`](AuthMapper.kt) | TEMPLATE — TODO: AuthMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
+| [`ClothingCheckMapper.kt`](ClothingCheckMapper.kt) | TEMPLATE — TODO: ClothingCheckMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
+| [`DonationMapper.kt`](DonationMapper.kt) | TEMPLATE — TODO: DonationMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
+| [`RewardMapper.kt`](RewardMapper.kt) | TEMPLATE — TODO: RewardMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
 
 ## TODO
 

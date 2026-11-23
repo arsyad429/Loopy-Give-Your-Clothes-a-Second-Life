@@ -4,11 +4,11 @@ Retrofit suspend API dan DTO. Health aktif; endpoint bisnis mengikuti docs/api-c
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `api/` | Baca README di subfolder api untuk peran file dan TODO. |
-| `datasource/` | Baca README di subfolder datasource untuk peran file dan TODO. |
-| `dto/` | Baca README di subfolder dto untuk peran file dan TODO. |
+| [`api/`](api/README.md) | Baca README di subfolder api untuk peran file dan TODO. |
+| [`datasource/`](datasource/README.md) | Baca README di subfolder datasource untuk peran file dan TODO. |
+| [`dto/`](dto/README.md) | Baca README di subfolder dto untuk peran file dan TODO. |
 
 ## TODO
 

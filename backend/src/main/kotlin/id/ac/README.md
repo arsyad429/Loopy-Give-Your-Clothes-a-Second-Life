@@ -4,9 +4,9 @@ Direktori ac mengelompokkan source/config Loopy. README subfolder menjelaskan im
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `loopy/` | Baca README di subfolder loopy untuk peran file dan TODO. |
+| [`loopy/`](loopy/README.md) | Baca README di subfolder loopy untuk peran file dan TODO. |
 
 ## TODO
 

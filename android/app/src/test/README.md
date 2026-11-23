@@ -4,9 +4,9 @@ Direktori test mengelompokkan source/config Loopy. README subfolder menjelaskan 
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `java/` | Baca README di subfolder java untuk peran file dan TODO. |
+| [`java/`](java/README.md) | Baca README di subfolder java untuk peran file dan TODO. |
 
 ## TODO
 

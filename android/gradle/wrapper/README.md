@@ -4,10 +4,10 @@ Direktori wrapper mengelompokkan source/config Loopy. README subfolder menjelask
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `gradle-wrapper.jar` | Binary bootstrap resmi Gradle8.13, jangan diedit manual. |
-| `gradle-wrapper.properties` | Distribusi Gradle8.13 dan SHA256 untuk validasi unduhan. |
+| [`gradle-wrapper.jar`](gradle-wrapper.jar) | Binary bootstrap resmi Gradle8.13, jangan diedit manual. |
+| [`gradle-wrapper.properties`](gradle-wrapper.properties) | Distribusi Gradle8.13 dan SHA256 untuk validasi unduhan. |
 
 ## TODO
 

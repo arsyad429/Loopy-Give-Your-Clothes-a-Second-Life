@@ -4,12 +4,12 @@ Direktori src mengelompokkan source/config Loopy. README subfolder menjelaskan i
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `androidTest/` | Baca README di subfolder androidTest untuk peran file dan TODO. |
-| `debug/` | Baca README di subfolder debug untuk peran file dan TODO. |
-| `main/` | Baca README di subfolder main untuk peran file dan TODO. |
-| `test/` | Baca README di subfolder test untuk peran file dan TODO. |
+| [`androidTest/`](androidTest/README.md) | Baca README di subfolder androidTest untuk peran file dan TODO. |
+| [`debug/`](debug/README.md) | Baca README di subfolder debug untuk peran file dan TODO. |
+| [`main/`](main/README.md) | Baca README di subfolder main untuk peran file dan TODO. |
+| [`test/`](test/README.md) | Baca README di subfolder test untuk peran file dan TODO. |
 
 ## TODO
 

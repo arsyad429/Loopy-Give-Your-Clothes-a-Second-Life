@@ -4,12 +4,12 @@ Direktori local mengelompokkan source/config Loopy. README subfolder menjelaskan
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `LoopyDatabase.kt` | Room database versi1 draft; tambahkan cache/migration sesuai kebutuhan fitur. |
-| `dao/` | Baca README di subfolder dao untuk peran file dan TODO. |
-| `entity/` | Baca README di subfolder entity untuk peran file dan TODO. |
-| `preferences/` | Baca README di subfolder preferences untuk peran file dan TODO. |
+| [`LoopyDatabase.kt`](LoopyDatabase.kt) | Room database versi1 draft; tambahkan cache/migration sesuai kebutuhan fitur. |
+| [`dao/`](dao/README.md) | Baca README di subfolder dao untuk peran file dan TODO. |
+| [`entity/`](entity/README.md) | Baca README di subfolder entity untuk peran file dan TODO. |
+| [`preferences/`](preferences/README.md) | Baca README di subfolder preferences untuk peran file dan TODO. |
 
 ## TODO
 

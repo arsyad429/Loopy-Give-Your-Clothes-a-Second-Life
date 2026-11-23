@@ -4,9 +4,9 @@ Preferences DataStore untuk tema/onboarding/filter non-sensitif; bukan password 
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `UserPreferencesDataSource.kt` | DataStore tema dengan Flow dan suspend edit, recovery IOException. |
+| [`UserPreferencesDataSource.kt`](UserPreferencesDataSource.kt) | DataStore tema dengan Flow dan suspend edit, recovery IOException. |
 
 ## TODO
 

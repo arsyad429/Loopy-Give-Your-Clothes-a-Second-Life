@@ -4,9 +4,9 @@ Direktori java mengelompokkan source/config Loopy. README subfolder menjelaskan 
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `id/` | Baca README di subfolder id untuk peran file dan TODO. |
+| [`id/`](id/README.md) | Baca README di subfolder id untuk peran file dan TODO. |
 
 ## TODO
 

@@ -4,11 +4,11 @@ Layer backend rewards. Isi route/service sesuai kontrak PRD; /health saja yang a
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `RedemptionService.kt` | TEMPLATE — TODO: lock wallet, cek saldo >= cost, debit+ledger+redemption atomik; rollback saat gagal; idempotency key scoped user + payload. Lihat docs/api-contract.md, docs/data-model.md dan docs/acceptance-tests.md. |
-| `RewardCatalog.kt` | TEMPLATE — TODO: seed katalog Eco Supporter Badge 10, wallpaper 20, Voucher Demo 30; tidak ada admin CRUD reward dalam MVP. Lihat docs/api-contract.md, docs/data-model.md dan docs/acceptance-tests.md. |
-| `RewardRoutes.kt` | TEMPLATE — TODO: GET balance/catalog/history; POST redemptions dengan idempotency key; respons voucher demo. Lihat docs/api-contract.md, docs/data-model.md dan docs/acceptance-tests.md. |
+| [`RedemptionService.kt`](RedemptionService.kt) | TEMPLATE — TODO: lock wallet, cek saldo >= cost, debit+ledger+redemption atomik; rollback saat gagal; idempotency key scoped user + payload. Lihat docs/api-contract.md, docs/data-model.md dan docs/acceptance-tests.md. |
+| [`RewardCatalog.kt`](RewardCatalog.kt) | TEMPLATE — TODO: seed katalog Eco Supporter Badge 10, wallpaper 20, Voucher Demo 30; tidak ada admin CRUD reward dalam MVP. Lihat docs/api-contract.md, docs/data-model.md dan docs/acceptance-tests.md. |
+| [`RewardRoutes.kt`](RewardRoutes.kt) | TEMPLATE — TODO: GET balance/catalog/history; POST redemptions dengan idempotency key; respons voucher demo. Lihat docs/api-contract.md, docs/data-model.md dan docs/acceptance-tests.md. |
 
 ## TODO
 

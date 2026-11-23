@@ -1,15 +1,7 @@
-# migration
+# Migrasi Flyway Ktor
 
-Direktori migration mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
+Flyway mencatat versi migrasi yang berhasil di flyway_schema_history. Perubahan skema berikutnya masuk lewat file versi baru.
 
-## Isi file dan perannya
-
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `V001__initial_schema.sql` | Template DDL PRD tujuh entitas+idempotency, belum membuat tabel. |
-
-## TODO
-
-- [ ] Isi TEMPLATE sesuai docs/api-contract.md dan docs/data-model.md; DB/auth/AI masih TODO.
-- [ ] Validasi role/ownership server dan transaksi poin/redeem; uji concurrency/rollback PostgreSQL.
-- [ ] Jalankan tes dan perbarui README saat perilaku berubah.
+| [`V001__initial_schema.sql`](V001__initial_schema.sql) | Membuat tabel users, user_sessions, clothing_checks, clothing_check_photos, dan clothing_check_requests beserta batasan dan indeksnya. |

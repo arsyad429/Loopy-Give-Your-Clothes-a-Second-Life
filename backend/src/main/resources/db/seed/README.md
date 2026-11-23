@@ -4,10 +4,10 @@ Direktori seed mengelompokkan source/config Loopy. README subfolder menjelaskan 
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `admin.sql` | Template seed admin privat, password hash, tidak ada credential hardcode. |
-| `rewards.sql` | Template seed idempotent badge10, wallpaper20, Voucher Demo30. |
+| [`admin.sql`](admin.sql) | Template seed admin privat, password hash, tidak ada credential hardcode. |
+| [`rewards.sql`](rewards.sql) | Template seed idempotent badge10, wallpaper20, Voucher Demo30. |
 
 ## TODO
 

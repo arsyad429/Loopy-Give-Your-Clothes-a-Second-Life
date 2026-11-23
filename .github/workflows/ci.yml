@@ -1,4 +1,4 @@
-name: Verify template
+name: Verify Loopy
 on:
   push:
   pull_request:
@@ -25,7 +25,7 @@ jobs:
         with:
           name: loopy-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
-  ktor-scaffold:
+  ktor-vision:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,6 +37,7 @@ jobs:
       - run: sh ./gradlew --no-daemon test installDist
         working-directory: backend
       - run: docker compose config --quiet
+      - run: docker compose -f compose.vision.yaml config --quiet
       - run: docker compose -f compose.lxc.yaml config --quiet
         env:
           POSTGRES_PASSWORD: ci_config_only

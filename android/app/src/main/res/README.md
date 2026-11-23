@@ -4,10 +4,12 @@ Direktori res mengelompokkan source/config Loopy. README subfolder menjelaskan i
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `values/` | Baca README di subfolder values untuk peran file dan TODO. |
-| `xml/` | Baca README di subfolder xml untuk peran file dan TODO. |
+| [`values/`](values/README.md) | Baca README di subfolder values untuk peran file dan TODO. |
+| [`xml/`](xml/README.md) | Baca README di subfolder xml untuk peran file dan TODO. |
+| [`drawable`](drawable/README.md) | VectorDrawable dan lisensi ikon kamera serta hasil pemeriksaan. |
+| [`font`](font/README.md) | Font Plus Jakarta Sans dan lisensi distribusinya. |
 
 ## TODO
 

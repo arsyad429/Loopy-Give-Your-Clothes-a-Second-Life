@@ -4,9 +4,9 @@ Schema Room diekspor otomatis KSP; commit untuk review/migration, jangan edit JS
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `id.ac.loopy.data.local.LoopyDatabase/` | Baca README di subfolder id.ac.loopy.data.local.LoopyDatabase untuk peran file dan TODO. |
+| [`id.ac.loopy.data.local.LoopyDatabase/`](id.ac.loopy.data.local.LoopyDatabase/README.md) | Baca README di subfolder id.ac.loopy.data.local.LoopyDatabase untuk peran file dan TODO. |
 
 ## TODO
 

@@ -4,10 +4,10 @@ Direktori domain mengelompokkan source/config Loopy. README subfolder menjelaska
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `model/` | Baca README di subfolder model untuk peran file dan TODO. |
-| `repository/` | Baca README di subfolder repository untuk peran file dan TODO. |
+| [`model/`](model/README.md) | Baca README di subfolder model untuk peran file dan TODO. |
+| [`repository/`](repository/README.md) | Baca README di subfolder repository untuk peran file dan TODO. |
 
 ## TODO
 

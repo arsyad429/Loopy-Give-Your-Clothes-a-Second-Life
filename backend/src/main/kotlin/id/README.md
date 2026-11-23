@@ -4,9 +4,9 @@ Direktori id mengelompokkan source/config Loopy. README subfolder menjelaskan im
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `ac/` | Baca README di subfolder ac untuk peran file dan TODO. |
+| [`ac/`](ac/README.md) | Baca README di subfolder ac untuk peran file dan TODO. |
 
 ## TODO
 

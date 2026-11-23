@@ -1,17 +1,12 @@
-# auth
+# Sesi API pemeriksaan Ktor
 
-Layer backend auth. Isi route/service sesuai kontrak PRD; /health saja yang aktif saat scaffold.
+Token opaque mengidentifikasi akun dan role dari PostgreSQL. Store menyimpan hash token dan menolak sesi yang kedaluwarsa atau dicabut.
 
-## Isi file dan perannya
-
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `AuthRoutes.kt` | TEMPLATE — TODO: POST register/login/logout, GET me, password hash, token expiry; register selalu USER, admin seed privat. Lihat docs/api-contract.md, docs/data-model.md dan docs/acceptance-tests.md. |
-| `AuthService.kt` | TEMPLATE — TODO: validasi email unik, hash Argon2id/bcrypt, session/token verification; jangan hardcode akun admin. Lihat docs/api-contract.md, docs/data-model.md dan docs/acceptance-tests.md. |
-| `Authorization.kt` | TEMPLATE — TODO: autentikasi bearer; requireRole ADMIN; ownership dari token, bukan userId kiriman klien. Lihat docs/api-contract.md, docs/data-model.md dan docs/acceptance-tests.md. |
+| [`Authorization.kt`](Authorization.kt) | Principal pengguna, role, dan pemasangan plugin bearer Ktor. |
+| [`SessionStore.kt`](SessionStore.kt) | Pembuatan, verifikasi, dan pencabutan sesi pemeriksaan. |
+| [`AuthRoutes.kt`](AuthRoutes.kt) | Template route akun Ktor. |
+| [`AuthService.kt`](AuthService.kt) | Template validasi kredensial akun Ktor. |
 
-## TODO
-
-- [ ] Isi TEMPLATE sesuai docs/api-contract.md dan docs/data-model.md; DB/auth/AI masih TODO.
-- [ ] Validasi role/ownership server dan transaksi poin/redeem; uji concurrency/rollback PostgreSQL.
-- [ ] Jalankan tes dan perbarui README saat perilaku berubah.
+Login, register, dan refresh yang tersedia saat ini ada di [API Go](../../../../../../../../go/README.md). Sesi Go memerlukan integrasi terpisah sebelum bisa dipakai untuk pemeriksaan Ktor.

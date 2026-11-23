@@ -8,7 +8,7 @@ PRD belum membagi pemilik implementasi. Neva/Rio/Alex/Arsyad tetap mengikuti tan
 | 2 | Auth Go + migrasi akun/sesi + CLI admin tersedia; lanjut integrasi Android dan ownership fitur bisnis | backend/go, docs/auth-go.md | Backend auth teruji; isolasi bisnis diverifikasi saat route tersedia |
 | 3 | Landing/login/register+session graph | feature landing/auth, navigation | AC01–04,19–20 |
 | 4 | Home ringkasan/status/saldo | feature home, repositories | Loading/empty/error dan data benar |
-| 5 | Kamera/galeri+AI proof of concept | clothingcheck, PhotoValidator, backend checks/storage | AC05–07, tiga hasil/error |
+| 5 | Sambungkan pemeriksaan Android ke API | clothingcheck, repository Android, backend checks/storage | UI S05–S06 dan API Ktor tersedia; Retrofit, sesi, dan foto privat perlu wiring |
 | 6 | Pickup submit idempotent | pickup, backend donations | AC07–08, request/history atomik |
 | 7 | API Go untuk ringkasan, antrean, detail, jadwal, dan penolakan sudah tersedia. Lanjut integrasi Android dan penyediaan foto privat. | admin Android, backend/go, docs/donation-review-go.md | AC09–11 teruji dengan data sungguhan |
 | 8 | My Donations+tracking detail | donations | AC12,19 tanpa GPS |
@@ -17,6 +17,6 @@ PRD belum membagi pemilik implementasi. Neva/Rio/Alex/Arsyad tetap mengikuti tan
 | 11 | UI Figma final+integrasi/demo | components/theme/features | AC01–20+aksesibilitas |
 | Setelah MVP | Profil/settings/OTP | profile/settings/verification | Kontrak/scope disepakati |
 
-TODO visual: ambil high-fidelity Figma context, token/font Plus Jakarta Sans dan aset resmi ketika akses tersedia. Screenshot acuan tidak dipakai sebagai aset UI. UI placeholder bukan implementasi desain final.
+S05 dan S06 menggunakan font Plus Jakarta Sans dan ikon dari desain. Layar lain mengikuti peta Figma saat diimplementasikan.
 
 Di luar MVP: kurir terpisah, GPS live, pembayaran, push notification, voucher merchant nyata, hadiah fisik, marketplace dan optimasi rute. Pickup/reward simulasi akademik.

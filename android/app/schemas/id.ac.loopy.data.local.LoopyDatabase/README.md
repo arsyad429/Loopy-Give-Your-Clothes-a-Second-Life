@@ -4,9 +4,9 @@ Schema Room diekspor otomatis KSP; commit untuk review/migration, jangan edit JS
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `1.json` | Konfigurasi/artefak pendukung folder. |
+| [`1.json`](1.json) | Konfigurasi/artefak pendukung folder. |
 
 ## TODO
 

@@ -1,8 +1,8 @@
 # Kontrak API Loopy
 
-Backend Docker memakai Go dan PostgreSQL. Lihat [panduan backend](backend.md), [kontrak autentikasi](auth-go.md), dan [kontrak verifikasi donasi](donation-review-go.md) untuk detail request, respons, dan error.
+Compose utama menjalankan Go untuk akun dan admin (port host 8080 secara default). Compose Vision menjalankan Ktor untuk pemeriksaan (port host 8081 secara default). Masing-masing layanan memakai PostgreSQL dan bearer token tersendiri. [Panduan backend](backend.md) · [Kontrak autentikasi Go](auth-go.md) · [Kontrak peninjauan donasi Go](donation-review-go.md)
 
-**Endpoint yang tersedia** mencakup `GET /health`, `GET /ready`, lima endpoint auth, serta lima endpoint admin untuk ringkasan, antrean, detail, jadwal, dan penolakan. Tabel ini juga mencakup rencana endpoint untuk fitur lanjutan.
+**Endpoint yang tersedia** mencakup `GET /health`, `GET /ready`, lima endpoint auth dan lima endpoint admin di Go, serta tiga endpoint pemeriksaan di Ktor. Tabel ini juga mencakup rencana endpoint untuk fitur lanjutan.
 
 | Metode/path | Akses | Request → respons target | Fitur |
 | --- | --- | --- | --- |
@@ -34,4 +34,12 @@ Enum status: PENDING_REVIEW/PICKUP_SCHEDULED/PICKED_UP/COMPLETED/REJECTED. AI: P
 
 Rencana idempotency untuk pengajuan dan redemption memakai actor, operation, key, dan hash payload. Pada peninjauan admin, `expectedVersion` mencegah keputusan yang sama diterapkan dua kali. Klien membaca detail terbaru setelah `409`.
 
-Pekerjaan berikutnya mencakup DTO Retrofit untuk auth dan admin, endpoint pengajuan pengguna, pengambilan foto privat, dan fitur lanjutan di tabel. AI dipanggil server dan hasilnya menjadi penilaian awal. OTP, settings, dan profil tambahan memerlukan kontrak tersendiri.
+Pekerjaan berikutnya mencakup DTO Retrofit untuk auth dan admin, endpoint pengajuan pengguna, integrasi Android dengan API Ktor dan foto privat, serta fitur lanjutan di tabel. AI dipanggil server dan hasilnya menjadi penilaian awal. OTP, settings, dan profil tambahan memerlukan kontrak tersendiri.
+
+## Kontrak pakaian Ktor
+
+- POST memerlukan role `USER`, bearer token Ktor, serta `Idempotency-Key`. Kirim tepat satu file `image` JPEG/PNG maksimal 10 MiB dan satu `clothingType`, misalnya `TSHIRT`.
+- Objek hasil berisi `checkId`, `userId`, `clothingPhoto`, `clothingType`, `aiResult`, `aiDescription`, `actionRecommendation`, dan `createdAt`. `clothingPhoto` menunjuk ke route foto privat dan memakai bearer token Ktor yang sama.
+- Key dan payload yang sama mendapat hasil lama setelah tersimpan. Key dengan isi berbeda atau request yang masih diproses menghasilkan `409`.
+- Pemilik dan admin dapat membaca detail dan foto. Akun lain mendapat `404`. Request tanpa sesi Ktor valid mendapat `401`.
+- Upload tidak valid menerima `400`, `413`, `415`, atau `422`. Gangguan Groq menghasilkan `502` atau `503` dan tidak menyimpan hasil pemeriksaan.

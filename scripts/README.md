@@ -4,10 +4,10 @@ Script development/build container dan pemeriksaan kelengkapan. Jalankan structu
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `android-container.sh` | Snapshot source tanpa local.properties/build/cache host; ekspor APK, laporan, schema. |
-| `check-scaffold.py` | Read-only validasi 17 screen, README setiap folder, wrapper, 10 materi dan 20 AC. |
+| [`android-container.sh`](android-container.sh) | Snapshot source tanpa local.properties/build/cache host; ekspor APK, laporan, schema. |
+| [`check-scaffold.py`](check-scaffold.py) | Read-only validasi 17 screen, README setiap folder, wrapper, 10 materi dan 20 AC. |
 
 ## TODO
 

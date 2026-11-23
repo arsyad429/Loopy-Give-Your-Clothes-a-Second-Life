@@ -4,13 +4,13 @@ Direktori ui mengelompokkan source/config Loopy. README subfolder menjelaskan im
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `LoopyApp.kt` | NavHost katalog debug 13+4 layar, tema/draft/health. Release hanya placeholder landing. |
-| `TemplateViewModel.kt` | StateFlow combine/stateIn, coroutine scope, loading/error/cancellation untuk demo fondasi. |
-| `components/` | Baca README di subfolder components untuk peran file dan TODO. |
-| `navigation/` | Baca README di subfolder navigation untuk peran file dan TODO. |
-| `theme/` | Baca README di subfolder theme untuk peran file dan TODO. |
+| [`LoopyApp.kt`](LoopyApp.kt) | NavHost katalog debug dan alur landing, login, register, pratinjau admin, serta rute S05–S07 dengan checkId. |
+| [`TemplateViewModel.kt`](TemplateViewModel.kt) | StateFlow combine/stateIn, coroutine scope, loading/error/cancellation untuk demo fondasi. |
+| [`components/`](components/README.md) | Baca README di subfolder components untuk peran file dan TODO. |
+| [`navigation/`](navigation/README.md) | Baca README di subfolder navigation untuk peran file dan TODO. |
+| [`theme/`](theme/README.md) | Baca README di subfolder theme untuk peran file dan TODO. |
 
 ## TODO
 

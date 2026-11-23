@@ -1,18 +1,11 @@
-# docker
+# Image dan konfigurasi backend
 
-Dockerfile backend membangun Go dari `backend/go/`, menjalankan unit test dan vet, lalu menyalin binary ke runtime Alpine non-root. Readiness healthcheck menguji koneksi PostgreSQL melalui `/ready`. Android image JDK17 didefinisikan pada Dockerfile root. Baca [panduan auth](../docs/auth-go.md) untuk alur dan konfigurasi.
-
-## Isi file dan perannya
-
-| File/folder | Peran dan isi yang diharapkan |
+| File | Kegunaan |
 | --- | --- |
-| `backend.Dockerfile` | Build/test/vet Go, runtime non-root dan readiness healthcheck. |
-| `lxc.env.example` | Contoh environment server LXC; password wajib diisi dan API bind address dapat dikonfigurasi. |
+| [backend.Dockerfile](backend.Dockerfile) | Build, tes, dan runtime non-root untuk API Go. |
+| [vision.Dockerfile](vision.Dockerfile) | Build Gradle Java 17, tes, dan runtime non-root untuk API Ktor. Health check memanggil `/ready`. |
+| [lxc.env.example](lxc.env.example) | Contoh konfigurasi deployment Go di LXC. |
 
-Deployment server menggunakan `docker compose -f compose.lxc.yaml up --build -d --wait` dari root repository. Ikuti [panduan LXC](../docs/deploy-lxc.md) untuk instalasi Docker, jaringan dan konfigurasi `.env`.
+Gunakan [compose.yaml](../compose.yaml) untuk Go lokal, [compose.lxc.yaml](../compose.lxc.yaml) untuk deployment Go, dan [compose.vision.yaml](../compose.vision.yaml) untuk Ktor. Compose Vision membuat proyek dan volume tersendiri. Jika sebelumnya kamu menjalankan Ktor dengan `compose.yaml`, pertahankan volume lama untuk backup atau migrasi. Untuk menjalankan Go lokal tanpa memakai volume lama itu, gunakan `docker compose -p loopy-go up --build -d --wait db backend`. Pilih port host yang tersedia untuk tiap API.
 
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+Image alat build Android didefinisikan di [Dockerfile root](../Dockerfile). [Panduan deployment LXC](../docs/deploy-lxc.md)

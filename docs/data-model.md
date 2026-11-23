@@ -27,3 +27,17 @@ BEGIN → autentikasi user → cek idempotency key/request hash → lock wallet 
 API aktif memproses `PENDING_REVIEW → PICKUP_SCHEDULED` dan `PENDING_REVIEW → REJECTED`. Transaksi mengunci pengajuan, memeriksa versinya, lalu mengubah status dan menulis riwayat pada versi yang sama. Lihat [alur verifikasi dan penjadwalan](donation-review-go.md). Skema menyediakan status `PICKED_UP` dan `COMPLETED` untuk penanganan pickup lanjutan.
 
 Fitur pengajuan pengguna perlu memasukkan pengajuan awal dan riwayat versi 1 dalam satu transaksi. Keputusan berikutnya memakai migrasi tambahan untuk database yang sudah berjalan. Lihat juga [model akun dan sesi](auth-go.md).
+
+## Database pemeriksaan Ktor
+
+Compose Vision memakai Flyway dan database terpisah dari Go. [Migrasi Ktor](../backend/src/main/resources/db/migration/V001__initial_schema.sql)
+
+| Tabel | Kegunaan |
+| --- | --- |
+| `users` | Identitas, role, dan saldo akun untuk pemeriksaan. |
+| `user_sessions` | Hash bearer token, pemilik, dan tenggat sesi. |
+| `clothing_checks` | Jenis pakaian, kategori, penjelasan, rekomendasi, dan waktu hasil. |
+| `clothing_check_photos` | Byte JPEG privat berdasarkan `check_id`. |
+| `clothing_check_requests` | Reservasi dan replay berdasarkan pemilik, key, hash request, dan ID hasil. |
+
+Ktor menulis hasil, foto, dan penyelesaian key idempotensi dalam satu transaksi PostgreSQL.

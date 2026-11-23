@@ -4,11 +4,11 @@ Direktori main mengelompokkan source/config Loopy. README subfolder menjelaskan 
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `AndroidManifest.xml` | Activity/application/permission. Main menolak cleartext, overlay debug mengizinkan HTTP lokal. |
-| `java/` | Baca README di subfolder java untuk peran file dan TODO. |
-| `res/` | Baca README di subfolder res untuk peran file dan TODO. |
+| [`AndroidManifest.xml`](AndroidManifest.xml) | Activity/application/permission. Main menolak cleartext, overlay debug mengizinkan HTTP lokal. |
+| [`java/`](java/README.md) | Baca README di subfolder java untuk peran file dan TODO. |
+| [`res/`](res/README.md) | Baca README di subfolder res untuk peran file dan TODO. |
 
 ## TODO
 

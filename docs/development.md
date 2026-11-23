@@ -1,6 +1,6 @@
 # Development lintas OS
 
-Dari root: `docker compose up --build -d --wait` memulai backend+PostgreSQL. Build Android dengan `docker compose --profile tools run --rm android-dev assembleDebug testDebugUnitTest lintDebug`. Profile tools mencegah build Android berjalan setiap up.
+Dari root, `docker compose up --build -d --wait` memulai Go dan PostgreSQL. Mulai Ktor dan database tersendiri dengan `docker compose -f compose.vision.yaml up --build -d --wait` setelah mengisi kredensial Groq di `.env`. Build Android dengan `docker compose --profile tools run --rm android-dev assembleDebug testDebugUnitTest lintDebug`. Profile tools mencegah build Android berjalan setiap up.
 
 Script container menyalin project ke direktori sementara, mengabaikan local.properties/cache/build host, lalu menyalin APK/laporan/schema kembali. Lokasi SDK Windows/macOS/Linux tidak mengganggu SDK container. Source diedit di host; container mengambil snapshot saat mulai. Gradle dependency cache memakai named volume. Run Android Studio membuild project host sendiri.
 
@@ -36,10 +36,10 @@ Instrumented test memerlukan emulator/perangkat host: `cd android` lalu `./gradl
 - Port terpakai: ubah API_PORT dan URL Android; jangan menghentikan proses lain tanpa memeriksa pemiliknya.
 - Linux output container milik root: sesuaikan ownership artifacts dengan UID lokal saat perlu; jangan membuka Studio sebagai root.
 - Build pertama lambat: unduhan SDK/Gradle/Maven; cache named volume digunakan berikutnya.
-- Database auth: Go menjalankan migrasi users/auth_sessions saat startup. `/ready` memeriksa koneksi database, `/health` hanya liveness. Fitur bisnis belum mempunyai tabel.
+- Database auth: Go menjalankan migrasi users/auth_sessions saat startup. `/ready` memeriksa koneksi database, `/health` hanya liveness. Go juga bermigrasi untuk peninjauan pickup. Ktor menjalankan Flyway terpisah untuk sesi, pemeriksaan, foto privat, dan key idempotensi.
 - Partisi sistem Docker penuh walau workspace lapang: cek docker info/df, pilih lokasi penyimpanan Docker di disk cukup melalui pengaturan host; jangan prune data/image proyek lain.
 - down -v menghapus data/cache; stop/down biasa mempertahankan volume.
 
-Backend auth Go: lihat [auth-go.md](auth-go.md) untuk host run, kontrak, tes PostgreSQL, dan command privat `create-admin`. Compose memakai Go; tidak perlu JDK untuk backend ini. TODO demo: wiring auth Android, AI, migrasi bisnis, reward seed, end-to-end dua akun user dan satu admin, lalu verifikasi APK pada emulator dan perangkat.
+Backend auth Go: lihat [auth-go.md](auth-go.md) untuk host run, kontrak, tes PostgreSQL, dan command privat `create-admin`. Compose memakai Go; tidak perlu JDK untuk backend ini. Tes pemeriksaan Ktor dan konfigurasi database uji dijelaskan di [README backend](../backend/README.md#uji-ktor). Untuk demo terpadu, sambungkan login Android dan API pemeriksaan beserta pengambilan foto privat.
 
 Pada mesin verifikasi, port8080 sudah dipakai Airflow sehingga pengujian memakai API_PORT=18080. Data DB/cache/tmp pengujian ditempatkan di partisi workspace lewat Compose override lokal karena partisi Docker penuh; override ini tidak mengubah konfigurasi portable repository.

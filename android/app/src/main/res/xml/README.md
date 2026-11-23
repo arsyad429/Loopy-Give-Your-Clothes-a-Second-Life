@@ -4,9 +4,9 @@ Direktori xml mengelompokkan source/config Loopy. README subfolder menjelaskan i
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `file_paths.xml` | Konfigurasi/artefak pendukung folder. |
+| [`file_paths.xml`](file_paths.xml) | Konfigurasi/artefak pendukung folder. |
 
 ## TODO
 

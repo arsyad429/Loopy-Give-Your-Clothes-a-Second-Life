@@ -1,15 +1,15 @@
 # app
 
-Modul APK id.ac.loopy, minSdk24/targetSdk36, debug harness fondasi dan template fitur PRD. Bukan implementasi MVP final.
+Modul APK id.ac.loopy untuk API 24–36. Katalog debug membuka pratinjau layar, termasuk pemeriksaan pakaian S05 dan hasil S06.
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `build.gradle.kts` | Plugin, dependency dan task build modul/project; jaga kompatibilitas versi. |
-| `proguard-rules.pro` | Tempat aturan R8 tambahan setelah shrinking diuji nanti. |
-| `schemas/` | Baca README di subfolder schemas untuk peran file dan TODO. |
-| `src/` | Baca README di subfolder src untuk peran file dan TODO. |
+| [`build.gradle.kts`](build.gradle.kts) | Plugin, dependency dan task build modul/project; jaga kompatibilitas versi. |
+| [`proguard-rules.pro`](proguard-rules.pro) | Tempat aturan R8 tambahan setelah shrinking diuji nanti. |
+| [`schemas/`](schemas/README.md) | Baca README di subfolder schemas untuk peran file dan TODO. |
+| [`src/`](src/README.md) | Baca README di subfolder src untuk peran file dan TODO. |
 
 ## TODO
 

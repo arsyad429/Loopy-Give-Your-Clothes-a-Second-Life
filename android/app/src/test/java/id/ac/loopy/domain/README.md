@@ -4,9 +4,9 @@ Area tes perilaku PRD. Tulis assertions bermakna untuk validasi/error/role/trans
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `DonationStatusTest.kt` | Unit test semua pasangan status, transisi valid dan larangan lompatan/final. |
+| [`DonationStatusTest.kt`](DonationStatusTest.kt) | Unit test semua pasangan status, transisi valid dan larangan lompatan/final. |
 
 ## TODO
 

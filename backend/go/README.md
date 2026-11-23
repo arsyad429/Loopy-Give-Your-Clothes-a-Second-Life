@@ -2,7 +2,7 @@
 
 See the [backend guide](../../docs/backend.md) for the architecture and setup, the [auth guide](../../docs/auth-go.md) for account and session details, and the [donation review guide](../../docs/donation-review-go.md) for the admin API and a local fixture.
 
-This is the active Docker backend: Go `net/http`, PostgreSQL via pgx, Argon2id passwords, and opaque access/refresh sessions. The sibling Gradle project is the earlier Ktor scaffold.
+This is the active Docker backend: Go `net/http`, PostgreSQL via pgx, Argon2id passwords, and opaque access/refresh sessions. The sibling [Ktor project](../README.md) provides the clothing-check Vision API on a separate database.
 
 - `main.go`: configuration, DB startup/migration, HTTP server, private `create-admin` command.
 - `schema.sql`, `schema_pickup.sql`, `store.go`: ordered database migrations and auth persistence.
@@ -16,3 +16,14 @@ Use Go 1.27.4+ (or automatic toolchain selection), set `DATABASE_URL` to a Postg
 Run `go test ./...` and `go vet ./...`. Integration tests run when `TEST_DATABASE_URL` is set, and isolate their tables in a temporary schema. Never use a production database. On systems with a C compiler, `go test -race ./...` adds race detection. Check known reachable vulnerabilities with `go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...`; CI runs this check too.
 
 No account is seeded automatically. To provision a new admin, privately set `LOOPY_ADMIN_NAME`, `LOOPY_ADMIN_EMAIL`, and `LOOPY_ADMIN_PASSWORD`, then run `go run . create-admin`. Existing emails are refused. See the guide for Docker usage, exact JSON, Android integration requirements, and limits.
+
+## Daftar file
+
+| File atau folder | Kegunaan |
+| --- | --- |
+| [`auth_test.go`](auth_test.go) | Unit test aturan login, register, sesi, dan validasi auth. |
+| [`donation_integration_test.go`](donation_integration_test.go) | Tes PostgreSQL untuk migrasi donasi, pembatasan akses, konflik dan rollback. |
+| [`donation_test.go`](donation_test.go) | Unit test aturan peninjauan dan penjadwalan donasi. |
+| [`go.mod`](go.mod) | Versi Go serta dependensi langsung dan tidak langsung. |
+| [`go.sum`](go.sum) | Checksum dependensi yang dikunci modul Go. |
+| [`store_integration_test.go`](store_integration_test.go) | Tes PostgreSQL untuk autentikasi, transaksi dan pemisahan sesi. |
