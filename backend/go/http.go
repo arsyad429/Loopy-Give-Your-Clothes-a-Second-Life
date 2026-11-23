@@ -17,12 +17,16 @@ import (
 
 type api struct {
 	auth      *authService
+	donations donationRepository
 	limiter   *authLimiter
 	hashSlots chan struct{}
 }
 
-func newAPI(auth *authService) *api {
-	return &api{auth: auth, limiter: &authLimiter{peers: make(map[string]limitWindow)}, hashSlots: make(chan struct{}, 4)}
+func newAPI(auth *authService, donations donationRepository) *api {
+	return &api{
+		auth: auth, donations: donations,
+		limiter: &authLimiter{peers: make(map[string]limitWindow)}, hashSlots: make(chan struct{}, 4),
+	}
 }
 
 func (a *api) routes() http.Handler {
@@ -46,6 +50,9 @@ func (a *api) routes() http.Handler {
 		writeJSON(w, 200, currentPrincipal(r).User)
 	})))
 	mux.Handle("POST /v1/auth/logout", a.authenticate(http.HandlerFunc(a.logout)))
+	if a.donations != nil {
+		a.mountDonationRoutes(mux)
+	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "no-store")
 		w.Header().Set("X-Content-Type-Options", "nosniff")

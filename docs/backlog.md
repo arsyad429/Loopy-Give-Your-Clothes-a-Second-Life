@@ -10,7 +10,7 @@ PRD belum membagi pemilik implementasi. Neva/Rio/Alex/Arsyad tetap mengikuti tan
 | 4 | Home ringkasan/status/saldo | feature home, repositories | Loading/empty/error dan data benar |
 | 5 | Kamera/galeri+AI proof of concept | clothingcheck, PhotoValidator, backend checks/storage | AC05–07, tiga hasil/error |
 | 6 | Pickup submit idempotent | pickup, backend donations | AC07–08, request/history atomik |
-| 7 | Admin dashboard/list/detail/schedule/reject | admin Android/backend | AC09–11, role server |
+| 7 | API Go untuk ringkasan, antrean, detail, jadwal, dan penolakan sudah tersedia. Lanjut integrasi Android dan penyediaan foto privat. | admin Android, backend/go, docs/donation-review-go.md | AC09–11 teruji dengan data sungguhan |
 | 8 | My Donations+tracking detail | donations | AC12,19 tanpa GPS |
 | 9 | Completed+ledger+10 sekali | CompletionTransaction | AC13 retry/concurrency |
 | 10 | Katalog/redeem/history | rewards Android/backend | AC14–18 rollback/concurrency |

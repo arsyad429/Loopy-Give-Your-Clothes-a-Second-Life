@@ -6,7 +6,7 @@ Fondasi aktif: MainActivity/lifecycle Logcat, TemplateViewModel, FoundationRepos
 
 DonationStatus mengatur transisi untuk UI. Model/kontrak bisnis masih TODO; UI final wajib stateless, dengan preview, aksesibilitas, Column/Row/Box, Modifier, LazyColumn, hoisting dan recomposition sesuai PAPB.
 
-Backend aktif sekarang **Go + PostgreSQL** sesuai pilihan implementasi auth. `backend/go/` memakai net/http, pgx, password Argon2id, dan sesi opaque access/refresh yang dapat dicabut. Migrasi akun/sesi berjalan saat startup; register/login/refresh/logout/me serta liveness/readiness tersedia. Lihat [alur, kode dan teori auth](auth-go.md). Kotlin/Ktor di `backend/src/` tetap scaffold referensi; Docker membangun Go. Route AI/donasi/admin/poin/redeem masih TODO.
+Backend aktif memakai **Go + PostgreSQL**. Docker membangun `backend/go/` dengan net/http dan pgx. Migrasi akun, sesi, pengajuan, dan riwayat berjalan saat startup. API melayani autentikasi dan peninjauan donasi oleh admin. Fitur AI, pengajuan pickup pengguna, pelacakan, poin, dan rewards masih direncanakan. Kotlin/Ktor di `backend/src/` merupakan scaffold referensi. [Panduan backend Loopy](backend.md)
 
 DataStore untuk preferensi tema/onboarding/filter; Room untuk draft/cache. Backend sumber kebenaran role, status, poin dan redemption. Token membutuhkan penyimpanan berbasis Keystore; password/AI API key tidak boleh masuk APK/DataStore. Cache bisnis wajib per user dan dibersihkan saat logout. Kamera/Photo Picker masih TODO; tidak ada permission yang belum dipakai.
 

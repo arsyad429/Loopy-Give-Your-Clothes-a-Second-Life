@@ -14,6 +14,9 @@ import (
 //go:embed schema.sql
 var schemaSQL string
 
+//go:embed schema_pickup.sql
+var pickupSchemaSQL string
+
 type pgStore struct{ pool *pgxpool.Pool }
 
 func (s *pgStore) migrate(ctx context.Context) error {
@@ -29,15 +32,19 @@ func (s *pgStore) migrate(ctx context.Context) error {
 	if _, err = tx.Exec(ctx, "CREATE TABLE IF NOT EXISTS schema_migrations (version INTEGER PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT now())"); err != nil {
 		return err
 	}
-	var exists bool
-	if err = tx.QueryRow(ctx, "SELECT EXISTS (SELECT 1 FROM schema_migrations WHERE version=1)").Scan(&exists); err != nil {
-		return err
-	}
-	if !exists {
-		if _, err = tx.Exec(ctx, schemaSQL); err != nil {
+	for index, migration := range []string{schemaSQL, pickupSchemaSQL} {
+		version := index + 1
+		var exists bool
+		if err = tx.QueryRow(ctx, "SELECT EXISTS (SELECT 1 FROM schema_migrations WHERE version=$1)", version).Scan(&exists); err != nil {
 			return err
 		}
-		if _, err = tx.Exec(ctx, "INSERT INTO schema_migrations(version) VALUES (1)"); err != nil {
+		if exists {
+			continue
+		}
+		if _, err = tx.Exec(ctx, migration); err != nil {
+			return err
+		}
+		if _, err = tx.Exec(ctx, "INSERT INTO schema_migrations(version) VALUES ($1)", version); err != nil {
 			return err
 		}
 	}
