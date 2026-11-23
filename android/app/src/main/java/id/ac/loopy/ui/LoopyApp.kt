@@ -60,6 +60,8 @@ import id.ac.loopy.feature.profile.UserProfileScreen
 import id.ac.loopy.feature.rewards.RewardsScreen
 import id.ac.loopy.feature.settings.SettingsScreen
 import id.ac.loopy.feature.verification.EmailVerificationScreen
+import id.ac.loopy.ui.components.LoopyInfo
+import id.ac.loopy.ui.components.LoopyScreen
 
 private val PreviewScreens = listOf(
     "s01" to "S01 · Landing Page",
@@ -99,7 +101,8 @@ fun LoopyApp(
     val authModel: LoginViewModel = viewModel(factory = authFactory)
     val session by authModel.session.collectAsStateWithLifecycle()
     val submitting by authModel.busy.collectAsStateWithLifecycle()
-    val authFeedback by authModel.feedback.collectAsStateWithLifecycle()
+    val loginFeedback by authModel.loginFeedback.collectAsStateWithLifecycle()
+    val registerFeedback by authModel.registerFeedback.collectAsStateWithLifecycle()
 
     fun goToAccountScreen(role: String?) {
         val route = when (role) {
@@ -148,14 +151,18 @@ fun LoopyApp(
                         if (role != null) goToAccountScreen(role)
                     }
                     LoginScreen(
-                        onBack = goBack,
+                        onBack = {
+                            authModel.clearFeedback()
+                            goBack()
+                        },
                         onRegister = {
                             authModel.clearFeedback()
                             nav.navigate("s03")
                         },
                         onLogin = authModel::login,
-                        feedback = authFeedback,
+                        feedback = loginFeedback?.message,
                         isSubmitting = submitting,
+                        onClearFeedback = authModel::clearFeedback,
                     )
                 }
 
@@ -165,14 +172,19 @@ fun LoopyApp(
                         if (role != null) goToAccountScreen(role)
                     }
                     RegisterScreen(
-                        onBack = goBack,
+                        onBack = {
+                            authModel.clearFeedback()
+                            goBack()
+                        },
                         onLogin = {
                             authModel.clearFeedback()
                             if (!nav.popBackStack("s02", inclusive = false)) nav.navigate("s02")
                         },
                         onRegister = authModel::register,
-                        feedback = authFeedback,
+                        feedback = registerFeedback?.message,
+                        fieldErrors = registerFeedback?.fields.orEmpty(),
                         isSubmitting = submitting,
+                        onFieldEdited = authModel::clearRegisterFieldFeedback,
                     )
                 }
 
@@ -306,7 +318,13 @@ fun LoopyApp(
                         val review = previews.firstOrNull { it.id == entry.arguments?.getString("id") }
 
                         if (review == null) {
-                            Text("Pengajuan tidak ditemukan.")
+                            LoopyScreen(title = "Verifikasi donasi", onBack = goBack) {
+                                LoopyInfo(
+                                    title = "Pengajuan tidak ditemukan",
+                                    description = "Kembali ke antrean untuk memilih pengajuan lain.",
+                                    isError = true,
+                                )
+                            }
                         } else {
                             AdminDonationDetailScreen(
                                 review = review,

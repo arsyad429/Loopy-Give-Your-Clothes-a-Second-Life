@@ -1,6 +1,5 @@
 package id.ac.loopy.feature.auth
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -17,6 +16,10 @@ import id.ac.loopy.ui.components.LoopyIntro
 import id.ac.loopy.ui.components.LoopyScreen
 import id.ac.loopy.ui.components.LoopyTextField
 
+private const val MinimumPasswordLength = 15
+private const val MaximumPasswordLength = 128
+private const val MaximumPasswordBytes = 512
+
 @Composable
 fun RegisterScreen(
     onBack: () -> Unit,
@@ -24,6 +27,8 @@ fun RegisterScreen(
     onRegister: (name: String, email: String, password: String) -> Unit,
     feedback: String? = null,
     isSubmitting: Boolean = false,
+    fieldErrors: Map<String, String> = emptyMap(),
+    onFieldEdited: (String) -> Unit = {},
 ) {
     var name by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -34,16 +39,19 @@ fun RegisterScreen(
     val trimmedName = name.trim()
     val nameError = when {
         trimmedName.isEmpty() -> "Masukkan nama lengkap."
-        trimmedName.codePointCount(0, trimmedName.length) > 100 -> "Nama maksimal 100 karakter."
-        trimmedName.any { it.isISOControl() } -> "Periksa karakter pada nama lengkap."
+        trimmedName.codePointCount(0, trimmedName.length) > 100 -> "Nama terlalu panjang. Gunakan maksimal 100 karakter."
+        trimmedName.any { it.isISOControl() } -> "Tulis ulang nama lengkap dalam satu baris."
         else -> null
     }
 
     val emailError = emailValidation(email)
+    val passwordLength = password.codePointCount(0, password.length)
     val passwordError = when {
-        password.isEmpty() -> "Masukkan kata sandi."
-        password.codePointCount(0, password.length) !in 15..128 || password.toByteArray().size > 512 ->
-            "Gunakan 15–128 karakter dengan ukuran maksimal 512 byte."
+        password.isEmpty() -> "Buat kata sandi untuk akunmu."
+        passwordLength < MinimumPasswordLength ->
+            "Kata sandi terlalu pendek. Gunakan minimal $MinimumPasswordLength karakter."
+        passwordLength > MaximumPasswordLength || password.toByteArray().size > MaximumPasswordBytes ->
+            "Kata sandi terlalu panjang. Coba gunakan kata sandi yang lebih pendek."
         else -> null
     }
 
@@ -51,6 +59,8 @@ fun RegisterScreen(
         title = "Buat akun",
         onBack = onBack,
         footer = {
+            feedback?.let { LoopyInfo("Belum bisa membuat akun", it, isError = true) }
+
             LoopyButton(
                 label = if (isSubmitting) "Membuat akun…" else "Buat akun",
                 enabled = !isSubmitting,
@@ -69,35 +79,42 @@ fun RegisterScreen(
         LoopyTextField(
             label = "Nama lengkap",
             value = name,
-            onValueChange = { name = it },
+            onValueChange = {
+                name = it
+                onFieldEdited("name")
+            },
             placeholder = "Nama lengkapmu",
-            error = nameError.takeIf { submitted },
+            error = nameError.takeIf { submitted } ?: fieldErrors["name"],
+            enabled = !isSubmitting,
         )
 
         LoopyTextField(
             label = "Email",
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it
+                onFieldEdited("email")
+            },
             placeholder = "nama@email.com",
-            error = emailError.takeIf { submitted },
+            error = emailError.takeIf { submitted } ?: fieldErrors["email"],
             keyboardType = KeyboardType.Email,
+            enabled = !isSubmitting,
         )
 
         LoopyTextField(
             label = "Kata sandi",
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                onFieldEdited("password")
+            },
             placeholder = "Buat kata sandi",
-            error = passwordError.takeIf { submitted },
+            error = passwordError.takeIf { submitted } ?: fieldErrors["password"],
             keyboardType = KeyboardType.Password,
             secret = true,
+            hint = "Minimal $MinimumPasswordLength karakter.",
+            enabled = !isSubmitting,
         )
-
-        Text("Gunakan 15–128 karakter.", style = MaterialTheme.typography.bodySmall)
-
-        if (feedback != null) {
-            LoopyInfo("Status pendaftaran", feedback)
-        }
 
         TextButton(onClick = onLogin, enabled = !isSubmitting) {
             Text("Sudah punya akun? Masuk")

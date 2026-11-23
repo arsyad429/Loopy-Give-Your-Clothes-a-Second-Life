@@ -19,6 +19,15 @@ internal fun RejectRequestDialog(onDismiss: () -> Unit, onConfirm: (String) -> U
     var reason by rememberSaveable { mutableStateOf("") }
     var submitted by rememberSaveable { mutableStateOf(false) }
 
+    val trimmedReason = reason.trim()
+    val reasonError = when {
+        trimmedReason.isEmpty() -> "Tulis alasan penolakan sebelum melanjutkan."
+        trimmedReason.codePointCount(0, trimmedReason.length) > 500 ->
+            "Alasan terlalu panjang. Gunakan maksimal 500 karakter."
+        '\u0000' in trimmedReason -> "Periksa kembali teks alasan penolakan."
+        else -> null
+    }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Tolak pengajuan?") },
@@ -31,7 +40,7 @@ internal fun RejectRequestDialog(onDismiss: () -> Unit, onConfirm: (String) -> U
                     value = reason,
                     onValueChange = { reason = it },
                     placeholder = "Tulis alasan penolakan",
-                    error = "Alasan penolakan wajib diisi.".takeIf { submitted && reason.isBlank() },
+                    error = reasonError.takeIf { submitted },
                     singleLine = false,
                 )
             }
@@ -41,8 +50,8 @@ internal fun RejectRequestDialog(onDismiss: () -> Unit, onConfirm: (String) -> U
                 LoopyButton("Konfirmasi penolakan", onClick = {
                     submitted = true
 
-                    if (reason.isNotBlank()) {
-                        onConfirm(reason.trim())
+                    if (reasonError == null) {
+                        onConfirm(trimmedReason)
                     }
                 })
 
