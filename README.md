@@ -2,7 +2,7 @@
 
 Template aplikasi donasi pakaian **Kotlin + Jetpack Compose** untuk **Android Studio**, berdasarkan [PRD 2.1](https://hackmd.io/@Nepa/H1x82bUsze) dan [desain Loopy](https://www.figma.com/design/ZDndr4gOItY7elDq9w7YA3/Loopy?node-id=0-1). Dokumentasi dan TODO berbahasa Indonesia.
 
-**Status: scaffold, belum MVP selesai.** Project dapat dibuild menjadi APK dengan Gradle. Fondasi DataStore, Room, Retrofit, Coroutines/Flow, ViewModel dan Navigation terhubung dalam harness debug. Fitur bisnis F01–F10 disediakan sebagai template. Login, AI, pickup, admin, poin, redeem, serta koneksi database backend belum diimplementasikan. Hasil pemeriksaan aktual ada di [verification.md](docs/verification.md).
+**Status: fondasi Android + backend auth Go, belum MVP selesai.** Project dapat dibuild menjadi APK dengan Gradle. Fondasi DataStore, Room, Retrofit, Coroutines/Flow, ViewModel dan Navigation terhubung dalam harness debug. Backend Go menyediakan register/login/refresh/logout/me dengan PostgreSQL; baca [alur, kode, dan teori auth](docs/auth-go.md). UI login Android belum terhubung. AI, pickup, dashboard admin, poin dan redeem masih template. Hasil pemeriksaan aktual ada di [verification.md](docs/verification.md).
 
 ## Mulai pengembangan dengan Docker
 
@@ -20,7 +20,9 @@ docker compose --profile tools run --rm android-dev assembleDebug testDebugUnitT
 
 PowerShell: ganti perintah pertama dengan `Copy-Item .env.example .env`; perintah Docker sama. Ganti password lokal di `.env` bila perlu; file ini diabaikan Git. Default hanya untuk development lokal.
 
-Backend: http://localhost:8080/health → `{"status":"ok","mode":"template"}`. PostgreSQL tersedia sebagai layanan, tetapi tabel dan koneksi aplikasi masih TODO. APK hasil Docker: `artifacts/outputs/apk/debug/app-debug.apk`; laporan: `artifacts/reports/`. Base URL emulator bawaan Android Studio: `http://10.0.2.2:8080/`.
+Backend: http://localhost:8080/health → `{"status":"ok","mode":"go-auth"}`; `/ready` memeriksa PostgreSQL. Migrasi users/auth_sessions dijalankan saat startup. APK hasil Docker: `artifacts/outputs/apk/debug/app-debug.apk`; laporan: `artifacts/reports/`. Base URL emulator bawaan Android Studio: `http://10.0.2.2:8080/`.
+
+Untuk menjalankan API di server LXC, ikuti [panduan deployment LXC](docs/deploy-lxc.md) dan gunakan `compose.lxc.yaml` (API + PostgreSQL, tanpa build Android).
 
 ## Buka project Android Studio
 
@@ -37,7 +39,7 @@ Docker menyiapkan JDK/SDK dan build konsisten di Linux, Windows, dan macOS. **AP
 | Folder/file | Peran |
 | --- | --- |
 | [`android/`](android/README.md) | Project Android Studio, modul app, wrapper, dependency catalog |
-| [`backend/`](backend/README.md) | Kotlin/Ktor, health aktif, template auth/AI/donasi/poin/redeem |
+| [`backend/`](backend/README.md) | Go auth aktif di backend/go; scaffold Kotlin/Ktor lama tetap tersedia |
 | [`docker/`](docker/README.md), Dockerfile, compose.yaml | Build Android, backend runtime dan PostgreSQL |
 | [`docs/`](docs/README.md) | Arsitektur, pemetaan 10 materi PAPB, screen map, API/data model, backlog dan 20 AC |
 | [`scripts/`](scripts/README.md) | Build container dan pemeriksaan struktur |
@@ -55,7 +57,7 @@ cd android
 # Windows PowerShell: .\gradlew.bat assembleDebug testDebugUnitTest lintDebug
 ```
 
-Backend: `cd backend` lalu `./gradlew run` (Windows `.\gradlew.bat run`). Tes: `./gradlew test installDist`. Hindari menjalankan backend host dan Docker bersamaan pada port 8080.
+Backend Go: `cd backend/go`, set `DATABASE_URL` ke PostgreSQL, lalu `go run .`. Tes: `go test ./...` dan `go vet ./...`; lihat [panduan auth](docs/auth-go.md) untuk tes integrasi dan provisioning admin. Scaffold Ktor dapat dijalankan terpisah dari `backend/` dengan Gradle. Hindari menjalankan beberapa backend pada port 8080 yang sama.
 
 ```sh
 docker compose logs -f backend

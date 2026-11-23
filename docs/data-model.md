@@ -1,10 +1,11 @@
 # Model data dan transaksi
 
-Rancangan ini **belum tabel aktif**. UUID dari server; audit UTC ISO-8601; jadwal pickup memakai zona layanan yang disepakati (usulan Asia/Jakarta). Owner/role dari token, bukan input klien.
+Tabel **users dan auth_sessions sudah aktif** melalui migrasi `backend/go/schema.sql`; tabel bisnis berikut masih rancangan. UUID dari server; audit UTC ISO-8601; jadwal pickup memakai zona layanan yang disepakati (usulan Asia/Jakarta). Owner/role diambil server dari sesi dan akun database, bukan input klien.
 
 | Tabel | Field/batasan PRD §8 dan kebutuhan teknis |
 | --- | --- |
 | users | user_id PK, name, normalized email UNIQUE, password_hash atau auth-provider ID, role USER/ADMIN, total_points CHECK >=0 |
+| auth_sessions | session_id PK, user_id FK, access_hash/refresh_hash UNIQUE (SHA-256, bukan token mentah), access_expires_at,refresh_expires_at,created_at; rotasi atomik dan hapus saat logout |
 | clothing_checks | check_id PK, user_id FK, private photo key, clothing_type, ai_result tiga kategori, ai_description, created_at |
 | donation_requests | donation_id PK, user_id/check_id FK, phone_number, pickup_address, city, quantity CHECK>=1, preferred_date/time, scheduled_date/time nullable, notes, status, rejection_reason, created_at/updated_at, version |
 | donation_status_history | history_id PK, donation_id FK, previous_status nullable awal, new_status, updated_by FK, updated_at |
@@ -25,4 +26,4 @@ BEGIN → autentikasi user → cek idempotency key/request hash → lock wallet 
 
 Transisi: PENDING_REVIEW → PICKUP_SCHEDULED → PICKED_UP → COMPLETED, atau PENDING_REVIEW → REJECTED. Schedule wajib tanggal/waktu final, reject wajib alasan, semua transisi diaudit. Preferensi user berbeda dari jadwal admin.
 
-TODO: pilih library SQL/migration, isi V001+seed, uji concurrency/rollback PostgreSQL dan isolasi owner. Request awal+history juga atomik.
+Auth menggunakan pgx, migrasi versi 1 transaksional, dan tes concurrency/rollback PostgreSQL; lihat [auth-go.md](auth-go.md). TODO bisnis: migrasi berikutnya, reward seed, transaksi donasi/poin/redeem dan isolasi owner. Request awal+history juga atomik. Jangan mengubah migrasi versi 1 untuk database yang sudah berjalan; tambahkan versi migrasi berikutnya.

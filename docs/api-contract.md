@@ -1,11 +1,12 @@
 # Kontrak API usulan
 
-**Hanya GET /health sudah diimplementasikan.** Semua /v1 berikut target pengembangan; sekarang 404. Respons health HTTP200 `{"status":"ok","mode":"template"}`; bukan readiness database. Auth/provider AI belum final.
+**Auth sudah diimplementasikan di Go** (`backend/go/`, backend Docker aktif): register, login, refresh, logout, me. Kontrak JSON final, masa berlaku token, validasi dan error ada di [auth-go.md](auth-go.md). `GET /health` menghasilkan `{"status":"ok","mode":"go-auth"}`; `GET /ready` memeriksa koneksi PostgreSQL. Endpoint bisnis selain auth masih target pengembangan dan menghasilkan 404. Scaffold Ktor tetap tersedia terpisah.
 
 | Metode/path | Akses | Request → respons target | Fitur |
 | --- | --- | --- | --- |
 | POST /v1/auth/register | Public | name,email,password → user USER/0 poin+session; email unik, role tidak diterima | F02 |
 | POST /v1/auth/login | Public | email,password → access/refresh token, expiresAt,user | F02 |
+| POST /v1/auth/refresh | Refresh token | refreshToken → token pair baru, expiresAt,refreshExpiresAt,user; pair lama tidak berlaku | F02 |
 | POST /v1/auth/logout | Login | revoke session/refresh token →204 | F02 |
 | GET /v1/auth/me | Login | userId,name,email,role,totalPoints | F02/F03 |
 | POST /v1/checks | User | multipart image → checkId,photo,type,aiResult,aiDescription,createdAt | F04/F05 |
@@ -30,4 +31,4 @@ Enum status: PENDING_REVIEW/PICKUP_SCHEDULED/PICKED_UP/COMPLETED/REJECTED. AI: P
 
 Idempotency key per aksi, dipertahankan saat retry; server scope actor+operation dan bandingkan payload hash. Payload berbeda key sama →409. UI disabled saat loading membantu UX, bukan pengganti transaksi server.
 
-TODO: sepakati JSON final, limit JPEG/PNG, timeout/retry, auth, zona/waktu layanan. Buat Retrofit DTO dan Ktor route bersama. AI dipanggil server saja dan hasilnya estimasi awal. OTP/settings/profile tambahan Figma perlu kontrak baru setelah scope disepakati.
+TODO: sepakati JSON bisnis, limit JPEG/PNG, timeout/retry dan zona/waktu layanan. Buat Retrofit DTO untuk auth yang sudah aktif, lalu route Go untuk fitur bisnis. AI dipanggil server saja dan hasilnya estimasi awal. OTP/settings/profile tambahan Figma perlu kontrak baru setelah scope disepakati.

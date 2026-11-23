@@ -4,8 +4,8 @@ PRD belum membagi pemilik implementasi. Neva/Rio/Alex/Arsyad tetap mengikuti tan
 
 | Urutan | Pekerjaan | Tempat awal | Selesai bila |
 | --- | --- | --- | --- |
-| 1 | Sepakati backend/auth/AI, wilayah/waktu pickup dan scope tambahan | API/data model/screen map | Kontrak tim disetujui |
-| 2 | Migration/auth+seed admin aman | backend database/auth/db | Role/ownership/email/token teruji |
+| 1 | Backend Go/auth sudah dipilih; sepakati AI, wilayah/waktu pickup dan scope tambahan | API/data model/screen map | Kontrak tim disetujui |
+| 2 | Auth Go + migrasi akun/sesi + CLI admin tersedia; lanjut integrasi Android dan ownership fitur bisnis | backend/go, docs/auth-go.md | Backend auth teruji; isolasi bisnis diverifikasi saat route tersedia |
 | 3 | Landing/login/register+session graph | feature landing/auth, navigation | AC01–04,19–20 |
 | 4 | Home ringkasan/status/saldo | feature home, repositories | Loading/empty/error dan data benar |
 | 5 | Kamera/galeri+AI proof of concept | clothingcheck, PhotoValidator, backend checks/storage | AC05–07, tiga hasil/error |

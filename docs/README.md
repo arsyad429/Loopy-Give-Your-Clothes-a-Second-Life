@@ -8,10 +8,12 @@ Dokumentasi arsitektur, PAPB, Figma, API, data model, backlog dan acceptance cri
 | --- | --- |
 | `acceptance-tests.md` | Dokumen acuan acceptance-tests; baca isi untuk spesifikasi/TODO. |
 | `api-contract.md` | Dokumen acuan api-contract; baca isi untuk spesifikasi/TODO. |
+| `auth-go.md` | Alur autentikasi Go, kontrak JSON, penjelasan kode, teori keamanan, dan cara menjalankan. |
 | `architecture.md` | Dokumen acuan architecture; baca isi untuk spesifikasi/TODO. |
 | `backlog.md` | Dokumen acuan backlog; baca isi untuk spesifikasi/TODO. |
 | `data-model.md` | Dokumen acuan data-model; baca isi untuk spesifikasi/TODO. |
 | `development.md` | Dokumen acuan development; baca isi untuk spesifikasi/TODO. |
+| `deploy-lxc.md` | Deployment API Go/PostgreSQL dengan Docker di LXC: instalasi, jaringan, admin, HTTPS dan backup. |
 | `papb-mapping.md` | Dokumen acuan papb-mapping; baca isi untuk spesifikasi/TODO. |
 | `reference/` | Baca README di subfolder reference untuk peran file dan TODO. |
 | `screen-map.json` | Mapping machine-readable 13 MVP+4 desain, node ID dan TODO. |
