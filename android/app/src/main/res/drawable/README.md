@@ -1,6 +1,6 @@
 # Ikon S05 dan S06
 
-VectorDrawable dari komponen Lucide di Figma. Ikon digunakan dengan ukuran slot yang dicatat pada desain S05 dan S06.
+Ikon VectorDrawable untuk layar Loopy, termasuk kontrol kamera S05 dan kategori hasil S06.
 
 | File atau folder | Kegunaan |
 | --- | --- |

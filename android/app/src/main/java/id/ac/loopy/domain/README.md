@@ -1,16 +1,10 @@
 # domain
 
-Direktori domain mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
+Model bisnis dan kontrak repository yang dipakai oleh ViewModel dan lapisan data.
 
 ## Isi file dan perannya
 
 | File atau folder | Kegunaan |
 | --- | --- |
-| [`model/`](model/README.md) | Baca README di subfolder model untuk peran file dan TODO. |
-| [`repository/`](repository/README.md) | Baca README di subfolder repository untuk peran file dan TODO. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`model/`](model/README.md) | Model domain aktif mencakup hasil pemeriksaan, jenis pakaian, dan status donasi. Model fitur lanjutan disiapkan sebagai template. |
+| [`repository/`](repository/README.md) | Kontrak domain repository. ViewModel S05 dan S06 memakai ClothingCheckRepository untuk meminta analisis dan mengambil detail. |

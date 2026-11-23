@@ -1,16 +1,10 @@
 # gradle
 
-Direktori gradle mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
+Katalog versi plugin dan dependensi Android serta konfigurasi Gradle Wrapper.
 
 ## Isi file dan perannya
 
 | File atau folder | Kegunaan |
 | --- | --- |
 | [`libs.versions.toml`](libs.versions.toml) | Version catalog Android terpusat: Kotlin, Compose, Room, DataStore, Retrofit, lifecycle, Navigation, tests. |
-| [`wrapper/`](wrapper/README.md) | Baca README di subfolder wrapper untuk peran file dan TODO. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`wrapper/`](wrapper/README.md) | Bootstrap Gradle untuk menghasilkan build Android dengan versi distribusi yang sama di setiap mesin. |

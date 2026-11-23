@@ -1,6 +1,6 @@
 # entity
 
-Room entity draft aktif dan template cache per user; backend sumber kebenaran bisnis.
+Entitas Room untuk draft pickup serta template entitas cache bisnis.
 
 ## Isi file dan perannya
 
@@ -14,9 +14,3 @@ Room entity draft aktif dan template cache per user; backend sumber kebenaran bi
 | [`RewardCacheEntity.kt`](RewardCacheEntity.kt) | TEMPLATE opsional — TODO: cache Reward ber-key userId; minimalkan PII, TTL dan invalidasi logout. Room hanya cache/draft; otoritas status, role dan poin di backend. |
 | [`StatusHistoryCacheEntity.kt`](StatusHistoryCacheEntity.kt) | TEMPLATE opsional — TODO: cache StatusHistory ber-key userId; minimalkan PII, TTL dan invalidasi logout. Room hanya cache/draft; otoritas status, role dan poin di backend. |
 | [`UserCacheEntity.kt`](UserCacheEntity.kt) | TEMPLATE opsional — TODO: cache User ber-key userId; minimalkan PII, TTL dan invalidasi logout. Room hanya cache/draft; otoritas status, role dan poin di backend. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.

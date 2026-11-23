@@ -1,6 +1,6 @@
 # Tes UI pemeriksaan pakaian
 
-Jalankan tes instrumentasi pada perangkat Android atau emulator melalui connectedDebugAndroidTest.
+Tes Compose untuk input S05, serta pemuatan hasil, retry, dan konfirmasi kebersihan di S06.
 
 | File atau folder | Kegunaan |
 | --- | --- |

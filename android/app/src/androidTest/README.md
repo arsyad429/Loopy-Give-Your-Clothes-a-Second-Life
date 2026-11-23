@@ -1,15 +1,9 @@
 # androidTest
 
-Direktori androidTest mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
+Tes instrumentasi Android dijalankan pada perangkat atau emulator dengan connectedDebugAndroidTest.
 
 ## Isi file dan perannya
 
 | File atau folder | Kegunaan |
 | --- | --- |
-| [`java/`](java/README.md) | Baca README di subfolder java untuk peran file dan TODO. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`java/`](java/README.md) | Akar source Kotlin untuk tes instrumentasi Android Loopy. |

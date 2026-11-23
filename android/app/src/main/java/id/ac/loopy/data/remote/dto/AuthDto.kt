@@ -1,4 +1,23 @@
 package id.ac.loopy.data.remote.dto
 
-// TEMPLATE — TODO: request/response DTO Auth sesuai docs/api-contract.md.
-// Nama field JSON, nullable, timestamps ISO-8601 dan error response harus disepakati backend.
+data class LoginRequest(val email: String, val password: String)
+
+data class RegisterRequest(
+    val name: String,
+    val email: String,
+    val password: String,
+)
+
+data class RefreshRequest(val refreshToken: String)
+
+data class SessionDto(
+    val accessToken: String,
+    val refreshToken: String,
+    val user: AuthUserDto,
+)
+
+data class AuthUserDto(
+    val userId: String,
+    val name: String,
+    val role: String,
+)

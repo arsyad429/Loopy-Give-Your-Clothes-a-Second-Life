@@ -20,7 +20,14 @@ class MainActivity : ComponentActivity() {
             val model: TemplateViewModel = viewModel(factory = TemplateViewModel.factory(container))
             val state = model.state.collectAsStateWithLifecycle().value
             LoopyTheme(darkTheme = state.darkTheme) {
-                LoopyApp(state, model::setDarkTheme, model::refreshHealth, model::saveDemoDraft, model::clearDemoDrafts)
+                LoopyApp(
+                    state = state,
+                    onTheme = model::setDarkTheme,
+                    onHealth = model::refreshHealth,
+                    onSave = model::saveDemoDraft,
+                    onClear = model::clearDemoDrafts,
+                    container = container,
+                )
             }
         }
     }

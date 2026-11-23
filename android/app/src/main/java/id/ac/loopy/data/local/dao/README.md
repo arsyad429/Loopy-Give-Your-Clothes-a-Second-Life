@@ -1,6 +1,6 @@
 # dao
 
-Room DAO untuk Flow observasi dan suspend write; cache bisnis wajib terfilter owner.
+Query Room untuk draft pickup dan template query cache bisnis per akun.
 
 ## Isi file dan perannya
 
@@ -14,9 +14,3 @@ Room DAO untuk Flow observasi dan suspend write; cache bisnis wajib terfilter ow
 | [`RewardCacheDao.kt`](RewardCacheDao.kt) | TEMPLATE opsional — TODO: DAO Reward dengan query terfilter userId, Flow dan suspend writes. Tambahkan entity ke database dan migration serta uji isolasi antar akun. |
 | [`StatusHistoryCacheDao.kt`](StatusHistoryCacheDao.kt) | TEMPLATE opsional — TODO: DAO StatusHistory dengan query terfilter userId, Flow dan suspend writes. Tambahkan entity ke database dan migration serta uji isolasi antar akun. |
 | [`UserCacheDao.kt`](UserCacheDao.kt) | TEMPLATE opsional — TODO: DAO User dengan query terfilter userId, Flow dan suspend writes. Tambahkan entity ke database dan migration serta uji isolasi antar akun. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.

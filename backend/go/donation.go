@@ -23,7 +23,7 @@ const (
 )
 
 var (
-	donationIDPattern  = regexp.MustCompile(`^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$`)
+	uuidPattern        = regexp.MustCompile(`^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$`)
 	errDonationChanged = errors.New("donation version changed")
 	errDonationFinal   = errors.New("donation is no longer pending review")
 	errPickupInPast    = errors.New("pickup time is not in the future")
@@ -144,7 +144,7 @@ func decodeDonationCursor(value string) (donationCursor, bool) {
 	if err != nil || json.Unmarshal(raw, &cursor) != nil {
 		return cursor, false
 	}
-	return cursor, !cursor.CreatedAt.IsZero() && donationIDPattern.MatchString(cursor.ID)
+	return cursor, !cursor.CreatedAt.IsZero() && uuidPattern.MatchString(cursor.ID)
 }
 
 func pickupLocation() *time.Location {

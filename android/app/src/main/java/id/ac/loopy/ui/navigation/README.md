@@ -1,6 +1,6 @@
 # Navigasi Android
 
-Rute aktif ada di [LoopyApp.kt](../LoopyApp.kt). Rute pemeriksaan meneruskan checkId dan katalog layar dibuka pada build debug.
+Rute aktif berada di [LoopyApp.kt](../LoopyApp.kt). S05 dan S06 memerlukan sesi USER dan hanya meneruskan checkId melalui navigasi.
 
 | File atau folder | Kegunaan |
 | --- | --- |

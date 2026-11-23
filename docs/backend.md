@@ -1,6 +1,6 @@
 # Backend Loopy
 
-Compose utama menjalankan [API Go](../backend/go/README.md) untuk akun dan peninjauan pickup. [API pemeriksaan Ktor](../backend/README.md) dijalankan dengan `compose.vision.yaml` dan memakai database serta sesi terpisah.
+API Go menangani akun, pemeriksaan pakaian dengan Groq, dan peninjauan pickup. Login dan pemeriksaan berbagi satu server serta database PostgreSQL. [Implementasi Go](../backend/go/README.md)
 
 ## Cara kerja
 
@@ -10,9 +10,10 @@ Compose utama menjalankan [API Go](../backend/go/README.md) untuk akun dan penin
 | HTTP | [http.go](../backend/go/http.go) | Routing, autentikasi Bearer, pemeriksaan role, batas ukuran JSON, dan format error. |
 | Autentikasi akun | [auth.go](../backend/go/auth.go), [password.go](../backend/go/password.go), [store.go](../backend/go/store.go) | Register, login, refresh, profil akun aktif, dan logout. Kata sandi di-hash dengan Argon2id. Database menyimpan hash token sesi. |
 | Verifikasi donasi dan jadwal | [donation_http.go](../backend/go/donation_http.go), [donation.go](../backend/go/donation.go), [donation_store.go](../backend/go/donation_store.go) | Ringkasan, antrean, detail pengajuan, persetujuan dengan jadwal final, dan penolakan dengan alasan. |
-| Penyimpanan | [schema.sql](../backend/go/schema.sql), [schema_pickup.sql](../backend/go/schema_pickup.sql) | Migrasi versi 1 untuk akun dan sesi, lalu versi 2 untuk pemeriksaan pakaian, pengajuan donasi, dan riwayat status. |
+| Pemeriksaan pakaian | [clothing_check.go](../backend/go/clothing_check.go), [clothing_photo.go](../backend/go/clothing_photo.go), [groq_vision.go](../backend/go/groq_vision.go), [clothing_check_store.go](../backend/go/clothing_check_store.go) | Validasi dan normalisasi foto, analisis Groq, penyimpanan atomik, dan pembacaan foto privat. |
+| Penyimpanan | [schema.sql](../backend/go/schema.sql), [schema_pickup.sql](../backend/go/schema_pickup.sql), [schema_vision.sql](../backend/go/schema_vision.sql) | Versi 1 untuk akun dan sesi, versi 2 untuk pemeriksaan dan peninjauan pickup, versi 3 untuk foto privat dan idempotensi. |
 
-Migrasi berjalan sekali per versi. Server mengambil advisory lock PostgreSQL untuk menyerialkan startup beberapa instance. Setiap startup menerapkan versi yang tertunda dan mencatatnya dalam transaksi. Database versi 1 mempertahankan akun dan sesi saat versi 2 diterapkan.
+Migrasi berjalan sekali per versi. Server mengambil advisory lock PostgreSQL untuk menyerialkan startup beberapa instance. Setiap startup menerapkan versi yang tertunda dan mencatatnya dalam transaksi. Migrasi mempertahankan akun, sesi, dan data pickup yang sudah tersimpan di database Go.
 
 ## Akun, sesi, dan hak akses
 
@@ -25,9 +26,9 @@ Endpoint admin memerlukan role `ADMIN`. Antrean memuat ringkasan pengajuan, seda
 Dari root repo, jalankan Docker Compose. Database memakai volume bernama sehingga data tersedia kembali saat service dijalankan ulang.
 
 ```bash
-docker compose up --build -d --wait
-curl http://localhost:8080/health
-curl http://localhost:8080/ready
+API_PORT=8082 docker compose -p loopy-go up --build -d --wait db backend
+curl -fsS http://127.0.0.1:8082/health
+curl -fsS http://127.0.0.1:8082/ready
 ```
 
 - `GET /health` mengembalikan `{"status":"ok","mode":"go-auth"}` sebagai respons liveness yang dipakai klien sekarang.
@@ -38,17 +39,10 @@ Dari `backend/go`, jalankan `go test ./...`, `go vet ./...`, dan `go build ./...
 
 ## Status fitur
 
-Backend aktif menyediakan autentikasi dasar serta keputusan admin dari `PENDING_REVIEW` ke `PICKUP_SCHEDULED` atau `REJECTED`. Android masih memakai pratinjau lokal. Email OTP, pengajuan pickup dari pengguna, analisis dan unduhan foto, pelacakan pengguna, penyelesaian pickup, poin, dan rewards masih menunggu implementasi pada API Go. [Peta endpoint dan rencana lanjutan](api-contract.md)
+Backend aktif menyediakan autentikasi dasar serta keputusan admin dari `PENDING_REVIEW` ke `PICKUP_SCHEDULED` atau `REJECTED`. Android menggunakan API untuk autentikasi dan pemeriksaan, serta pratinjau lokal untuk admin. Email OTP, pengajuan pickup dari pengguna, pelacakan pengguna, penyelesaian pickup, poin, dan rewards masih menunggu implementasi pada API Go. [Peta endpoint dan rencana lanjutan](api-contract.md)
 
-## Pemeriksaan pakaian Ktor
+## Pemeriksaan pakaian Go
 
-Ktor menerima JPEG atau PNG dan jenis pakaian melalui multipart, menormalkan gambar menjadi JPEG sebelum analisis Groq, dan menyimpan hasil serta foto privat dalam transaksi PostgreSQL. Pemilik dan admin dapat mengakses hasil dan foto dengan bearer token Ktor. Key idempotensi dipertahankan saat request yang sama diulang.
+Go menerima JPEG atau PNG dan jenis pakaian melalui multipart. Backend menormalkan foto menjadi JPEG, mengirimkannya ke Groq, lalu menyimpan hasil dan foto privat dalam satu transaksi PostgreSQL. Pemilik dan admin menggunakan access token Go untuk mengakses hasil dan foto. Pengulangan request dengan key dan payload yang sama mengembalikan hasil sebelumnya.
 
-Dari root repository, isi kredensial Groq di `.env` lokal, lalu jalankan:
-
-```sh
-docker compose -f compose.vision.yaml up --build -d --wait
-curl -fsS http://127.0.0.1:8081/ready
-```
-
-Token hasil login Go saat ini ditolak oleh API Ktor karena token dan pengguna berasal dari database sesi yang berbeda. Penerbitan sesi Ktor sudah tersedia di server untuk pengujian; route login publik dan wiring Android masih diperlukan untuk alur pengguna. [Kontrak API](api-contract.md) · [Cara menjalankan tes Ktor](../backend/README.md#uji-ktor)
+Isi `GROQ_API_KEY` di `.env` server untuk mengaktifkan analisis baru. Data dari skema backend lama memerlukan proses impor tersendiri. Android memakai access token Go yang sama untuk upload, detail, dan unduhan privat. Token diperbarui melalui refresh ketika server menolak access token dengan `401`. [Kontrak API](api-contract.md#kontrak-pemeriksaan-pakaian-go) · [Tes Go](../backend/go/README.md)

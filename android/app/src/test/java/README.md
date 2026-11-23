@@ -1,15 +1,9 @@
 # java
 
-Area tes perilaku PRD. Tulis assertions bermakna untuk validasi/error/role/transaksi dan persistence.
+Akar source Kotlin untuk unit test aplikasi Android.
 
 ## Isi file dan perannya
 
 | File atau folder | Kegunaan |
 | --- | --- |
-| [`id/`](id/README.md) | Baca README di subfolder id untuk peran file dan TODO. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`id/`](id/README.md) | Segmen id pada namespace unit test Loopy. |

@@ -1,6 +1,6 @@
 # verification
 
-S13 tersedia sebagai pratinjau UI pada build debug. Penerbitan dan konfirmasi OTP server masih direncanakan.
+S13 merupakan pratinjau verifikasi email pada katalog debug. Penerbitan dan konfirmasi OTP masih dalam rencana.
 
 ## Isi file dan perannya
 

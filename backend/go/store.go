@@ -17,6 +17,9 @@ var schemaSQL string
 //go:embed schema_pickup.sql
 var pickupSchemaSQL string
 
+//go:embed schema_vision.sql
+var visionSchemaSQL string
+
 type pgStore struct{ pool *pgxpool.Pool }
 
 func (s *pgStore) migrate(ctx context.Context) error {
@@ -32,7 +35,7 @@ func (s *pgStore) migrate(ctx context.Context) error {
 	if _, err = tx.Exec(ctx, "CREATE TABLE IF NOT EXISTS schema_migrations (version INTEGER PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT now())"); err != nil {
 		return err
 	}
-	for index, migration := range []string{schemaSQL, pickupSchemaSQL} {
+	for index, migration := range []string{schemaSQL, pickupSchemaSQL, visionSchemaSQL} {
 		version := index + 1
 		var exists bool
 		if err = tx.QueryRow(ctx, "SELECT EXISTS (SELECT 1 FROM schema_migrations WHERE version=$1)", version).Scan(&exists); err != nil {

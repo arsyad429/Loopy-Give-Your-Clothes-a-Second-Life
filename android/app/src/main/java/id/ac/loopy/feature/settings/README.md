@@ -1,6 +1,6 @@
 # settings
 
-Template fitur S12 Settings. UI bisnis belum diimplementasikan; kerjakan Screen/UiState/ViewModel terpisah.
+Template S12 untuk preferensi pengguna. Tema yang aktif dapat diuji melalui katalog debug dan disimpan dengan DataStore.
 
 ## Isi file dan perannya
 

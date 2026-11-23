@@ -1,3 +1,3 @@
 # Unit test fitur Android
 
-[clothingcheck](clothingcheck/README.md) berisi unit test validasi kualitas foto di S05.
+Unit test perilaku fitur. Tes clothingcheck memeriksa kualitas foto S05 melalui piksel sintetis.

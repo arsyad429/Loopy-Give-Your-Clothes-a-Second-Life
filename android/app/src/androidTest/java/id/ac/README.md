@@ -1,15 +1,9 @@
 # ac
 
-Area tes perilaku PRD. Tulis assertions bermakna untuk validasi/error/role/transaksi dan persistence.
+Segmen ac pada namespace tes instrumentasi Loopy.
 
 ## Isi file dan perannya
 
 | File atau folder | Kegunaan |
 | --- | --- |
-| [`loopy/`](loopy/README.md) | Baca README di subfolder loopy untuk peran file dan TODO. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`loopy/`](loopy/README.md) | Tes instrumentasi untuk persistensi lokal DataStore dan Room, serta UI pemeriksaan pakaian. |

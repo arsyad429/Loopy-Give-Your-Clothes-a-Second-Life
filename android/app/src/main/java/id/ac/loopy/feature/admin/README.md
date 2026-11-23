@@ -1,6 +1,6 @@
 # admin
 
-Pratinjau A02 dan A03 mendukung antrean, detail, penjadwalan, dan penolakan dengan data lokal. Dashboard A01 serta ViewModel jaringan masih template.
+A02 dan A03 memakai data contoh untuk pratinjau antrean, detail, jadwal, dan penolakan. API admin Go masih perlu disambungkan ke layar.
 
 ## Isi file dan perannya
 

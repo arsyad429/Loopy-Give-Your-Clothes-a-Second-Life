@@ -1,6 +1,6 @@
 # profile
 
-Template fitur S11 Profil User, A04 Profil Admin. UI bisnis belum diimplementasikan; kerjakan Screen/UiState/ViewModel terpisah.
+Template profil pengguna S11 dan profil admin A04 untuk data akun dan tindakan terkait sesi.
 
 ## Isi file dan perannya
 

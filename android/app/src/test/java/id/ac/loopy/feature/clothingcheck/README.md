@@ -1,3 +1,5 @@
 # Unit test pemeriksaan pakaian
 
-[ClothingPhotoQualityTest.kt](ClothingPhotoQualityTest.kt) menguji foto gelap, gambar transparan, transisi buram, pakaian gelap berlatar terang, dan gambar minim tekstur menggunakan piksel sintetis.
+Unit test kualitas foto S05 mencakup gelap, transparan, detail rendah, dan contoh pakaian gelap yang masih terlihat jelas.
+
+[ClothingPhotoQualityTest.kt](ClothingPhotoQualityTest.kt) membangun fixture piksel dan memeriksa alasan foto diminta ulang.

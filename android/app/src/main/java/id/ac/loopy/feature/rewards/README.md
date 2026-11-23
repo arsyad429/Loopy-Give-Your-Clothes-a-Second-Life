@@ -1,6 +1,6 @@
 # rewards
 
-Template fitur S10 Rewards & My Rewards. UI bisnis belum diimplementasikan; kerjakan Screen/UiState/ViewModel terpisah.
+Template S10 untuk katalog hadiah dan riwayat penukaran. Integrasi menunggu API Go untuk poin dan rewards.
 
 ## Isi file dan perannya
 

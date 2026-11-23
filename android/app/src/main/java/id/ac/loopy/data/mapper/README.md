@@ -1,6 +1,6 @@
 # mapper
 
-Direktori mapper mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
+Template mapper antara DTO, domain, dan cache. Konversi hasil pemeriksaan yang aktif ada di ClothingCheckDto.
 
 ## Isi file dan perannya
 
@@ -11,9 +11,3 @@ Direktori mapper mengelompokkan source/config Loopy. README subfolder menjelaska
 | [`ClothingCheckMapper.kt`](ClothingCheckMapper.kt) | TEMPLATE — TODO: ClothingCheckMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
 | [`DonationMapper.kt`](DonationMapper.kt) | TEMPLATE — TODO: DonationMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
 | [`RewardMapper.kt`](RewardMapper.kt) | TEMPLATE — TODO: RewardMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.

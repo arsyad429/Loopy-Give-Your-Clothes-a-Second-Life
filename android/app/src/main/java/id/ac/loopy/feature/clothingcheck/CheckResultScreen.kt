@@ -1,5 +1,6 @@
 package id.ac.loopy.feature.clothingcheck
 
+import android.graphics.BitmapFactory
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -59,6 +61,8 @@ import id.ac.loopy.domain.model.AiResult
 import id.ac.loopy.domain.model.ClothingCheck
 import id.ac.loopy.domain.model.ClothingType
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 private val ResultCanvas = Color(0xFFFAF8F3)
 private val ResultGreen = Color(0xFF246348)
@@ -84,6 +88,7 @@ fun CheckResultScreen(
     onRecheck: () -> Unit,
     onPickup: (String) -> Unit,
     emptyMessage: String = "Layanan pemeriksaan belum terhubung.",
+    loadPrivatePhoto: (suspend (String) -> ByteArray)? = null,
 ) {
     val state = viewModel?.uiState?.collectAsStateWithLifecycle()?.value ?: CheckResultUiState()
     CheckResultContent(
@@ -94,6 +99,7 @@ fun CheckResultScreen(
         onRetry = viewModel?.let { it::retry },
         onConfirmationChange = { viewModel?.setCleanAndSafeConfirmed(it) },
         emptyMessage = emptyMessage,
+        loadPrivatePhoto = loadPrivatePhoto,
     )
 }
 
@@ -107,6 +113,7 @@ internal fun CheckResultContent(
     onRetry: (() -> Unit)?,
     onConfirmationChange: (Boolean) -> Unit,
     emptyMessage: String = "Lakukan pemeriksaan pakaian untuk melihat hasilnya.",
+    loadPrivatePhoto: (suspend (String) -> ByteArray)? = null,
 ) {
     val check = state.check
 
@@ -140,7 +147,7 @@ internal fun CheckResultContent(
                 state.error != null -> ResultMessage(state.error, error = true)
                 check == null -> ResultMessage(emptyMessage)
                 else -> {
-                    ResultPhoto(check.clothingPhoto)
+                    ResultPhoto(check.clothingPhoto, check.checkId, loadPrivatePhoto)
                     ResultDetails(check)
                     Text(
                         "Hasil AI adalah pemeriksaan awal. Penerimaan tetap diverifikasi admin.",
@@ -170,14 +177,26 @@ internal fun CheckResultContent(
 }
 
 @Composable
-private fun ResultPhoto(reference: String) {
+private fun ResultPhoto(
+    reference: String,
+    checkId: String,
+    loadPrivatePhoto: (suspend (String) -> ByteArray)?,
+) {
     val context = LocalContext.current
     val isSample = LocalInspectionMode.current
-    val photo by key(reference) {
-        produceState<PhotoPreview>(PhotoPreview(loading = !isSample && reference.isNotBlank())) {
-            if (!isSample && reference.isNotBlank()) {
+    val canLoadPhoto = !isSample && (loadPrivatePhoto != null || reference.isNotBlank())
+    val photo by key(reference, checkId, canLoadPhoto) {
+        produceState(PhotoPreview(loading = canLoadPhoto)) {
+            if (canLoadPhoto) {
                 val bitmap = try {
-                    loadCheckResultPhoto(context, reference)
+                    if (loadPrivatePhoto == null) {
+                        loadCheckResultPhoto(context, reference)
+                    } else {
+                        val bytes = loadPrivatePhoto(checkId)
+                        withContext(Dispatchers.Default) {
+                            BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+                        }
+                    }
                 } catch (cancelled: CancellationException) {
                     throw cancelled
                 } catch (_: Exception) {

@@ -1,3 +1,0 @@
--- TEMPLATE: seed idempotent setelah migrasi dibuat.
--- Eco Supporter Badge = 10; Loopy Digital Wallpaper = 20; Voucher Demo = 30.
--- Voucher demo bukan voucher komersial. Tidak ada hadiah fisik atau pembayaran.

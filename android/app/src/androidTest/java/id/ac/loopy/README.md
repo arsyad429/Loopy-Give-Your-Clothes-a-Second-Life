@@ -1,6 +1,6 @@
 # loopy
 
-Area tes perilaku PRD. Tulis assertions bermakna untuk validasi/error/role/transaksi dan persistence.
+Tes instrumentasi untuk persistensi lokal DataStore dan Room, serta UI pemeriksaan pakaian.
 
 ## Isi file dan perannya
 
@@ -8,9 +8,3 @@ Area tes perilaku PRD. Tulis assertions bermakna untuk validasi/error/role/trans
 | --- | --- |
 | [`FoundationPersistenceTest.kt`](FoundationPersistenceTest.kt) | Instrumented test draft Room bertahan setelah database ditutup/dibuka. |
 | [`feature`](feature/README.md) | Tes fitur menurut layar yang diuji. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.

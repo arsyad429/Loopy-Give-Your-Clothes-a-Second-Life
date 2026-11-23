@@ -4,38 +4,30 @@ Loopy adalah aplikasi donasi pakaian dengan Android Kotlin dan Jetpack Compose, 
 
 | Bagian | Status |
 | --- | --- |
-| Android | Android menyediakan UI login, register, pratinjau admin, kamera/galeri S05, validasi kualitas foto, serta layar hasil S06. Klien login dan API pemeriksaan masih perlu dihubungkan. |
-| API Go | Menyediakan register, login, refresh, logout, profil akun aktif, dan peninjauan serta penjadwalan pickup oleh admin. |
-| API Ktor | Menyediakan analisis foto dengan Groq, penyimpanan hasil dan foto privat di PostgreSQL, serta pembatasan akses pemilik/admin. |
+| Android | Login dan register terhubung ke Go. S05 mengunggah foto dari kamera atau galeri, dan S06 menampilkan hasil serta foto privat. Admin masih memakai pratinjau lokal. |
+| API Go | Menyediakan autentikasi akun, pemeriksaan foto dengan Groq, foto privat, serta peninjauan dan penjadwalan pickup oleh admin. |
 
-Go dan Ktor memakai database dan sesi yang terpisah. Tahap integrasi Android berikutnya menentukan alur akun dan pengambilan foto privat. [Panduan backend](docs/backend.md) · [Kontrak endpoint](docs/api-contract.md) · [Hasil verifikasi](docs/verification.md)
+Pemeriksaan pakaian memakai access token dari login Go. Android menyimpan sesi di memori selama proses aplikasi berjalan. [Panduan backend](docs/backend.md) · [Kontrak endpoint](docs/api-contract.md) · [Hasil verifikasi](docs/verification.md)
 
 ## Jalankan dengan Docker
 
 Gunakan Docker Engine dengan Compose v2 atau Docker Desktop dengan Linux containers. Siapkan `.env` lokal dari [`.env.example`](.env.example) jika belum ada. Simpan API key Groq hanya di `.env` lokal. Jalankan dari root repository.
 
-API Go dan PostgreSQL:
+Jalankan API Go dan PostgreSQL. Port 8082 dan nama proyek `loopy-go` memberi ruang bagi instalasi development lama.
 
 ```sh
-docker compose up --build -d --wait db backend
-curl -fsS http://127.0.0.1:8080/ready
+API_PORT=8082 docker compose -p loopy-go up --build -d --wait db backend
+curl -fsS http://127.0.0.1:8082/ready
 ```
 
-API pemeriksaan Ktor dan PostgreSQL tersendiri:
-
-```sh
-docker compose -f compose.vision.yaml up --build -d --wait
-curl -fsS http://127.0.0.1:8081/ready
-```
-
-Jika port host terpakai, atur `API_PORT` untuk Go atau `VISION_API_PORT` untuk Ktor. Compose Vision menggunakan nama proyek `loopy-vision` dan volume PostgreSQL terpisah. Ikuti [panduan Docker](docker/README.md) jika pernah menjalankan Ktor menggunakan Compose utama sebelum penggabungan ini. Untuk deployment Go ke server, lihat [deployment LXC](docs/deploy-lxc.md).
+Untuk database Go yang sudah berjalan, gunakan kembali nama proyek Compose dan volume Go yang sama agar migrasi berjalan pada data tersebut. Data dari instalasi backend lama dengan skema berbeda memerlukan impor tersendiri. [Panduan Docker](docker/README.md) · [Deployment LXC](docs/deploy-lxc.md)
 
 ## Buka Android Studio
 
 1. Buka folder [`android/`](android/README.md) sebagai proyek yang sudah ada.
 2. Gunakan JDK 17, Android SDK Platform 36, dan Build Tools 36.0.0. Android Studio dapat membuat `local.properties` untuk SDK host.
-3. Jalankan varian `debug` pada emulator atau perangkat API 24+. Katalog debug menyediakan akses ke layar yang sedang dikembangkan, termasuk S05 dan S06.
-4. Emulator memakai `http://10.0.2.2:8080/` untuk API Go secara default. Lihat [panduan development](docs/development.md) untuk perangkat USB dan pengaturan port.
+3. Jalankan varian `debug` pada emulator atau perangkat API 24+. Di katalog debug, buka S02, masuk sebagai pengguna, lalu pilih **Periksa pakaian** untuk membuka S05. S06 terbuka setelah analisis berhasil.
+4. Untuk HP fisik, aktifkan `adb reverse tcp:8082 tcp:8082` dan build APK dengan `-PLOOPY_API_BASE_URL=http://127.0.0.1:8082/`. Emulator memakai alamat `10.0.2.2` dengan port Go. [Panduan development](docs/development.md#koneksi-android-ke-backend)
 
 ```sh
 cd android
@@ -49,15 +41,14 @@ Alternatif dari root adalah `docker compose --profile tools run --rm android-dev
 | Folder atau file | Kegunaan |
 | --- | --- |
 | [`android/`](android/README.md) | Modul Android, pengujian, dan Gradle wrapper. |
-| [`backend/`](backend/README.md) | API Go dan Ktor, migrasi, serta cara menjalankan tes backend. |
-| [`docker/`](docker/README.md) | Dockerfile API Go dan Ktor serta contoh konfigurasi server. |
+| [`backend/`](backend/README.md) | Backend Go, migrasi PostgreSQL, tes, dan template fitur berikutnya. |
+| [`docker/`](docker/README.md) | Dockerfile API Go dan contoh konfigurasi server. |
 | [`docs/`](docs/README.md) | Arsitektur, kontrak, referensi, backlog, dan hasil pengujian. |
 | [`scripts/`](scripts/README.md) | Build Android terisolasi dan pemeriksaan struktur repo. |
 | [`UI design/`](UI%20design/README.md) | File desain Figma asli untuk layar Loopy. |
 | [`.github/`](.github/README.md) | Workflow CI dan template kontribusi. |
 | [`Dockerfile`](Dockerfile) | Image alat build Android yang dipakai profil Compose `tools`. |
 | [`compose.yaml`](compose.yaml) | API Go, PostgreSQL, dan profil alat build Android lokal. |
-| [`compose.vision.yaml`](compose.vision.yaml) | API pemeriksaan Ktor dan PostgreSQL terisolasi. |
 | [`compose.lxc.yaml`](compose.lxc.yaml) | API Go dan PostgreSQL untuk deployment server. |
 | [`.env.example`](.env.example) | Contoh port dan variabel Compose tanpa kredensial nyata. |
 | [`.dockerignore`](.dockerignore) | Mengecualikan kredensial, cache, build, dan aset tertentu dari konteks Docker. |

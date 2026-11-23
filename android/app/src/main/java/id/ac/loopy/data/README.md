@@ -1,18 +1,12 @@
 # data
 
-Direktori data mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
+Implementasi data Android untuk Retrofit ke Go, preferensi DataStore, dan draft Room.
 
 ## Isi file dan perannya
 
 | File atau folder | Kegunaan |
 | --- | --- |
-| [`local/`](local/README.md) | Baca README di subfolder local untuk peran file dan TODO. |
-| [`mapper/`](mapper/README.md) | Baca README di subfolder mapper untuk peran file dan TODO. |
-| [`remote/`](remote/README.md) | Baca README di subfolder remote untuk peran file dan TODO. |
-| [`repository/`](repository/README.md) | Baca README di subfolder repository untuk peran file dan TODO. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`local/`](local/README.md) | LoopyDatabase menyimpan draft pickup dengan Room. Preferensi tema memakai DataStore. |
+| [`mapper/`](mapper/README.md) | Template mapper antara DTO, domain, dan cache. Konversi hasil pemeriksaan yang aktif ada di ClothingCheckDto. |
+| [`remote/`](remote/README.md) | Interface Retrofit dan DTO untuk health, register, login, refresh, dan pemeriksaan pakaian. |
+| [`repository/`](repository/README.md) | Repository untuk autentikasi, pemeriksaan pakaian, dan demo fondasi aplikasi, beserta template akses data fitur berikutnya. |

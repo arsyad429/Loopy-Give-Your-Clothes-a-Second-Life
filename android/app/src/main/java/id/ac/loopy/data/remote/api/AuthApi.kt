@@ -1,4 +1,19 @@
 package id.ac.loopy.data.remote.api
 
-// TEMPLATE — TODO: Retrofit suspend endpoints Auth, lihat docs/api-contract.md.
-// register/login/logout/me; backend memverifikasi role; lindungi token dengan Android Keystore; hapus cache per user saat logout.
+import id.ac.loopy.data.remote.dto.LoginRequest
+import id.ac.loopy.data.remote.dto.RefreshRequest
+import id.ac.loopy.data.remote.dto.RegisterRequest
+import id.ac.loopy.data.remote.dto.SessionDto
+import retrofit2.http.Body
+import retrofit2.http.POST
+
+interface AuthApi {
+    @POST("v1/auth/login")
+    suspend fun login(@Body request: LoginRequest): SessionDto
+
+    @POST("v1/auth/register")
+    suspend fun register(@Body request: RegisterRequest): SessionDto
+
+    @POST("v1/auth/refresh")
+    suspend fun refresh(@Body request: RefreshRequest): SessionDto
+}

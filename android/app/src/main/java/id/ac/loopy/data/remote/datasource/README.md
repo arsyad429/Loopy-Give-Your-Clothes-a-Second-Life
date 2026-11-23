@@ -1,6 +1,6 @@
 # datasource
 
-Retrofit suspend API dan DTO. Health aktif; endpoint bisnis mengikuti docs/api-contract.md.
+Template pembungkus panggilan jarak jauh. Repository auth dan pemeriksaan aktif memakai Retrofit secara langsung.
 
 ## Isi file dan perannya
 
@@ -11,9 +11,3 @@ Retrofit suspend API dan DTO. Health aktif; endpoint bisnis mengikuti docs/api-c
 | [`ClothingCheckRemoteDataSource.kt`](ClothingCheckRemoteDataSource.kt) | TEMPLATE — TODO: ClothingCheckRemoteDataSource: bungkus API suspend, map error HTTP/IO, pertahankan cancellation. |
 | [`DonationRemoteDataSource.kt`](DonationRemoteDataSource.kt) | TEMPLATE — TODO: DonationRemoteDataSource: bungkus API suspend, map error HTTP/IO, pertahankan cancellation. |
 | [`RewardRemoteDataSource.kt`](RewardRemoteDataSource.kt) | TEMPLATE — TODO: RewardRemoteDataSource: bungkus API suspend, map error HTTP/IO, pertahankan cancellation. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.

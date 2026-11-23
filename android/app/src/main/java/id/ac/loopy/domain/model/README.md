@@ -1,6 +1,6 @@
 # Model domain Android
 
-Model pemeriksaan dan status donasi dipakai oleh layar saat ini. Model bisnis lain masih berupa template PRD.
+Model domain aktif mencakup hasil pemeriksaan, jenis pakaian, dan status donasi. Model fitur lanjutan disiapkan sebagai template.
 
 ## Isi file dan perannya
 
@@ -15,9 +15,3 @@ Model pemeriksaan dan status donasi dipakai oleh layar saat ini. Model bisnis la
 | [`Reward.kt`](Reward.kt) | TEMPLATE PRD §8 — TODO: data class Reward: rewardId, rewardName, description, image, requiredPoints, rewardType, isActive. Katalog tetap 10/20/30 poin. |
 | [`User.kt`](User.kt) | TEMPLATE PRD §8 — TODO: data class User: userId, name, email, role USER/ADMIN, totalPoints (server). Jangan simpan password dalam model/cache. |
 | [`ClothingType.kt`](ClothingType.kt) | Daftar 20 jenis pakaian, label dropdown, dan kode yang dikirim ke backend. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.

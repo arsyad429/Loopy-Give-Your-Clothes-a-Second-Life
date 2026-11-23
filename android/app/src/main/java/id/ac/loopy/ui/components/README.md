@@ -1,6 +1,6 @@
 # components
 
-Direktori components mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
+Komponen Compose bersama untuk input, tombol, tata letak, dan feedback, beserta template komponen fitur.
 
 ## Isi file dan perannya
 
@@ -20,9 +20,3 @@ Direktori components mengelompokkan source/config Loopy. README subfolder menjel
 | [`TemplateScreen.kt`](TemplateScreen.kt) | Composable placeholder stateless berisi kebutuhan layar; ganti dengan layout sesuai desain. |
 | [`UserBottomBar.kt`](UserBottomBar.kt) | TEMPLATE — TODO: composable stateless UserBottomBar sesuai UI kit Figma; semantics, 48dp touch target, preview dan font scaling. |
 | [`LoopyScreen.kt`](LoopyScreen.kt) | Kerangka layout, judul, navigasi kembali, serta blok intro dan informasi yang dipakai bersama. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.

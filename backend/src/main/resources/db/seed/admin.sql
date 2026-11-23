@@ -1,2 +1,0 @@
--- TEMPLATE: akun admin melalui command privat dengan password hash.
--- Jangan commit password/plaintext/token. Registrasi publik tidak boleh menerima role admin.

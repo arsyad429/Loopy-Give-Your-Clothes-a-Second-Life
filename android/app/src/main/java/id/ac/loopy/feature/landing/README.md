@@ -1,6 +1,6 @@
 # landing
 
-Landing S01 memperkenalkan Loopy dan menyediakan aksi menuju login atau registrasi.
+S01 adalah pembuka aplikasi. Pengguna memilih masuk atau mendaftar sebelum membuka pemeriksaan.
 
 ## Isi file dan perannya
 

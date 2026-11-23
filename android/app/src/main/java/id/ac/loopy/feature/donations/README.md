@@ -1,6 +1,6 @@
 # donations
 
-Template fitur S08 My Donations, S09 Donation Detail. UI bisnis belum diimplementasikan; kerjakan Screen/UiState/ViewModel terpisah.
+Rencana layar riwayat dan detail donasi S08–S09. Integrasi menunggu endpoint pickup pengguna.
 
 ## Isi file dan perannya
 

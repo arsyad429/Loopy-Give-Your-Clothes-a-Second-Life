@@ -1,6 +1,6 @@
 # pickup
 
-Template fitur S07 Pickup Request Form. UI bisnis belum diimplementasikan; kerjakan Screen/UiState/ViewModel terpisah.
+Rute S07 menerima checkId dari hasil yang berpotensi layak. Form dan pengajuan pickup masih dalam rencana.
 
 ## Isi file dan perannya
 

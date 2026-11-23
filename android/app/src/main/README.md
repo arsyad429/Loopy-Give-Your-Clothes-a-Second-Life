@@ -1,17 +1,11 @@
 # main
 
-Direktori main mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
+Source set utama memuat manifest, kode Kotlin aplikasi, dan resource UI.
 
 ## Isi file dan perannya
 
 | File atau folder | Kegunaan |
 | --- | --- |
 | [`AndroidManifest.xml`](AndroidManifest.xml) | Activity/application/permission. Main menolak cleartext, overlay debug mengizinkan HTTP lokal. |
-| [`java/`](java/README.md) | Baca README di subfolder java untuk peran file dan TODO. |
-| [`res/`](res/README.md) | Baca README di subfolder res untuk peran file dan TODO. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`java/`](java/README.md) | Akar source Kotlin untuk aplikasi Android id.ac.loopy. |
+| [`res/`](res/README.md) | Resource Android untuk ikon, font, nilai aplikasi, dan konfigurasi FileProvider. |

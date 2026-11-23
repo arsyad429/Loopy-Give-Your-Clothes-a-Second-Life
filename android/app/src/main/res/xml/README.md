@@ -1,15 +1,9 @@
 # xml
 
-Direktori xml mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
+Konfigurasi jalur FileProvider untuk berbagi URI foto dengan aplikasi kamera.
 
 ## Isi file dan perannya
 
 | File atau folder | Kegunaan |
 | --- | --- |
 | [`file_paths.xml`](file_paths.xml) | Konfigurasi/artefak pendukung folder. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.

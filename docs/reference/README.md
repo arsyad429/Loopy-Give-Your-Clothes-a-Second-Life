@@ -1,6 +1,6 @@
 # reference
 
-Snapshot PRD2.1, metadata/screenshot desain, katalog checksum 10 PDF. Hanya referensi, bukan aset UI aplikasi.
+Materi rujukan tim berisi PRD v2.1, metadata desain, dan katalog sumber PAPB beserta checksum.
 
 ## Isi file dan perannya
 
@@ -13,9 +13,3 @@ Snapshot PRD2.1, metadata/screenshot desain, katalog checksum 10 PDF. Hanya refe
 | [`s05-android.png`](s05-android.png) | Screenshot implementasi S05 pada emulator, state awal tanpa foto. |
 | [`s05-local-design.json`](s05-local-design.json) | Struktur dan nilai layout S05 hasil decode file .fig lokal (node 2:88); sumber implementasi bersama screenshot pengguna. |
 | [`papb-catalog.json`](papb-catalog.json) | Nama/ukuran/SHA256 10 PDF yang dibaca, tanpa menyalin materi kuliah. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
