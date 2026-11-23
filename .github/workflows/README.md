@@ -1,12 +1,12 @@
 # workflows
 
-CI build APK debug, unit/lint Android, artifact APK, backend tests dan pemeriksaan Compose.
+CI build APK debug, unit/lint Android, artifact APK, Go auth unit/integration/race test dengan PostgreSQL, tes scaffold Ktor dan pemeriksaan Compose.
 
 ## Isi file dan perannya
 
 | File/folder | Peran dan isi yang diharapkan |
 | --- | --- |
-| `ci.yml` | CI Android assemble/unit/lint, upload APK, backend tests/installDist dan Compose config. |
+| `ci.yml` | CI Android assemble/unit/lint dan upload APK; Go auth test/race/vet/build dengan PostgreSQL; Ktor tests/installDist dan Compose config. |
 
 ## TODO
 
