@@ -2,6 +2,8 @@
 
 Komponen Compose bersama untuk input, tombol, tata letak, dan feedback, beserta template komponen fitur.
 
+`CompletionComponents.kt` menyediakan kartu, saldo, navigasi bawah, ikon lokal, dan feedback untuk alur E–F. `LoopyScreen` mendukung slot navigasi bawah serta avatar akun. `LoopyButton` memiliki varian primary, secondary sage, dan outlined. Komponen ini digunakan oleh Home, Donasiku, Rewards, dan konfirmasi penyelesaian.
+
 ## Isi file dan perannya
 
 | File atau folder | Kegunaan |

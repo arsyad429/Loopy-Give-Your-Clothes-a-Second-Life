@@ -22,7 +22,9 @@ Server memakai `net/http`, PostgreSQL melalui pgx, password Argon2id, dan access
 | [donation_http.go](donation_http.go) | Endpoint ringkasan, antrean, detail, jadwal dan penolakan admin. |
 | [donation_store.go](donation_store.go) | Query PostgreSQL, perubahan status berdasarkan versi, dan audit peninjauan. |
 | [pickup.go](pickup.go) | Template Go untuk pengajuan donatur dan penyelesaian pickup beserta rencana tes transaksi. |
-| [rewards.go](rewards.go) | Template Go untuk katalog, poin, redemption, dan kondisi konkurensi yang perlu diuji. |
+| [rewards.go](rewards.go), [rewards_http.go](rewards_http.go), [rewards_store.go](rewards_store.go) | Penyelesaian donasi, kredit 10 poin satu kali, saldo, katalog, redeem atomik/idempoten, dan riwayat. |
+| [schema_rewards.sql](schema_rewards.sql) | Migrasi versi 4 untuk katalog, ledger dan snapshot redemption. Vision tetap versi 3; catatan versi reward lama dinormalisasi tanpa menghapus data. |
+| [merge_migration_test.go](merge_migration_test.go) | Upgrade dari kedua riwayat versi 3: akun/sesi, Vision, saldo, dan redemption tetap tersedia. |
 | [auth_test.go](auth_test.go) | Unit test akun, sesi, role, batas input, dan pembatasan request. |
 | [store_integration_test.go](store_integration_test.go) | Tes PostgreSQL untuk autentikasi, konkurensi, transaksi dan masa berlaku sesi. |
 | [clothing_check_integration_test.go](clothing_check_integration_test.go) | Tes PostgreSQL untuk login dan akses pemeriksaan dengan sesi yang sama serta migrasi data yang sudah ada. |

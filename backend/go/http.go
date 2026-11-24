@@ -18,14 +18,16 @@ import (
 type api struct {
 	auth      *authService
 	donations donationRepository
+	rewards   rewardsRepository
 	checks    *clothingCheckService
 	limiter   *authLimiter
 	hashSlots chan struct{}
 }
 
 func newAPI(auth *authService, donations donationRepository) *api {
+	rewards, _ := donations.(rewardsRepository)
 	return &api{
-		auth: auth, donations: donations,
+		auth: auth, donations: donations, rewards: rewards,
 		limiter: &authLimiter{peers: make(map[string]limitWindow)}, hashSlots: make(chan struct{}, 4),
 	}
 }
@@ -53,6 +55,9 @@ func (a *api) routes() http.Handler {
 	mux.Handle("POST /v1/auth/logout", a.authenticate(http.HandlerFunc(a.logout)))
 	if a.donations != nil {
 		a.mountDonationRoutes(mux)
+	}
+	if a.rewards != nil {
+		a.mountRewardRoutes(mux)
 	}
 	if a.checks != nil {
 		a.mountClothingCheckRoutes(mux)

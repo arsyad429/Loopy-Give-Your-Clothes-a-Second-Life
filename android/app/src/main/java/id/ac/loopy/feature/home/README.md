@@ -2,6 +2,8 @@
 
 S04 menyapa pengguna yang sudah masuk dan menyediakan tombol Periksa pakaian untuk membuka S05.
 
+Overload Home berbasis `CompletionUiState` mempertahankan desain Figma, saldo, dan donasi terakhir pada demo Room debug tanpa sesi login. Home pengguna yang login tetap memakai nama akun dan membuka pemeriksaan Go. Saldo demo tidak dipakai sebagai saldo akun server.
+
 ## Isi file dan perannya
 
 | File atau folder | Kegunaan |

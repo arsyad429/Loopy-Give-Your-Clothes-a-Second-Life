@@ -16,6 +16,7 @@ Panduan pengembangan, kontrak API, rujukan desain, deployment, dan hasil uji Loo
 | [`development.md`](development.md) | Dokumen acuan development; baca isi untuk spesifikasi/TODO. |
 | [`deploy-lxc.md`](deploy-lxc.md) | Deployment API Go/PostgreSQL dengan Docker di LXC: instalasi, jaringan, admin, HTTPS dan backup. |
 | [`donation-review-go.md`](donation-review-go.md) | Kontrak API admin, aturan jadwal WIB, riwayat keputusan, penanganan konflik, dan contoh pengujian manual. |
+| [`completion-rewards.md`](completion-rewards.md) | Demo Room E–F, API penyelesaian/poin/reward, idempotensi, serta penyesuaian migrasi setelah merge. |
 | [`papb-mapping.md`](papb-mapping.md) | Dokumen acuan papb-mapping; baca isi untuk spesifikasi/TODO. |
 | [`reference/`](reference/README.md) | Materi rujukan tim berisi PRD v2.1, metadata desain, dan katalog sumber PAPB beserta checksum. |
 | [`screen-map.json`](screen-map.json) | Mapping machine-readable 13 MVP+4 desain, node ID dan TODO. |

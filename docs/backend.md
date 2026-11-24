@@ -11,7 +11,8 @@ API Go menangani akun, pemeriksaan pakaian dengan Groq, dan peninjauan pickup. L
 | Autentikasi akun | [auth.go](../backend/go/auth.go), [password.go](../backend/go/password.go), [store.go](../backend/go/store.go) | Register, login, refresh, profil akun aktif, dan logout. Kata sandi di-hash dengan Argon2id. Database menyimpan hash token sesi. |
 | Verifikasi donasi dan jadwal | [donation_http.go](../backend/go/donation_http.go), [donation.go](../backend/go/donation.go), [donation_store.go](../backend/go/donation_store.go) | Ringkasan, antrean, detail pengajuan, persetujuan dengan jadwal final, dan penolakan dengan alasan. |
 | Pemeriksaan pakaian | [clothing_check.go](../backend/go/clothing_check.go), [clothing_photo.go](../backend/go/clothing_photo.go), [groq_vision.go](../backend/go/groq_vision.go), [clothing_check_store.go](../backend/go/clothing_check_store.go) | Validasi dan normalisasi foto, analisis Groq, penyimpanan atomik, dan pembacaan foto privat. |
-| Penyimpanan | [schema.sql](../backend/go/schema.sql), [schema_pickup.sql](../backend/go/schema_pickup.sql), [schema_vision.sql](../backend/go/schema_vision.sql) | Versi 1 untuk akun dan sesi, versi 2 untuk pemeriksaan dan peninjauan pickup, versi 3 untuk foto privat dan idempotensi. |
+| Penyimpanan | [schema.sql](../backend/go/schema.sql), [schema_pickup.sql](../backend/go/schema_pickup.sql), [schema_vision.sql](../backend/go/schema_vision.sql), [schema_rewards.sql](../backend/go/schema_rewards.sql) | Versi 1 akun/sesi, versi 2 pickup, versi 3 Vision, versi 4 poin dan reward. |
+| Penyelesaian dan reward | [rewards_http.go](../backend/go/rewards_http.go), [rewards_store.go](../backend/go/rewards_store.go) | Transisi status, kredit unik, saldo, katalog, transaksi penukaran idempoten dan riwayat pengguna. |
 
 Migrasi berjalan sekali per versi. Server mengambil advisory lock PostgreSQL untuk menyerialkan startup beberapa instance. Setiap startup menerapkan versi yang tertunda dan mencatatnya dalam transaksi. Migrasi mempertahankan akun, sesi, dan data pickup yang sudah tersimpan di database Go.
 
@@ -39,7 +40,7 @@ Dari `backend/go`, jalankan `go test ./...`, `go vet ./...`, dan `go build ./...
 
 ## Status fitur
 
-Backend aktif menyediakan autentikasi dasar serta keputusan admin dari `PENDING_REVIEW` ke `PICKUP_SCHEDULED` atau `REJECTED`. Android menggunakan API untuk autentikasi dan pemeriksaan, serta pratinjau lokal untuk admin. Email OTP, pengajuan pickup dari pengguna, pelacakan pengguna, penyelesaian pickup, poin, dan rewards masih menunggu implementasi pada API Go. [Peta endpoint dan rencana lanjutan](api-contract.md)
+Backend aktif menyediakan autentikasi, pemeriksaan/foto privat, verifikasi/jadwal/penolakan, transisi `PICKUP_SCHEDULED → PICKED_UP → COMPLETED` dengan 10 poin satu kali, pembacaan donasi pemilik, saldo, katalog, redeem, dan riwayat. Android menggunakan API untuk auth dan pemeriksaan; penyelesaian/reward masih berupa demo Room debug yang terpisah dari akun aktif. Email OTP, pengajuan pickup pengguna, dan integrasi Android ke API donasi/reward masih menunggu implementasi. [Kontrak API](api-contract.md) · [Panduan E–F](completion-rewards.md)
 
 ## Pemeriksaan pakaian Go
 

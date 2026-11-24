@@ -1,13 +1,58 @@
 package id.ac.loopy.feature.donations
 
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import id.ac.loopy.ui.components.TemplateScreen
+import androidx.compose.ui.unit.dp
+import id.ac.loopy.data.local.DemoDonation
+import id.ac.loopy.domain.model.DonationStatus
+import id.ac.loopy.ui.components.*
 
-/** S09 | F08 | https://www.figma.com/design/ZDndr4gOItY7elDq9w7YA3/Loopy?node-id=2-94
- * TODO: Timeline lima status; jadwal preferensi dan jadwal final dibedakan; alasan rejected; foto/detail; pengguna tidak dapat mengubah status.
- * Ganti placeholder dengan UI stateless (state + callback); bisnis dikerjakan ViewModel/repository.
- */
+/** S09: read-only status timeline; donors cannot change status or award points. */
 @Composable
-fun DonationDetailScreen(onBack: () -> Unit) {
-    TemplateScreen("S09 · Donation Detail", "Timeline lima status; jadwal preferensi dan jadwal final dibedakan; alasan rejected; foto/detail; pengguna tidak dapat mengubah status.", onBack)
+fun DonationDetailScreen(item: DemoDonation?, onBack: () -> Unit, onNavigate: (String) -> Unit) {
+    LoopyScreen("Detail donasi", onBack, bottomBar = { UserBottomBar("s08", onNavigate) }) {
+        if (item == null) {
+            LoopyInfo("Pengajuan tidak ditemukan", "Kembali ke Donasiku untuk memilih pengajuan.")
+        } else {
+            val status = DonationStatus.valueOf(item.status)
+            Text("#${item.id} · ${item.quantity} pakaian", style = MaterialTheme.typography.bodySmall)
+            Text(if (status == DonationStatus.COMPLETED) "Kebaikanmu\nsudah tersampaikan." else "Kebaikanmu\nsedang diproses.", style = MaterialTheme.typography.headlineMedium)
+            StatusBadge(status)
+            Text(when (status) {
+                DonationStatus.COMPLETED -> "Penerimaan pakaian sudah dikonfirmasi. 10 poin telah ditambahkan satu kali."
+                DonationStatus.PICKED_UP -> "Pakaian sudah dijemput. Menunggu konfirmasi penerimaan dari admin."
+                DonationStatus.PICKUP_SCHEDULED -> "Penjemputan sudah dijadwalkan."
+                DonationStatus.REJECTED -> "Pengajuan ditolak oleh admin."
+                else -> "Pengajuan terkirim. Admin akan memeriksa pakaian dan mengonfirmasi jadwal."
+            }, style = MaterialTheme.typography.bodyMedium)
+            val steps = listOf("Pengajuan terkirim", "Penjemputan dijadwalkan", "Pakaian dijemput", "Donasi selesai")
+            val icons = listOf("check", "calendar", "package", "gift")
+            val descriptions = listOf("Pengajuan telah diterima sistem", item.schedule, "Menunggu penjemputan", "+10 poin setelah penerimaan dikonfirmasi")
+            val reached = when (status) {
+                DonationStatus.PENDING_REVIEW, DonationStatus.REJECTED -> 0
+                DonationStatus.PICKUP_SCHEDULED -> 1
+                DonationStatus.PICKED_UP -> 2
+                DonationStatus.COMPLETED -> 3
+            }
+            LoopyCard {
+                steps.forEachIndexed { index, title ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        LoopyAsset(icons[index], 22, if (index <= reached) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(title, style = MaterialTheme.typography.labelLarge)
+                            Text(if (index <= reached && index > 1) "Dikonfirmasi admin" else descriptions[index], style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
+            }
+            if (status != DonationStatus.PENDING_REVIEW && status != DonationStatus.REJECTED) LoopyInfo("Jadwal final", item.schedule)
+            LoopyInfo("Preferensi penjemputan", "Tanggal dan waktu pilihan pengguna bukan jadwal final.")
+            LoopyInfo("Alamat penjemputan", item.address)
+            if (status == DonationStatus.COMPLETED) LoopyButton("Lihat rewards", { onNavigate("s10") })
+            Text("Poin diberikan satu kali setelah status donasi selesai.", style = MaterialTheme.typography.bodySmall)
+            Text("Demo lokal · belum terhubung ke server.", style = MaterialTheme.typography.bodySmall)
+        }
+    }
 }

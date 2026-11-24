@@ -2,6 +2,8 @@
 
 Semua AC produk masih **TODO**. Tes fondasi dan placeholder bukan bukti MVP selesai. Gunakan data uji tanpa PII.
 
+Untuk AC11–18 tersedia implementasi backend Go dan demo Android lokal pada [alur penyelesaian dan reward](completion-rewards.md). Tes lokal PostgreSQL/Room/Compose dicatat terpisah di verification.md; status produk tetap TODO sampai akun aktif, frontend, dan API benar-benar terintegrasi. Tidak ada deployment VM pada perubahan ini.
+
 | AC | Fitur | Target | Bukti uji | Status |
 | --- | --- | --- | --- | --- |
 | AC-01 | F01 | Landing berisi informasi, manfaat dan empat langkah | Buka tanpa sesi, cek hero/tagline, About, benefit dan how it works. | TODO |

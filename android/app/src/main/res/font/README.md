@@ -1,5 +1,7 @@
 # Font S05
 
+`plus_jakarta_extrabold.ttf` (weight 800) juga dipertahankan untuk saldo poin pada LoopyScreen. Font tersedia lokal dan tidak diunduh saat runtime.
+
 Berkas Plus Jakarta Sans untuk tipografi Loopy. Ketentuan distribusinya tersedia di [OFL.md](OFL.md).
 
 TODO: gunakan font pada theme bersama ketika layar lain diimplementasikan.

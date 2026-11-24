@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import id.ac.loopy.BuildConfig
 import id.ac.loopy.data.local.LoopyDatabase
+import id.ac.loopy.data.local.CompletionDemoDatabase
+import id.ac.loopy.data.repository.CompletionDemoRepository
 import id.ac.loopy.data.local.preferences.UserPreferencesDataSource
 import id.ac.loopy.data.remote.api.AuthApi
 import id.ac.loopy.data.remote.api.ClothingCheckApi
@@ -45,4 +47,8 @@ class AppContainer(context: Context) {
         database.pickupDraftDao(),
         retrofit.create(HealthApi::class.java),
     )
+    val completionDemoRepository by lazy {
+        check(BuildConfig.DEBUG) { "Demo data is available only in debug builds." }
+        CompletionDemoRepository(Room.databaseBuilder(context.applicationContext, CompletionDemoDatabase::class.java, "loopy-completion-demo.db").build())
+    }
 }

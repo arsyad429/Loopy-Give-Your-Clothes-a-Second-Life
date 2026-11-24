@@ -2,7 +2,7 @@
 
 Akun, pemeriksaan pakaian, dan admin berjalan pada satu API Go. Gunakan base URL yang sama untuk login, hasil pemeriksaan, dan foto privat. [Panduan backend](backend.md) · [Kontrak autentikasi Go](auth-go.md) · [Kontrak peninjauan donasi Go](donation-review-go.md)
 
-**Endpoint yang tersedia** mencakup `GET /health`, `GET /ready`, lima endpoint auth, lima endpoint admin, serta tiga endpoint pemeriksaan. Tabel ini juga mencakup rencana endpoint untuk fitur lanjutan.
+**Endpoint yang tersedia** mencakup health/readiness, autentikasi, pemeriksaan/foto privat, peninjauan/status admin, pembacaan donasi milik pengguna, saldo, katalog, penukaran, dan riwayat reward. [Kontrak penyelesaian dan reward](completion-rewards.md). `POST /v1/donations` masih direncanakan.
 
 | Metode/path | Akses | Request → respons target | Fitur |
 | --- | --- | --- | --- |
@@ -24,8 +24,8 @@ Akun, pemeriksaan pakaian, dan admin berjalan pada satu API Go. Gunakan base URL
 | POST /v1/admin/donations/{id}/reject | Admin | rejectionReason,expectedVersion → detail ditolak dan riwayat | F07 |
 | POST /v1/admin/donations/{id}/status | Admin | targetStatus PICKED_UP/COMPLETED,expectedVersion →status+history; completed+10 atomik | F07/F09 |
 | GET /v1/points/balance | User | balance,updatedAt | F09 |
-| GET /v1/rewards | User | katalog rewardId,name,description,image,requiredPoints,type,isActive | F10 |
-| POST /v1/redemptions | User | Idempotency-Key+rewardId → redemption,remainingBalance | F10 |
+| GET /v1/rewards | User | items: rewardId,name,description,icon,requiredPoints,type,isActive | F10 |
+| POST /v1/redemptions | User | Idempotency-Key+rewardId → redemption,remainingBalance,replayed; 201 baru/200 replay | F10 |
 | GET /v1/redemptions | User | history milik user, reward snapshot/details/pointsUsed/redeemedAt | F10 |
 
 Nama akun/foto/jenis pakaian diambil server dari akun/check, bukan dipercaya dari klien. Konfirmasi cleanAndSafeConfirmed wajib. Check gagal/ineligible atau bukan milik user ditolak. Semua endpoint admin memverifikasi role server; ownership di query/service. User tidak mengubah status/poin.
@@ -34,7 +34,7 @@ Enum status: PENDING_REVIEW/PICKUP_SCHEDULED/PICKED_UP/COMPLETED/REJECTED. AI: P
 
 Rencana idempotency untuk pengajuan dan redemption memakai actor, operation, key, dan hash payload. Pada peninjauan admin, `expectedVersion` mencegah keputusan yang sama diterapkan dua kali. Klien membaca detail terbaru setelah `409`.
 
-Android telah menggunakan kontrak auth dan pemeriksaan di atas. DTO admin, endpoint pengajuan pengguna, dan fitur lanjutan masih direncanakan. AI dipanggil server dan hasilnya menjadi penilaian awal. OTP, settings, dan profil tambahan memerlukan kontrak tersendiri.
+Android telah menggunakan kontrak auth dan pemeriksaan di atas. Integrasi API admin/donasi/reward ke Android serta endpoint pengajuan pengguna masih direncanakan. Demo Room untuk penyelesaian dan reward terpisah dari sesi akun server. AI dipanggil server dan hasilnya menjadi penilaian awal. OTP, settings, dan profil tambahan memerlukan kontrak tersendiri.
 
 ## Kontrak pemeriksaan pakaian Go
 

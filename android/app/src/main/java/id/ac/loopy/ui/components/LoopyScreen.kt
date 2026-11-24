@@ -1,6 +1,7 @@
 package id.ac.loopy.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,17 +16,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
@@ -43,6 +48,7 @@ private val Jakarta = FontFamily(
     Font(R.font.plus_jakarta_medium, FontWeight.Medium),
     Font(R.font.plus_jakarta_semibold, FontWeight.SemiBold),
     Font(R.font.plus_jakarta_bold, FontWeight.Bold),
+    Font(R.font.plus_jakarta_extrabold, FontWeight.ExtraBold),
 )
 
 private fun loopyType(size: Int, lineHeight: Int, weight: FontWeight = FontWeight.Normal) =
@@ -64,6 +70,9 @@ internal fun LoopyScreen(
     title: String,
     onBack: (() -> Unit)? = null,
     footer: (@Composable ColumnScope.() -> Unit)? = null,
+    bottomBar: (@Composable () -> Unit)? = null,
+    onAccount: (() -> Unit)? = null,
+    contentSpacing: Int = 20,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
@@ -99,45 +108,53 @@ internal fun LoopyScreen(
     }
 
     MaterialTheme(colorScheme = screenColors, typography = ScreenTypography) {
-        Box(
-            modifier = Modifier.fillMaxSize().background(screenColors.background).imePadding(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            Column(Modifier.widthIn(max = 560.dp).fillMaxSize()) {
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                        .heightIn(min = 64.dp)
-                        .padding(start = if (onBack == null) 24.dp else 12.dp, end = 24.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    if (onBack != null) {
-                        IconButton(onClick = onBack) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_clothing_back),
-                                contentDescription = "Kembali",
-                                tint = screenColors.primary,
-                                modifier = Modifier.size(24.dp),
-                            )
+        CompositionLocalProvider(LocalContentColor provides screenColors.onSurface) {
+            Box(
+                modifier = Modifier.fillMaxSize().background(screenColors.background).imePadding(),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+                Column(Modifier.widthIn(max = 560.dp).fillMaxSize()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .heightIn(min = 64.dp)
+                            .padding(start = if (onBack == null) 24.dp else 12.dp, end = 24.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        if (onBack != null) {
+                            IconButton(onClick = onBack) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_clothing_back),
+                                    contentDescription = "Kembali",
+                                    tint = screenColors.primary,
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            }
+                        }
+
+                        Text(title, color = screenColors.primary, style = if (title == "loopy ↻") ScreenTypography.headlineMedium else ScreenTypography.titleLarge, modifier = Modifier.weight(1f))
+                        if (onAccount != null) {
+                            Box(Modifier.size(40.dp).background(if (screenColors.background.luminance() > 0.5f) Color(0xFFEEE7FA) else Color(0xFF383044), CircleShape).clickable(role = Role.Button, onClick = onAccount), contentAlignment = Alignment.Center) {
+                                Text("A", color = screenColors.onSurface, style = ScreenTypography.labelLarge)
+                            }
                         }
                     }
 
-                    Text(title, color = screenColors.primary, style = ScreenTypography.titleLarge)
-                }
-
-                Column(
-                    modifier = Modifier.weight(1f).fillMaxWidth()
-                        .verticalScroll(rememberScrollState())
-                        .padding(start = 24.dp, top = 8.dp, end = 24.dp, bottom = 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp),
-                    content = content,
-                )
-
-                if (footer != null) {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        content = footer,
+                        modifier = Modifier.weight(1f).fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                            .padding(start = 24.dp, top = 8.dp, end = 24.dp, bottom = 24.dp),
+                        verticalArrangement = Arrangement.spacedBy(contentSpacing.dp),
+                        content = content,
                     )
+
+                    if (footer != null) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 12.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            content = footer,
+                        )
+                    }
+                    bottomBar?.invoke()
                 }
             }
         }

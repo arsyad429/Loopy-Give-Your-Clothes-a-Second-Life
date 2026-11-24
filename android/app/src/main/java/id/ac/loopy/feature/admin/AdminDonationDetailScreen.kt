@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -34,6 +35,7 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import id.ac.loopy.R
 import id.ac.loopy.domain.model.DonationStatus
 import id.ac.loopy.ui.components.LoopyButton
@@ -42,6 +44,7 @@ import id.ac.loopy.ui.components.LoopyScreen
 import id.ac.loopy.ui.components.RejectRequestDialog
 import id.ac.loopy.ui.components.ScheduleConfirmDialog
 import id.ac.loopy.ui.components.StatusBadge
+import id.ac.loopy.ui.components.LoopyCard
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -59,7 +62,18 @@ internal fun AdminDonationDetailScreen(
     onSchedule: (Long) -> Unit,
     onReject: (String) -> Unit,
     photo: ImageBitmap? = null,
+    onAdvance: ((DonationStatus) -> Unit)? = null,
+    busy: Boolean = false,
+    completionMessage: String? = null,
+    completionError: String? = null,
 ) {
+    var advanceOpen by rememberSaveable(review.id) { mutableStateOf(false) }
+    val nextStatus = when (review.status) {
+        DonationStatus.PICKUP_SCHEDULED -> DonationStatus.PICKED_UP
+        DonationStatus.PICKED_UP -> DonationStatus.COMPLETED
+        else -> null
+    }
+    LaunchedEffect(review.status) { advanceOpen = false }
     var date by rememberSaveable(review.id) { mutableLongStateOf(0) }
     var minutes by rememberSaveable(review.id) { mutableIntStateOf(-1) }
     var scheduleOpen by rememberSaveable(review.id) { mutableStateOf(false) }
@@ -97,12 +111,24 @@ internal fun AdminDonationDetailScreen(
 
                 LoopyButton("Tolak pengajuan", onClick = { rejectionOpen = true }, outlined = true)
             }
+        } else if (onAdvance != null && nextStatus != null) {
+            {
+                LoopyButton(
+                    if (nextStatus == DonationStatus.COMPLETED) "Selesaikan donasi (+10 poin)" else "Konfirmasi sudah dijemput",
+                    onClick = { advanceOpen = true }, enabled = !busy,
+                )
+            }
         } else {
             null
         },
     ) {
         Text("#${review.id} · Diajukan ${review.submittedAt}", style = MaterialTheme.typography.bodySmall)
         StatusBadge(review.status)
+        completionMessage?.let { LoopyInfo("Berhasil", it) }
+        completionError?.let { LoopyInfo("Belum berhasil", it, isError = true) }
+        if (review.status == DonationStatus.COMPLETED && onAdvance != null) {
+            LoopyInfo("Donasi selesai", "10 poin telah ditambahkan satu kali untuk pengajuan ini.")
+        }
 
         ClothingPhoto(review.clothing, photo)
         LoopyInfo(review.assessment, review.assessmentDescription)
@@ -180,6 +206,17 @@ internal fun AdminDonationDetailScreen(
                     onReject(it)
                 },
             )
+        }
+        if (advanceOpen && nextStatus != null && onAdvance != null) {
+            Dialog(onDismissRequest = { if (!busy) advanceOpen = false }) {
+                LoopyCard {
+                    Text(if (nextStatus == DonationStatus.COMPLETED) "Pakaian sudah diterima?" else "Pakaian sudah dijemput?", style = MaterialTheme.typography.headlineMedium)
+                    Text(if (nextStatus == DonationStatus.COMPLETED) "Konfirmasikan penerimaan #${review.id}. Donasi menjadi Selesai dan donatur mendapat 10 poin satu kali." else "Konfirmasikan penjemputan #${review.id} hanya setelah pakaian benar-benar dijemput.")
+                    completionError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                    LoopyButton(if (busy) "Menyimpan…" else "Ya, konfirmasi", { onAdvance(nextStatus) }, enabled = !busy)
+                    LoopyButton("Batal", { advanceOpen = false }, enabled = !busy, secondary = true)
+                }
+            }
         }
     }
 }

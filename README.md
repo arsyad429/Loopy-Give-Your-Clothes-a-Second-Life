@@ -4,10 +4,12 @@ Loopy adalah aplikasi donasi pakaian dengan Android Kotlin dan Jetpack Compose, 
 
 | Bagian | Status |
 | --- | --- |
-| Android | Login dan register terhubung ke Go. S05 mengunggah foto dari kamera atau galeri, dan S06 menampilkan hasil serta foto privat. Admin masih memakai pratinjau lokal. |
-| API Go | Menyediakan autentikasi akun, pemeriksaan foto dengan Groq, foto privat, serta peninjauan dan penjadwalan pickup oleh admin. |
+| Android | Login/register dan S05–S06 terhubung ke Go. Demo penyelesaian donasi, poin, dan reward memakai Room pada build debug; data demo terpisah dari akun yang login. |
+| API Go | Autentikasi, pemeriksaan Groq dan foto privat, peninjauan/jadwal pickup, penyelesaian donasi dengan kredit 10 poin satu kali, saldo, katalog, penukaran, serta riwayat reward. |
 
 Pemeriksaan pakaian memakai access token dari login Go. Android menyimpan sesi di memori selama proses aplikasi berjalan. [Panduan backend](docs/backend.md) · [Kontrak endpoint](docs/api-contract.md) · [Hasil verifikasi](docs/verification.md)
+
+Untuk mencoba bagian E–F tanpa login atau VM, buka **Demo E–F · Admin penyelesaian donasi & poin** pada katalog debug, lalu buka **S10 · Rewards & My Rewards**. [Panduan penyelesaian dan reward](docs/completion-rewards.md). Integrasi data donasi/reward Android ke API akun aktif belum dikerjakan.
 
 ## Jalankan dengan Docker
 

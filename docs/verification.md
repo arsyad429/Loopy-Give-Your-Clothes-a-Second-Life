@@ -1,5 +1,21 @@
 # Hasil verifikasi Loopy
 
+## Penggabungan login AI dengan penyelesaian dan reward — 24 November 2026
+
+Resolusi merge `main` (`429f7fb`) ke branch `feature/donation-completion-rewards` mempertahankan login/register Go, upload dan hasil Vision, demo Room E–F, serta API penyelesaian/poin/reward. Dua puluh file yang semula masih berisi penanda konflik diselesaikan berdasarkan fungsi masing-masing. Backend aktif tetap Go dan perubahan penghapusan scaffold Ktor dari main dipertahankan.
+
+| Pemeriksaan | Hasil |
+| --- | --- |
+| Penanda konflik dan diff | Tidak ada penanda konflik tertinggal; `git diff --cached --check` lulus. |
+| Migrasi PostgreSQL | Vision tetap versi 3; reward menjadi versi 4. Database development yang pernah memakai reward versi 3 dikenali tanpa menghapus saldo/redemption, lalu mendapat migrasi Vision. Upgrade dari kedua riwayat dan startup ulang lulus tes. |
+| Go dan PostgreSQL lokal | `go test -count=1 -cover ./...`, `go vet ./...`, dan build lulus; cakupan package 75,2%. Tes menggunakan schema terisolasi pada PostgreSQL 17.12. Race detector tidak dijalankan pada host Windows ini. |
+| Build Android | `assembleDebug`, `testDebugUnitTest`, `lintDebug`, dan `assembleDebugAndroidTest` lulus; 10 unit test, 0 kegagalan. Lint 0 error dan 28 warning. |
+| Emulator | `connectedDebugAndroidTest` lulus: 13 tes pada Pixel_7 API37, mencakup alur E–F, persistensi/rollback Room, serta UI pemeriksaan dan hasil pakaian dari main. |
+| Pemisahan data Android | Home akun yang login mempertahankan nama akun dan akses S05. Preview saldo/donasi/reward lokal hanya tampil tanpa sesi login pada build debug; saldo contoh tidak ditampilkan sebagai saldo akun server. |
+| Struktur dan tautan | Snapshot dari Git index bersih lulus `scripts/check-scaffold.py`; tautan lokal pada 88 Markdown yang berubah juga valid. Pemeriksaan langsung pada workspace masih mendeteksi empat README pada folder IDE lokal `.github/modernize/` yang tidak menjadi bagian snapshot Git. |
+
+Pemeriksaan dilakukan pada Windows dengan JDK 21.0.11 dan Go 1.27.4. Tidak ada push, PR, deployment VM, atau panggilan Groq berbayar pada verifikasi merge ini. Integrasi Android ke API donasi/reward tetap ditunda; login dan pemeriksaan mengikuti implementasi main yang sudah ada. Database uji dan emulator sementara dihentikan setelah pemeriksaan.
+
 ## Konsolidasi backend Go — 24 November 2026
 
 Tes Go dengan PostgreSQL dan deteksi race lulus, begitu juga `go vet`, `go build`, pemeriksaan struktur, dan validasi Compose lokal serta LXC. Build APK debug dan instrumentasi, enam unit test Android, dan lint lulus pada commit konsolidasi. Android mempertahankan Gradle Wrapper untuk build aplikasi.
@@ -42,6 +58,27 @@ Diuji di Linux dengan dua proyek Compose dan database terpisah.
 | Satu login untuk kedua API | Login Go berhasil dan token Go diterima di `/v1/auth/me`, tetapi GET dan POST pemeriksaan Ktor menjawab `401`. Sesi Ktor untuk tes HTTP dibuat sebagai fixture di database uji. |
 
 Hasil ini mendokumentasikan baseline dua API sebelum migrasi Go dan integrasi Android.
+
+## Penyelesaian donasi dan reward — 23 November 2026
+
+PRD 6.5–6.6 dan flowchart E–F diimplementasikan pada branch `feature/donation-completion-rewards`. Frontend memakai demo Room khusus debug; backend Go/PostgreSQL diuji secara terpisah. [Panduan fitur, file, API, dan cara mencoba](completion-rewards.md).
+
+| Pemeriksaan | Hasil |
+| --- | --- |
+| Go 1.27.4, PostgreSQL 17.12 lokal khusus pengujian: `go test -count=1 -cover ./...` | Lulus; cakupan seluruh package 76,6% statement. |
+| `go vet ./...` dan build binary Go | Lulus. Binary lokal merespons `/health` dan `/ready`; bukan deployment VM. |
+| Alur HTTP dan otorisasi | Anonim 401, USER tidak dapat menyelesaikan donasi, akun lain tidak dapat membaca detail donasi atau riwayat reward pemilik. Katalog, saldo, status, dan riwayat tersedia. |
+| Penyelesaian dan kredit | Skip status ditolak. Picked Up memberi 0 poin; Completed memberi 10 poin per pengajuan. Delapan keputusan bersamaan menghasilkan satu penyelesaian/kredit. |
+| Redeem dan idempotensi | Retry dengan key sama mengembalikan redemption yang sama; key sama/payload berbeda ditolak. Delapan key berbeda tidak dapat membelanjakan saldo 10 poin lebih dari satu kali. Saldo kurang ditolak. |
+| Rollback PostgreSQL | Kegagalan insert ledger membatalkan status/riwayat/saldo completion serta redemption/debit. Migrasi akun dan pengajuan lama tetap lulus tes yang ada. |
+| Android: `assembleDebug testDebugUnitTest lintDebug connectedDebugAndroidTest` | Lulus pada Windows, JDK 21.0.11, compile/target SDK36, emulator Pixel_7 API37. Lint: 0 error, 28 warning. |
+| Tes instrumentasi Android | Tujuh tes lulus: tiga tes UI pemilihan foto yang sudah ada, satu persistensi draft yang sudah ada, dua transaksi/persistensi Room E–F, dan satu alur UI E–F lengkap. |
+| Alur UI E–F | Admin menandai Dijemput lalu Selesai; saldo 20 menjadi 30; batal redeem tidak mengurangi poin; konfirmasi badge 10 poin menjadi 20; Reward-ku, Home, dan detail menampilkan hasil. Tombol voucher 30 poin nonaktif ketika saldo 20. |
+| Persistensi dan rollback Room | Completion tidak memberi poin berulang; request redemption yang sama tidak didebit ulang; saldo kurang ditolak; kegagalan ledger membatalkan transaksi; status/saldo/redemption bertahan setelah database ditutup/dibuka. |
+| Figma dan screenshot | Konteks desain S04/S08/S09/S10, RedeemConfirm, dan Reward-ku dibaca langsung. Font serta ikon memakai aset lokal. Screenshot emulator diperiksa; salinan QA di `artifacts/completion-rewards/` diabaikan Git. |
+| Pemeriksaan struktur | Masih menemukan empat README yang tidak tersedia pada folder IDE lama `.github/modernize/`, `java-upgrade/`, `hooks/`, dan `scripts/`. Seluruh folder baru fitur memiliki README. Kegagalan struktur ini terpisah dari build dan pengujian fitur. |
+
+API server dan database sementara dihentikan setelah pemeriksaan. Tidak ada koneksi/deployment VM, integrasi login Android ke API bisnis, atau sinkronisasi cloud. Tes Room membuktikan persistensi database lokal, bukan sinkronisasi server. AC produk tetap memerlukan integrasi tersebut; tidak seluruh MVP dinyatakan selesai. Race detector Go tidak dijalankan di Windows pada pemeriksaan ini; transaksi bersamaan diuji terhadap PostgreSQL yang sebenarnya.
 
 ## Verifikasi donasi dan jadwal pickup Go — 23 November 2026
 

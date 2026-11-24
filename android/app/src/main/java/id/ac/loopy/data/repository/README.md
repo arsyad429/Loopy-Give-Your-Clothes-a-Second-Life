@@ -1,5 +1,7 @@
 # repository
 
+`CompletionDemoRepository.kt` menangani transaksi Room demo E–F: kredit unik per donasi, validasi saldo ulang, idempotensi, serta riwayat penukaran. Data lokal ini terpisah dari AuthRepository dan ClothingCheckRepository yang menggunakan API Go.
+
 Repository untuk autentikasi, pemeriksaan pakaian, dan demo fondasi aplikasi, beserta template akses data fitur berikutnya.
 
 ## Isi file dan perannya
