@@ -1,4 +1,4 @@
--- Version 3: completion credits and reward redemptions, in the same transaction as the balance.
+-- Version 4: completion credits and reward redemptions, in the same transaction as the balance.
 CREATE TABLE rewards (
     reward_id TEXT PRIMARY KEY,
     name TEXT NOT NULL,

@@ -1,20 +1,14 @@
 # dto
 
-Retrofit suspend API dan DTO. Health aktif; endpoint bisnis mengikuti docs/api-contract.md.
+Bentuk JSON untuk Retrofit, termasuk health, akun, token sesi, dan hasil pemeriksaan.
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `AdminDto.kt` | TEMPLATE — TODO: request/response DTO Admin sesuai docs/api-contract.md. Nama field JSON, nullable, timestamps ISO-8601 dan error response harus disepakati backend. |
-| `AuthDto.kt` | TEMPLATE — TODO: request/response DTO Auth sesuai docs/api-contract.md. Nama field JSON, nullable, timestamps ISO-8601 dan error response harus disepakati backend. |
-| `ClothingCheckDto.kt` | TEMPLATE — TODO: request/response DTO ClothingCheck sesuai docs/api-contract.md. Nama field JSON, nullable, timestamps ISO-8601 dan error response harus disepakati backend. |
-| `DonationDto.kt` | TEMPLATE — TODO: request/response DTO Donation sesuai docs/api-contract.md. Nama field JSON, nullable, timestamps ISO-8601 dan error response harus disepakati backend. |
-| `HealthDto.kt` | DTO JSON status dan mode liveness backend. |
-| `RewardDto.kt` | TEMPLATE — TODO: request/response DTO Reward sesuai docs/api-contract.md. Nama field JSON, nullable, timestamps ISO-8601 dan error response harus disepakati backend. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`AdminDto.kt`](AdminDto.kt) | TEMPLATE — TODO: request/response DTO Admin sesuai docs/api-contract.md. Nama field JSON, nullable, timestamps ISO-8601 dan error response harus disepakati backend. |
+| [`AuthDto.kt`](AuthDto.kt) | Payload login, register, dan refresh, serta DTO sesi dan akun. |
+| [`ClothingCheckDto.kt`](ClothingCheckDto.kt) | Respons hasil dari Go dan konversi ke model domain ClothingCheck. |
+| [`DonationDto.kt`](DonationDto.kt) | TEMPLATE — TODO: request/response DTO Donation sesuai docs/api-contract.md. Nama field JSON, nullable, timestamps ISO-8601 dan error response harus disepakati backend. |
+| [`HealthDto.kt`](HealthDto.kt) | DTO JSON status dan mode liveness backend. |
+| [`RewardDto.kt`](RewardDto.kt) | TEMPLATE — TODO: request/response DTO Reward sesuai docs/api-contract.md. Nama field JSON, nullable, timestamps ISO-8601 dan error response harus disepakati backend. |

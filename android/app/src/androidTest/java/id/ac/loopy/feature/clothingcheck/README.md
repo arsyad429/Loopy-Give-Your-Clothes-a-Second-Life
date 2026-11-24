@@ -1,5 +1,8 @@
-# Pengujian S05
+# Tes UI pemeriksaan pakaian
 
-ClothingDetectorScreenTest memeriksa ilustrasi tidak mengaktifkan analisis, callback kamera/galeri/kembali,
-foto valid mengaktifkan analisis, dan loading mencegah aksi berulang.
-TODO: uji integrasi Photo Picker/kamera lintas versi Android serta endpoint AI saat tersedia.
+Tes Compose untuk input S05, serta pemuatan hasil, retry, dan konfirmasi kebersihan di S06.
+
+| File atau folder | Kegunaan |
+| --- | --- |
+| [`ClothingDetectorScreenTest.kt`](ClothingDetectorScreenTest.kt) | Menguji aktivasi analisis, callback kamera/galeri/kembali, pilihan jenis pakaian, dan pergantian PNG yang ditolak. |
+| [`CheckResultScreenTest.kt`](CheckResultScreenTest.kt) | Menguji ketiga hasil, preview foto lokal, konfirmasi dan checkId penjemputan, retry, serta judul pada layar sempit. |

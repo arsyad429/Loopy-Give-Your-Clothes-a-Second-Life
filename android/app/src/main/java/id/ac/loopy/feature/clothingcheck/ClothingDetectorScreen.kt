@@ -21,6 +21,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -30,7 +34,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.loopy.R
+import id.ac.loopy.domain.model.ClothingType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import java.io.File
@@ -51,27 +58,43 @@ private fun type(size: Int, height: Int, weight: FontWeight = FontWeight.Normal)
     fontFamily = Jakarta, fontSize = size.sp, lineHeight = height.sp, fontWeight = weight,
 )
 
-/** Route adapter: native photo picker/camera. AI integration belongs in ViewModel/repository next. */
+/** Connects photo selection and the analysis ViewModel to the S05 content. */
 @Composable
-fun ClothingDetectorScreen(onBack: () -> Unit) {
+fun ClothingDetectorScreen(
+    viewModel: ClothingDetectorViewModel?,
+    onCheckReady: (String) -> Unit,
+    onBack: () -> Unit,
+) {
+    val analysis = viewModel?.analysisState?.collectAsStateWithLifecycle()?.value
+        ?: ClothingAnalysisUiState()
+    val latestOnCheckReady by rememberUpdatedState(onCheckReady)
+
+    LaunchedEffect(viewModel, analysis.checkId) {
+        val checkId = analysis.checkId ?: return@LaunchedEffect
+        latestOnCheckReady(checkId)
+        viewModel?.onResultHandled()
+    }
+
     val context = LocalContext.current
     var selectedUri by rememberSaveable { mutableStateOf<String?>(null) }
     var cameraUri by rememberSaveable { mutableStateOf<String?>(null) }
     var launchError by rememberSaveable { mutableStateOf<String?>(null) }
+    var clothingTypeValue by rememberSaveable { mutableStateOf(ClothingType.TSHIRT.backendValue) }
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    val state by produceState(ClothingDetectorUiState(), selectedUri) {
-        val uri = selectedUri
-        if (uri == null) {
-            value = ClothingDetectorUiState()
-        } else {
-            value = ClothingDetectorUiState(isLoading = true)
-            value = try {
-                loadClothingPhoto(context, Uri.parse(uri))
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                ClothingDetectorUiState(error = e.message ?: "Foto tidak dapat dibaca. Silakan pilih ulang.")
+    val photoUri = selectedUri
+    val state by key(photoUri) {
+        produceState(ClothingDetectorUiState(isLoading = photoUri != null)) {
+            if (photoUri != null) {
+                value = try {
+                    loadClothingPhotoForAnalysis(context, photoUri.toUri())
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    ClothingDetectorUiState(
+                        error = e.message ?: "Foto tidak dapat dibaca. Silakan pilih ulang.",
+                    )
+                }
             }
         }
     }
@@ -95,9 +118,16 @@ fun ClothingDetectorScreen(onBack: () -> Unit) {
         }
         cameraUri = null
     }
+    val screenState = state.copy(
+        error = launchError ?: state.error,
+        clothingType = ClothingType.entries.first { it.backendValue == clothingTypeValue },
+        isAnalyzing = analysis.isAnalyzing,
+    )
     Box(Modifier.fillMaxSize()) {
         ClothingDetectorContent(
-            state = state.copy(error = launchError ?: state.error),
+            state = screenState,
+            analysisError = analysis.error,
+            onClothingTypeChange = { clothingTypeValue = it.backendValue },
             onBack = onBack,
             onTakePhoto = {
                 try {
@@ -120,7 +150,15 @@ fun ClothingDetectorScreen(onBack: () -> Unit) {
                 }
             },
             onAnalyze = {
-                scope.launch { snackbar.showSnackbar("Analisis AI belum tersedia. Layanan pemeriksaan belum terhubung.") }
+                if (photoUri != null && photoUri == selectedUri && screenState.canAnalyze) {
+                    if (viewModel != null) {
+                        viewModel.analyze(photoUri, screenState.clothingType)
+                    } else {
+                        scope.launch {
+                            snackbar.showSnackbar("Layanan pemeriksaan belum terhubung.")
+                        }
+                    }
+                }
             },
         )
         SnackbarHost(snackbar, Modifier.align(Alignment.BottomCenter).padding(24.dp))
@@ -136,6 +174,8 @@ fun ClothingDetectorContent(
     onPickPhoto: () -> Unit,
     onAnalyze: () -> Unit,
     modifier: Modifier = Modifier,
+    onClothingTypeChange: (ClothingType) -> Unit = {},
+    analysisError: String? = null,
 ) {
     Column(modifier.fillMaxSize().background(CanvasColor)) {
         Row(
@@ -177,6 +217,19 @@ fun ClothingDetectorContent(
                     color = MutedColor, style = type(12, 18, FontWeight.Medium), maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }
+            (state.error ?: analysisError)?.let { message ->
+                Text(
+                    message,
+                    color = Color(0xFF9B302E),
+                    style = type(12, 18, FontWeight.Medium),
+                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+                )
+            }
+            ClothingTypeDropdown(
+                selected = state.clothingType,
+                enabled = !state.isLoading && !state.isAnalyzing,
+                onSelected = onClothingTypeChange,
+            )
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 PhotoSourceButton("Ambil foto", onTakePhoto, !state.isLoading && !state.isAnalyzing, Modifier.weight(1f))
                 PhotoSourceButton("Pilih galeri", onPickPhoto, !state.isLoading && !state.isAnalyzing, Modifier.weight(1f))
@@ -195,7 +248,6 @@ fun ClothingDetectorContent(
                 "AI menilai kondisi yang terlihat pada foto. Bau dan kerusakan tersembunyi tetap perlu kamu periksa.",
                 color = MutedColor, style = type(12, 18, FontWeight.Medium),
             )
-            state.error?.let { Text(it, color = Color(0xFF9B302E), style = type(12, 18, FontWeight.Medium)) }
         }
         Box(Modifier.fillMaxWidth().padding(24.dp)) {
             Button(
@@ -209,6 +261,56 @@ fun ClothingDetectorContent(
                     Spacer(Modifier.width(8.dp))
                 }
                 Text(if (state.isAnalyzing) "Memeriksa pakaian…" else "Periksa pakaian", style = type(14, 20, FontWeight.SemiBold))
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ClothingTypeDropdown(
+    selected: ClothingType,
+    enabled: Boolean,
+    onSelected: (ClothingType) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text("Jenis pakaian", color = InkColor, style = type(14, 20, FontWeight.SemiBold))
+        ExposedDropdownMenuBox(
+            expanded = expanded && enabled,
+            onExpandedChange = { if (enabled) expanded = it },
+        ) {
+            OutlinedTextField(
+                value = selected.label,
+                onValueChange = {},
+                readOnly = true,
+                enabled = enabled,
+                singleLine = true,
+                textStyle = type(14, 20),
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded && enabled) },
+                modifier = Modifier.fillMaxWidth()
+                    .semantics { contentDescription = "Jenis pakaian" }
+                    .menuAnchor(MenuAnchorType.PrimaryNotEditable, enabled),
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = InkColor,
+                    unfocusedTextColor = InkColor,
+                    focusedBorderColor = LeafColor,
+                    unfocusedBorderColor = MutedColor.copy(alpha = 0.4f),
+                ),
+            )
+            ExposedDropdownMenu(
+                expanded = expanded && enabled,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.heightIn(max = 320.dp),
+                containerColor = CanvasColor,
+            ) {
+                ClothingType.entries.forEach { option ->
+                    DropdownMenuItem(
+                        text = { Text(option.label, style = type(14, 20), color = InkColor) },
+                        onClick = { onSelected(option); expanded = false },
+                    )
+                }
             }
         }
     }

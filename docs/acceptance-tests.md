@@ -32,4 +32,4 @@ Demo PRD: register Neva(0)→foto eligible→pickup pending→admin schedule→p
 
 Nonfungsional: rotasi/background/restore, state hoisting, cancellation, retry/error/loading/empty, debounce pencarian, tema DataStore/draft Room bertahan restart, klik berulang, TalkBack/font scaling dan release tanpa cleartext/AI key.
 
-Unit Android di src/test, persistence/UI di src/androidTest; server unit/integration di backend/src/test. Concurrency/rollback diuji terhadap PostgreSQL, bukan wallet fake Android. Catat perangkat/tanggal/hasil setelah tiap AC sungguh lulus.
+Unit Android di src/test, persistence/UI di src/androidTest; unit dan integration test server di `backend/go/*_test.go`. Concurrency/rollback diuji terhadap PostgreSQL, bukan wallet fake Android. Catat perangkat/tanggal/hasil setelah tiap AC sungguh lulus.

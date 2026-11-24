@@ -1,3 +1,18 @@
 package id.ac.loopy.domain.model
 
-// TEMPLATE PRD §8 — TODO: data class ClothingCheck: checkId, userId, clothingPhoto, clothingType, aiResult enum tiga kategori, aiDescription, createdAt.
+enum class AiResult {
+    POTENTIALLY_ELIGIBLE,
+    NEEDS_RECHECK,
+    NOT_RECOMMENDED
+}
+
+data class ClothingCheck(
+    val checkId: String,
+    val userId: String,
+    val clothingPhoto: String,
+    val clothingType: ClothingType,
+    val aiResult: AiResult,
+    val aiDescription: String,
+    val actionRecommendation: String? = null,
+    val createdAt: String
+)

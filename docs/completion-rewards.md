@@ -31,7 +31,7 @@ Semua lokasi pada tabel relatif terhadap `android/app/src/main/java/id/ac/loopy/
 
 ## Backend API
 
-Jalankan backend lokal sesuai [panduan backend](backend.md). PostgreSQL diperlukan; VM tidak diperlukan. Migrasi versi 3 menambah katalog reward, snapshot redemption, dan ledger poin tanpa menghapus akun, sesi, atau pengajuan. Migrasi tidak memberikan poin retroaktif untuk donasi lama yang sudah selesai sebelum fitur ini tersedia.
+Jalankan backend lokal sesuai [panduan backend](backend.md). PostgreSQL diperlukan; VM tidak diperlukan. Setelah penggabungan dengan main, Vision tetap memakai migrasi versi 3, sedangkan katalog reward, snapshot redemption, dan ledger poin memakai versi 4. Jika database development pernah menjalankan versi 3 reward dari branch lama, migrasi mengenali tabelnya, memindahkan catatan versinya ke 4, lalu menerapkan Vision versi 3 tanpa menghapus saldo atau riwayat. Migrasi tidak memberikan poin retroaktif untuk donasi lama yang sudah selesai sebelum fitur ini tersedia.
 
 | Endpoint | Akses dan perilaku |
 | --- | --- |

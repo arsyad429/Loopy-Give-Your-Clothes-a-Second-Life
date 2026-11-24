@@ -95,8 +95,14 @@ func run() error {
 	if err != nil {
 		return errors.New("password hashing initialization failed")
 	}
-	server := &http.Server{Addr: envOr("HTTP_ADDR", "127.0.0.1:8080"), Handler: newAPI(auth, store).routes(),
-		ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second,
+	vision, err := configuredVision()
+	if err != nil {
+		return err
+	}
+	handler := newAPI(auth, store)
+	handler.checks = &clothingCheckService{store: store, vision: vision}
+	server := &http.Server{Addr: envOr("HTTP_ADDR", "127.0.0.1:8080"), Handler: handler.routes(),
+		ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, WriteTimeout: 45 * time.Second,
 		IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 * 1024}
 	stop, stopSignals := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stopSignals()

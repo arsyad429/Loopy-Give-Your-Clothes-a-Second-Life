@@ -15,6 +15,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import id.ac.loopy.data.local.CompletionDemoDatabase
 import id.ac.loopy.data.repository.CompletionDemoRepository
 import id.ac.loopy.feature.rewards.CompletionViewModel
+import id.ac.loopy.di.AppContainer
 import id.ac.loopy.ui.LoopyApp
 import id.ac.loopy.ui.TemplateUiState
 import id.ac.loopy.ui.theme.LoopyTheme
@@ -36,12 +37,13 @@ class CompletionFlowTest {
 
     @Test fun adminCompletionThenCancelAndRedeemUpdatesHomeAndHistory() {
         val repo = CompletionDemoRepository(db)
+        val container = AppContainer(context)
         runBlocking { repo.prepare() }
         compose.runOnUiThread { model = CompletionViewModel(repo) }
         compose.setContent {
             val activity = LocalActivity.current as? ComponentActivity
             DisposableEffect(activity) { activity?.enableEdgeToEdge(); onDispose {} }
-            LoopyTheme { LoopyApp(TemplateUiState(), {}, {}, {}, {}, model) }
+            LoopyTheme { LoopyApp(TemplateUiState(), {}, {}, {}, {}, container = container, completion = model) }
         }
         compose.onNode(hasScrollAction()).performScrollToNode(hasText("Demo E–F · Admin penyelesaian donasi & poin"))
         compose.onNodeWithText("Demo E–F · Admin penyelesaian donasi & poin").performClick()

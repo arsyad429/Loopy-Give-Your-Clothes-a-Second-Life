@@ -1,5 +1,6 @@
 package id.ac.loopy.ui
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,17 +18,25 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.navArgument
 import id.ac.loopy.BuildConfig
+import id.ac.loopy.di.AppContainer
 import id.ac.loopy.domain.model.DonationStatus
 import id.ac.loopy.feature.admin.AdminDashboardScreen
 import id.ac.loopy.feature.admin.AdminDonationDetailScreen
@@ -35,9 +44,12 @@ import id.ac.loopy.feature.admin.DonationRequestsScreen
 import id.ac.loopy.feature.admin.SampleDonationReviews
 import id.ac.loopy.feature.admin.formatPickupSchedule
 import id.ac.loopy.feature.auth.LoginScreen
+import id.ac.loopy.feature.auth.LoginViewModel
 import id.ac.loopy.feature.auth.RegisterScreen
 import id.ac.loopy.feature.clothingcheck.CheckResultScreen
+import id.ac.loopy.feature.clothingcheck.CheckResultViewModel
 import id.ac.loopy.feature.clothingcheck.ClothingDetectorScreen
+import id.ac.loopy.feature.clothingcheck.ClothingDetectorViewModel
 import id.ac.loopy.feature.donations.DonationDetailScreen
 import id.ac.loopy.feature.donations.MyDonationsScreen
 import id.ac.loopy.feature.home.HomeScreen
@@ -53,6 +65,8 @@ import id.ac.loopy.feature.rewards.toAdminReview
 import id.ac.loopy.ui.components.TemplateScreen
 import id.ac.loopy.feature.settings.SettingsScreen
 import id.ac.loopy.feature.verification.EmailVerificationScreen
+import id.ac.loopy.ui.components.LoopyInfo
+import id.ac.loopy.ui.components.LoopyScreen
 
 private val PreviewScreens = listOf(
     "completion-admin" to "Demo E–F · Admin penyelesaian donasi & poin",
@@ -82,10 +96,33 @@ fun LoopyApp(
     onHealth: () -> Unit,
     onSave: () -> Unit,
     onClear: () -> Unit,
+    container: AppContainer,
     completion: CompletionViewModel? = null,
 ) {
     val nav = rememberNavController()
     val goBack: () -> Unit = { completion?.dismissMessage(); nav.popBackStack() }
+    val clothingCheckRepository = container.clothingCheckRepository
+    val authFactory = remember(container) {
+        viewModelFactory { initializer { LoginViewModel(container.authRepository) } }
+    }
+    val authModel: LoginViewModel = viewModel(factory = authFactory)
+    val session by authModel.session.collectAsStateWithLifecycle()
+    val submitting by authModel.busy.collectAsStateWithLifecycle()
+    val loginFeedback by authModel.loginFeedback.collectAsStateWithLifecycle()
+    val registerFeedback by authModel.registerFeedback.collectAsStateWithLifecycle()
+
+    fun goToAccountScreen(role: String?) {
+        val route = when (role) {
+            "USER" -> "s04"
+            "ADMIN" -> "a01"
+            else -> "s02"
+        }
+        nav.navigate(route) {
+            popUpTo(nav.graph.startDestinationId)
+            launchSingleTop = true
+        }
+    }
+
     val completionState = completion?.state?.collectAsStateWithLifecycle()?.value ?: CompletionUiState()
     val userNavigate: (String) -> Unit = { route ->
         completion?.dismissMessage()
@@ -129,52 +166,154 @@ fun LoopyApp(
                 }
 
                 composable("s02") {
-                    var feedback by rememberSaveable { mutableStateOf<String?>(null) }
-
+                    val role = session?.user?.role
+                    LaunchedEffect(role) {
+                        if (role != null) goToAccountScreen(role)
+                    }
                     LoginScreen(
-                        onBack = goBack,
-                        onRegister = { nav.navigate("s03") },
-                        onLogin = { _, _ -> feedback = "Layanan masuk belum terhubung." },
-                        feedback = feedback,
+                        onBack = {
+                            authModel.clearFeedback()
+                            goBack()
+                        },
+                        onRegister = {
+                            authModel.clearFeedback()
+                            nav.navigate("s03")
+                        },
+                        onLogin = authModel::login,
+                        feedback = loginFeedback?.message,
+                        isSubmitting = submitting,
+                        onClearFeedback = authModel::clearFeedback,
                     )
                 }
 
                 composable("s03") {
-                    var feedback by rememberSaveable { mutableStateOf<String?>(null) }
-
+                    val role = session?.user?.role
+                    LaunchedEffect(role) {
+                        if (role != null) goToAccountScreen(role)
+                    }
                     RegisterScreen(
-                        onBack = goBack,
+                        onBack = {
+                            authModel.clearFeedback()
+                            goBack()
+                        },
                         onLogin = {
+                            authModel.clearFeedback()
                             if (!nav.popBackStack("s02", inclusive = false)) nav.navigate("s02")
                         },
-                        onRegister = { _, email, _ ->
-                            if (BuildConfig.DEBUG) {
-                                verificationEmail = "${email.first()}***@${email.substringAfter('@')}"
-                                nav.navigate("s13")
-                            } else {
-                                feedback = "Layanan pendaftaran belum terhubung."
-                            }
-                        },
-                        feedback = feedback,
+                        onRegister = authModel::register,
+                        feedback = registerFeedback?.message,
+                        fieldErrors = registerFeedback?.fields.orEmpty(),
+                        isSubmitting = submitting,
+                        onFieldEdited = authModel::clearRegisterFieldFeedback,
                     )
                 }
 
                 composable("s04") {
-                    if (completion != null) HomeScreen(completionState, userNavigate, openDonation, { nav.navigate("s05") }, account, refreshCompletion)
-                    else TemplateScreen("Home", "Integrasi akun dan server belum terhubung.", goBack)
+                    val user = session?.user
+                    val role = user?.role
+                    if (BuildConfig.DEBUG && completion != null && user == null) {
+                        HomeScreen(completionState, userNavigate, openDonation, { nav.navigate("s05") }, account, refreshCompletion)
+                    } else if (user?.role != "USER") {
+                        LaunchedEffect(role) { goToAccountScreen(role) }
+                    } else {
+                        HomeScreen(
+                            name = user.name,
+                            onBack = goBack,
+                            onCheckClothing = { nav.navigate("s05") },
+                        )
+                    }
                 }
-                composable("s05") { ClothingDetectorScreen(goBack) }
-                composable("s06") { CheckResultScreen(goBack) }
+                composable("s05") { entry ->
+                    val role = session?.user?.role
+                    if (role != "USER") {
+                        LaunchedEffect(role) { goToAccountScreen(role) }
+                        return@composable
+                    }
+                    val factory = remember(clothingCheckRepository) {
+                        viewModelFactory {
+                            initializer { ClothingDetectorViewModel(clothingCheckRepository) }
+                        }
+                    }
+                    val model = viewModel<ClothingDetectorViewModel>(
+                        viewModelStoreOwner = entry,
+                        factory = factory,
+                    )
+
+                    ClothingDetectorScreen(
+                        viewModel = model,
+                        onCheckReady = { checkId ->
+                            nav.navigate("s06/${Uri.encode(checkId)}") {
+                                launchSingleTop = true
+                            }
+                        },
+                        onBack = goBack,
+                    )
+                }
+                if (BuildConfig.DEBUG) composable("s06") {
+                    CheckResultScreen(
+                        viewModel = null,
+                        onBack = goBack,
+                        onRecheck = { nav.navigate("s05") },
+                        onPickup = {},
+                        emptyMessage = "Lakukan pemeriksaan pakaian untuk melihat hasilnya.",
+                    )
+                }
+                composable(
+                    route = "s06/{checkId}",
+                    arguments = listOf(navArgument("checkId") { type = NavType.StringType }),
+                ) { entry ->
+                    val role = session?.user?.role
+                    if (role != "USER") {
+                        LaunchedEffect(role) { goToAccountScreen(role) }
+                        return@composable
+                    }
+                    val checkId = entry.arguments?.getString("checkId").orEmpty()
+                    val factory = remember(clothingCheckRepository, checkId) {
+                        viewModelFactory {
+                            initializer { CheckResultViewModel(checkId, clothingCheckRepository) }
+                        }
+                    }
+                    val model = viewModel<CheckResultViewModel>(
+                        viewModelStoreOwner = entry,
+                        factory = factory,
+                    )
+                    CheckResultScreen(
+                        viewModel = model,
+                        loadPrivatePhoto = clothingCheckRepository::downloadPhoto,
+                        onBack = goBack,
+                        onRecheck = {
+                            nav.navigate("s05") {
+                                popUpTo("s05") { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        },
+                        onPickup = { checkId ->
+                            nav.navigate("s07/${Uri.encode(checkId)}") { launchSingleTop = true }
+                        },
+                    )
+                }
                 composable("s07") { PickupRequestScreen(goBack) }
-                composable("s08") {
-                    if (completion != null) MyDonationsScreen(completionState, userNavigate, openDonation, account, refreshCompletion)
-                    else TemplateScreen("Donasiku", "Integrasi akun dan server belum terhubung.", goBack)
+                composable(
+                    route = "s07/{checkId}",
+                    arguments = listOf(navArgument("checkId") { type = NavType.StringType }),
+                ) {
+                    PickupRequestScreen(goBack)
                 }
-                composable("s09") { DonationDetailScreen(completionState.donations.firstOrNull(), goBack, userNavigate) }
-                composable("s09/{id}") { entry -> DonationDetailScreen(completionState.donations.find { it.id == entry.arguments?.getString("id") }, goBack, userNavigate) }
+                composable("s08") {
+                    if (BuildConfig.DEBUG && completion != null && session == null) MyDonationsScreen(completionState, userNavigate, openDonation, account, refreshCompletion)
+                    else TemplateScreen("Donasiku", "Integrasi donasi dan reward ke akun aktif belum terhubung.", goBack)
+                }
+                composable("s09") {
+                    if (BuildConfig.DEBUG && completion != null && session == null) DonationDetailScreen(completionState.donations.firstOrNull(), goBack, userNavigate)
+                    else TemplateScreen("Detail donasi", "Integrasi donasi ke akun aktif belum terhubung.", goBack)
+                }
+                composable("s09/{id}") { entry ->
+                    if (BuildConfig.DEBUG && completion != null && session == null) DonationDetailScreen(completionState.donations.find { it.id == entry.arguments?.getString("id") }, goBack, userNavigate)
+                    else TemplateScreen("Detail donasi", "Integrasi donasi ke akun aktif belum terhubung.", goBack)
+                }
                 composable("s10") {
-                    if (completion != null) RewardsScreen(completionState, userNavigate, account, completion::redeem, refreshCompletion, completion::dismissMessage)
-                    else TemplateScreen("Rewards", "Integrasi akun dan server belum terhubung.", goBack)
+                    if (BuildConfig.DEBUG && completion != null && session == null) RewardsScreen(completionState, userNavigate, account, completion::redeem, refreshCompletion, completion::dismissMessage)
+                    else TemplateScreen("Rewards", "Integrasi donasi dan reward ke akun aktif belum terhubung.", goBack)
                 }
                 composable("a01") { AdminDashboardScreen(goBack) }
                 composable("s11") { UserProfileScreen(goBack) }
@@ -226,7 +365,13 @@ fun LoopyApp(
                         val review = previews.firstOrNull { it.id == entry.arguments?.getString("id") }
 
                         if (review == null) {
-                            Text("Pengajuan tidak ditemukan.")
+                            LoopyScreen(title = "Verifikasi donasi", onBack = goBack) {
+                                LoopyInfo(
+                                    title = "Pengajuan tidak ditemukan",
+                                    description = "Kembali ke antrean untuk memilih pengajuan lain.",
+                                    isError = true,
+                                )
+                            }
                         } else {
                             AdminDonationDetailScreen(
                                 review = review,

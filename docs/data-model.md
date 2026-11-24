@@ -1,12 +1,14 @@
 # Model data dan transaksi
 
-Migrasi [versi 1](../backend/go/schema.sql) membuat tabel akun dan sesi. Migrasi [versi 2](../backend/go/schema_pickup.sql) menambahkan pemeriksaan pakaian, pengajuan donasi, dan riwayat status. API mengembalikan waktu audit dalam UTC ISO-8601. Jadwal final memakai `Asia/Jakarta`. Identitas dan role berasal dari akun dalam sesi.
+Migrasi [versi 1](../backend/go/schema.sql) membuat tabel akun dan sesi. Migrasi [versi 2](../backend/go/schema_pickup.sql) menambahkan pemeriksaan pakaian, pengajuan donasi, dan riwayat status. Migrasi [versi 3](../backend/go/schema_vision.sql) menambahkan foto privat, rekomendasi AI, dan idempotensi pemeriksaan. API mengembalikan waktu audit dalam UTC ISO-8601. Jadwal final memakai `Asia/Jakarta`. Identitas dan role berasal dari akun dalam sesi.
 
 | Tabel | Field/batasan PRD §8 dan kebutuhan teknis |
 | --- | --- |
 | users | user_id PK, name, normalized email UNIQUE, password_hash atau auth-provider ID, role USER/ADMIN, total_points CHECK >=0 |
 | auth_sessions | session_id PK, user_id FK, access_hash/refresh_hash UNIQUE (SHA-256, bukan token mentah), access_expires_at,refresh_expires_at,created_at; rotasi atomik dan hapus saat logout |
-| clothing_checks | check_id PK, user_id FK, private photo key, clothing_type, ai_result tiga kategori, ai_description, created_at |
+| clothing_checks | check_id PK, user_id FK, private photo key, clothing_type, ai_result tiga kategori, ai_description, action_recommendation, created_at |
+| clothing_check_photos | check_id FK, jpeg ternormalisasi hingga 2 MiB |
+| clothing_check_requests | PK (user_id, request_key), request_hash, claim_id, claimed_until, check_id FK yang dibatasi ke pemilik |
 | donation_requests | donation_id PK, user_id FK, pasangan check_id/user_id FK ke pemeriksaan milik donatur, phone_number, pickup_address, city, quantity CHECK>=1, preferred_date/time, scheduled_at TIMESTAMPTZ, notes, status, rejection_reason, created_at/updated_at, version |
 | donation_status_history | PK (donation_id, version), donation_id FK, previous_status null pada versi awal, new_status, updated_by FK, updated_at |
 | point_transactions | transaction_id PK, user_id FK, donation_id nullable atau redemption_id nullable, transaction_type EARN/REDEEM, signed points, created_at; partial UNIQUE donation_id WHERE type=EARN |
@@ -14,7 +16,7 @@ Migrasi [versi 1](../backend/go/schema.sql) membuat tabel akun dan sesi. Migrasi
 | redemptions | redemption_id PK, user_id/reward_id FK, points_used, reward_details snapshot, redeemed_at |
 | idempotency_records (dukungan) | actor_id+operation+key UNIQUE, request_hash, response reference/status; retry sama mengembalikan hasil sama |
 
-Versi 2 mengindeks antrean menurut waktu dan status, serta pengajuan menurut donatur. Jadwal wajib untuk status terjadwal, dijemput, dan selesai. Alasan wajib untuk status ditolak. API detail admin mengembalikan kunci penyimpanan foto. Pengambilan foto privat untuk owner dan admin masih direncanakan.
+Versi 2 mengindeks antrean menurut waktu dan status, serta pengajuan menurut donatur. Jadwal wajib untuk status terjadwal, dijemput, dan selesai. Alasan wajib untuk status ditolak. API detail admin mengembalikan kunci penyimpanan foto. Pemilik dan admin mengambil foto pemeriksaan baru melalui route privat Go.
 
 ## Completed yang direncanakan
 
@@ -27,3 +29,7 @@ BEGIN → autentikasi user → cek idempotency key/request hash → lock wallet 
 API aktif memproses `PENDING_REVIEW → PICKUP_SCHEDULED` dan `PENDING_REVIEW → REJECTED`. Transaksi mengunci pengajuan, memeriksa versinya, lalu mengubah status dan menulis riwayat pada versi yang sama. Lihat [alur verifikasi dan penjadwalan](donation-review-go.md). Skema menyediakan status `PICKED_UP` dan `COMPLETED` untuk penanganan pickup lanjutan.
 
 Fitur pengajuan pengguna perlu memasukkan pengajuan awal dan riwayat versi 1 dalam satu transaksi. Keputusan berikutnya memakai migrasi tambahan untuk database yang sudah berjalan. Lihat juga [model akun dan sesi](auth-go.md).
+
+## Transaksi pemeriksaan pakaian
+
+Go memvalidasi pemilik melalui `auth_sessions` dan mereservasi key idempotensi sebelum memanggil Groq. Setelah analisis, satu transaksi menulis pemeriksaan, foto, dan referensi hasil bagi key tadi. Migrasi versi 3 menjaga referensi pickup dan foto terdahulu pada database Go. Database dari skema backend lama memerlukan impor terpisah.

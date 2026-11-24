@@ -108,7 +108,7 @@ func (a *api) listDonationsFor(w http.ResponseWriter, r *http.Request, owner str
 
 func donationID(w http.ResponseWriter, r *http.Request) (string, bool) {
 	id := r.PathValue("id")
-	if !donationIDPattern.MatchString(id) {
+	if !uuidPattern.MatchString(id) {
 		writeError(w, &apiError{Status: 400, Code: "INVALID_DONATION_ID", Message: "Use a valid donation UUID."})
 		return "", false
 	}

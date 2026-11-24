@@ -1,15 +1,9 @@
 # domain
 
-Area tes perilaku PRD. Tulis assertions bermakna untuk validasi/error/role/transaksi dan persistence.
+DonationStatusTest memeriksa transisi status donasi yang dipakai UI.
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `DonationStatusTest.kt` | Unit test semua pasangan status, transisi valid dan larangan lompatan/final. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`DonationStatusTest.kt`](DonationStatusTest.kt) | Unit test semua pasangan status, transisi valid dan larangan lompatan/final. |

@@ -37,6 +37,8 @@ fun LoginScreen(
     onRegister: () -> Unit,
     onLogin: (email: String, password: String) -> Unit,
     feedback: String? = null,
+    isSubmitting: Boolean = false,
+    onClearFeedback: () -> Unit = {},
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -50,14 +52,19 @@ fun LoginScreen(
         title = "loopy ↻",
         onBack = onBack,
         footer = {
-            LoopyButton("Masuk", onClick = {
-                submitted = true
+            feedback?.let { LoopyInfo("Belum bisa masuk", it, isError = true) }
 
-                if (emailError == null && passwordError == null) {
-                    focusManager.clearFocus()
-                    onLogin(email.trim(), password)
-                }
-            })
+            LoopyButton(
+                label = if (isSubmitting) "Sedang masuk…" else "Masuk",
+                enabled = !isSubmitting,
+                onClick = {
+                    submitted = true
+                    if (emailError == null && passwordError == null) {
+                        focusManager.clearFocus()
+                        onLogin(email.trim(), password)
+                    }
+                },
+            )
         },
     ) {
         val colors = MaterialTheme.colorScheme
@@ -82,27 +89,31 @@ fun LoginScreen(
         LoopyTextField(
             label = "Email",
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it
+                onClearFeedback()
+            },
             placeholder = "nama@email.com",
             error = emailError.takeIf { submitted },
             keyboardType = KeyboardType.Email,
+            enabled = !isSubmitting,
         )
 
         LoopyTextField(
             label = "Kata sandi",
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                onClearFeedback()
+            },
             placeholder = "Masukkan kata sandi",
             error = passwordError.takeIf { submitted },
             keyboardType = KeyboardType.Password,
             secret = true,
+            enabled = !isSubmitting,
         )
 
-        if (feedback != null) {
-            LoopyInfo("Status masuk", feedback)
-        }
-
-        TextButton(onClick = onRegister) {
+        TextButton(onClick = onRegister, enabled = !isSubmitting) {
             Text("Belum punya akun? Daftar")
         }
 
@@ -115,8 +126,8 @@ internal fun emailValidation(value: String): String? {
 
     return when {
         email.isEmpty() -> "Masukkan alamat email."
-        email.toByteArray().size > 254 || !Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
-            "Masukkan alamat email yang valid."
+        email.toByteArray().size > 254 -> "Alamat email terlalu panjang. Periksa kembali alamatnya."
+        !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> "Gunakan format email seperti nama@email.com."
         else -> null
     }
 }

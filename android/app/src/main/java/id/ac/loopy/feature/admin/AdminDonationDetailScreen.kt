@@ -31,6 +31,9 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import id.ac.loopy.R
@@ -50,6 +53,7 @@ import java.util.TimeZone
 
 private val PickupZone = TimeZone.getTimeZone("Asia/Jakarta")
 private val Indonesian = Locale.forLanguageTag("id-ID")
+private const val PastPickupMessage = "Jadwal ini sudah lewat. Pilih tanggal atau jam lain."
 
 @Composable
 internal fun AdminDonationDetailScreen(
@@ -88,6 +92,7 @@ internal fun AdminDonationDetailScreen(
                 if (scheduleError != null) {
                     Text(
                         text = scheduleError.orEmpty(),
+                        modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
                     )
@@ -95,8 +100,10 @@ internal fun AdminDonationDetailScreen(
 
                 LoopyButton("Setujui & jadwalkan", onClick = {
                     scheduleError = when {
-                        pickupAt == null -> "Pilih tanggal dan jam penjemputan."
-                        pickupAt <= System.currentTimeMillis() -> "Pilih jadwal yang masih akan datang."
+                        date == 0L && minutes < 0 -> "Pilih tanggal dan jam penjemputan terlebih dahulu."
+                        date == 0L -> "Pilih tanggal penjemputan terlebih dahulu."
+                        pickupAt == null -> "Pilih jam penjemputan terlebih dahulu."
+                        pickupAt <= System.currentTimeMillis() -> PastPickupMessage
                         else -> null
                     }
                     scheduleOpen = scheduleError == null
@@ -185,7 +192,7 @@ internal fun AdminDonationDetailScreen(
                     if (pickupAt > System.currentTimeMillis()) {
                         onSchedule(pickupAt)
                     } else {
-                        scheduleError = "Pilih jadwal yang masih akan datang."
+                        scheduleError = PastPickupMessage
                     }
                 },
             )

@@ -1,14 +1,14 @@
 # landing
 
-Template fitur S01 Landing Page. UI bisnis belum diimplementasikan; kerjakan Screen/UiState/ViewModel terpisah.
+S01 adalah pembuka aplikasi. Pengguna memilih masuk atau mendaftar sebelum membuka pemeriksaan.
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `LandingScreen.kt` | Template S01: Hero dan tagline; About Loopy; tiga benefit; empat langkah; Get Started → Register; Login → Login. |
-| `LandingUiState.kt` | TEMPLATE S01 (F01) — belum ada implementasi bisnis. TODO: buat LandingUiState: data class immutable berisi nilai form/data, field errors, loading, error, serta event sukses tanpa menyimpan NavController. Kebutuhan: Hero dan tagline; About Loopy; tiga benefit; empat langkah; Get Started → Register; Login → Login. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
-| `LandingViewModel.kt` | TEMPLATE S01 (F01) — belum ada implementasi bisnis. TODO: buat LandingViewModel: ViewModel dengan private MutableStateFlow, StateFlow immutable, viewModelScope, cancellation, loading/success/error dan cegah request berulang. Kebutuhan: Hero dan tagline; About Loopy; tiga benefit; empat langkah; Get Started → Register; Login → Login. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
+| [`LandingScreen.kt`](LandingScreen.kt) | Composable landing dengan pengenalan layanan, manfaat, langkah penggunaan, serta navigasi aksi. |
+| [`LandingUiState.kt`](LandingUiState.kt) | TEMPLATE S01 (F01) — belum ada implementasi bisnis. TODO: buat LandingUiState: data class immutable berisi nilai form/data, field errors, loading, error, serta event sukses tanpa menyimpan NavController. Kebutuhan: Hero dan tagline; About Loopy; tiga benefit; empat langkah; Get Started → Register; Login → Login. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
+| [`LandingViewModel.kt`](LandingViewModel.kt) | TEMPLATE S01 (F01) — belum ada implementasi bisnis. TODO: buat LandingViewModel: ViewModel dengan private MutableStateFlow, StateFlow immutable, viewModelScope, cancellation, loading/success/error dan cegah request berulang. Kebutuhan: Hero dan tagline; About Loopy; tiga benefit; empat langkah; Get Started → Register; Login → Login. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
 
 ## TODO
 

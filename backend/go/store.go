@@ -17,6 +17,9 @@ var schemaSQL string
 //go:embed schema_pickup.sql
 var pickupSchemaSQL string
 
+//go:embed schema_vision.sql
+var visionSchemaSQL string
+
 //go:embed schema_rewards.sql
 var rewardsSchemaSQL string
 
@@ -35,7 +38,18 @@ func (s *pgStore) migrate(ctx context.Context) error {
 	if _, err = tx.Exec(ctx, "CREATE TABLE IF NOT EXISTS schema_migrations (version INTEGER PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT now())"); err != nil {
 		return err
 	}
-	for index, migration := range []string{schemaSQL, pickupSchemaSQL, rewardsSchemaSQL} {
+	// Both branches originally used version 3. Preserve main's Vision v3 and
+	// move an already-applied feature-branch rewards migration to version 4.
+	// This is metadata only; the existing balances and redemption rows stay intact.
+	if _, err = tx.Exec(ctx, `UPDATE schema_migrations SET version=4 WHERE version=3
+		AND to_regclass('rewards') IS NOT NULL
+		AND to_regclass('redemptions') IS NOT NULL
+		AND to_regclass('point_transactions') IS NOT NULL
+		AND to_regclass('clothing_check_photos') IS NULL
+		AND NOT EXISTS (SELECT 1 FROM schema_migrations WHERE version=4)`); err != nil {
+		return err
+	}
+	for index, migration := range []string{schemaSQL, pickupSchemaSQL, visionSchemaSQL, rewardsSchemaSQL} {
 		version := index + 1
 		var exists bool
 		if err = tx.QueryRow(ctx, "SELECT EXISTS (SELECT 1 FROM schema_migrations WHERE version=$1)", version).Scan(&exists); err != nil {

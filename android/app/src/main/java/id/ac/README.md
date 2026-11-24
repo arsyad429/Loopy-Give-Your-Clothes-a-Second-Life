@@ -1,15 +1,9 @@
 # ac
 
-Direktori ac mengelompokkan source/config Loopy. README subfolder menjelaskan implementasi spesifik.
+Segmen ac pada namespace Kotlin aplikasi Loopy.
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `loopy/` | Baca README di subfolder loopy untuk peran file dan TODO. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`loopy/`](loopy/README.md) | Package utama Android memuat Application, Activity, UI, domain, data, dan dependency injection. |

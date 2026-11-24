@@ -22,7 +22,15 @@ class MainActivity : ComponentActivity() {
             val state = model.state.collectAsStateWithLifecycle().value
             val completion: CompletionViewModel? = if (BuildConfig.DEBUG) viewModel(factory = CompletionViewModel.factory(container.completionDemoRepository)) else null
             LoopyTheme(darkTheme = state.darkTheme) {
-                LoopyApp(state, model::setDarkTheme, model::refreshHealth, model::saveDemoDraft, model::clearDemoDrafts, completion)
+                LoopyApp(
+                    state = state,
+                    onTheme = model::setDarkTheme,
+                    onHealth = model::refreshHealth,
+                    onSave = model::saveDemoDraft,
+                    onClear = model::clearDemoDrafts,
+                    container = container,
+                    completion = completion,
+                )
             }
         }
     }

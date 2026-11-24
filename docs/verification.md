@@ -1,4 +1,63 @@
-# Hasil verifikasi scaffold
+# Hasil verifikasi Loopy
+
+## Penggabungan login AI dengan penyelesaian dan reward — 24 November 2026
+
+Resolusi merge `main` (`429f7fb`) ke branch `feature/donation-completion-rewards` mempertahankan login/register Go, upload dan hasil Vision, demo Room E–F, serta API penyelesaian/poin/reward. Dua puluh file yang semula masih berisi penanda konflik diselesaikan berdasarkan fungsi masing-masing. Backend aktif tetap Go dan perubahan penghapusan scaffold Ktor dari main dipertahankan.
+
+| Pemeriksaan | Hasil |
+| --- | --- |
+| Penanda konflik dan diff | Tidak ada penanda konflik tertinggal; `git diff --cached --check` lulus. |
+| Migrasi PostgreSQL | Vision tetap versi 3; reward menjadi versi 4. Database development yang pernah memakai reward versi 3 dikenali tanpa menghapus saldo/redemption, lalu mendapat migrasi Vision. Upgrade dari kedua riwayat dan startup ulang lulus tes. |
+| Go dan PostgreSQL lokal | `go test -count=1 -cover ./...`, `go vet ./...`, dan build lulus; cakupan package 75,2%. Tes menggunakan schema terisolasi pada PostgreSQL 17.12. Race detector tidak dijalankan pada host Windows ini. |
+| Build Android | `assembleDebug`, `testDebugUnitTest`, `lintDebug`, dan `assembleDebugAndroidTest` lulus; 10 unit test, 0 kegagalan. Lint 0 error dan 28 warning. |
+| Emulator | `connectedDebugAndroidTest` lulus: 13 tes pada Pixel_7 API37, mencakup alur E–F, persistensi/rollback Room, serta UI pemeriksaan dan hasil pakaian dari main. |
+| Pemisahan data Android | Home akun yang login mempertahankan nama akun dan akses S05. Preview saldo/donasi/reward lokal hanya tampil tanpa sesi login pada build debug; saldo contoh tidak ditampilkan sebagai saldo akun server. |
+| Struktur dan tautan | Snapshot dari Git index bersih lulus `scripts/check-scaffold.py`; tautan lokal pada 88 Markdown yang berubah juga valid. Pemeriksaan langsung pada workspace masih mendeteksi empat README pada folder IDE lokal `.github/modernize/` yang tidak menjadi bagian snapshot Git. |
+
+Pemeriksaan dilakukan pada Windows dengan JDK 21.0.11 dan Go 1.27.4. Tidak ada push, PR, deployment VM, atau panggilan Groq berbayar pada verifikasi merge ini. Integrasi Android ke API donasi/reward tetap ditunda; login dan pemeriksaan mengikuti implementasi main yang sudah ada. Database uji dan emulator sementara dihentikan setelah pemeriksaan.
+
+## Konsolidasi backend Go — 24 November 2026
+
+Tes Go dengan PostgreSQL dan deteksi race lulus, begitu juga `go vet`, `go build`, pemeriksaan struktur, dan validasi Compose lokal serta LXC. Build APK debug dan instrumentasi, enam unit test Android, dan lint lulus pada commit konsolidasi. Android mempertahankan Gradle Wrapper untuk build aplikasi.
+
+## Integrasi Android S05–AI–S06 — 24 November 2026
+
+| Pemeriksaan | Hasil |
+| --- | --- |
+| Gradle `assembleDebug`, `testDebugUnitTest`, `lintDebug`, dan `assembleDebugAndroidTest` | APK debug dan APK tes berhasil dibangun. Unit test serta lint lulus. |
+| Retrofit Android ke Go dan Groq | Uji JVM sementara dengan API Retrofit, repository sesi, fixture JPEG sintetis, dan database uji terpisah berhasil login, merotasi token melalui refresh, mengunggah foto, replay key, membaca detail, dan mengunduh JPEG privat. Token sebelum refresh ditolak dengan `401`. |
+| Perangkat Android | Setelah memasang APK port 8082 dan mengaktifkan ADB reverse, tombol Periksa backend menampilkan `ok (go-auth)`. Request dari HP ke endpoint registrasi memperoleh respons validasi `422`. Pengguna kemudian mengonfirmasi alur aplikasi berjalan di HP. |
+
+Base URL APK uji adalah `http://127.0.0.1:8082/` lewat ADB reverse. Sesi aplikasi uji disimpan di memori. [Panduan development](development.md#koneksi-android-ke-backend)
+
+## Migrasi pemeriksaan pakaian ke Go — 24 November 2026
+
+Diuji di Linux dengan Go 1.27.4, PostgreSQL 17.6, serta instance Compose dan database uji terpisah.
+
+| Pemeriksaan | Hasil |
+| --- | --- |
+| `go test -race -count=1 ./...`, `go vet ./...`, dan `go build` | Lulus. Tes integrasi mengaktifkan PostgreSQL dan memverifikasi migrasi versi 2 ke versi 3, sesi lama, data pickup lama, akses pemilik/admin, serta retry setelah kegagalan provider. |
+| Docker Compose lokal dan LXC | Kedua konfigurasi valid. Image Go berhasil dibangun dan layanan basis data serta API lokal lulus health check. |
+| Login → upload → Groq langsung | Token dari `POST /v1/auth/login` diterima oleh `POST /v1/checks` (`201`) untuk ilustrasi JPEG kaos sintetis. Groq mengembalikan kategori, penjelasan, dan saran. |
+| Replay dan foto privat | Upload yang diulang dengan key dan payload sama mendapat hasil lama (`200`). Token pemilik yang sama dapat membaca detail dan JPEG privat (`200`). |
+| Privasi dan logout | Akun lain menerima `404` untuk detail dan foto. Tanpa token atau setelah logout, API mengembalikan `401`. Bytes yang tidak bisa didekode sebagai JPEG ditolak dengan `422 INVALID_PHOTO`. |
+
+Uji HTTP nyata mencakup 16 pemeriksaan integrasi API dan akses sesi. Akurasi model belum dievaluasi. Hasil integrasi Android tercatat pada bagian tersendiri di atas.
+
+## Riwayat penggabungan Go dan Ktor sebelum migrasi — 24 November 2026
+
+Diuji di Linux dengan dua proyek Compose dan database terpisah.
+
+| Pemeriksaan | Hasil |
+| --- | --- |
+| Android `assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest` | Lulus. Enam unit test lulus dan lint melaporkan 0 error. APK instrumentasi berhasil dibangun. |
+| Ktor `test installDist` | Tujuh tes lulus, termasuk store dan route dengan PostgreSQL. Smoke test Groq opt-in dilewati pada run Gradle terkontrol. |
+| Go `go test -race -count=1 ./...`, `go vet`, dan `go build` | Lulus dengan PostgreSQL khusus pengujian. |
+| HTTP dari container aktual | 23 pemeriksaan sesuai harapan mencakup login Go, pencabutan sesi, akses admin, validasi upload, POST Groq, replay, dan privasi detail serta foto. |
+| POST pemeriksaan + Groq | Sesi Ktor valid menerima `201`. Groq mengembalikan `NEEDS_RECHECK` untuk ilustrasi kaos sintetis. |
+| Satu login untuk kedua API | Login Go berhasil dan token Go diterima di `/v1/auth/me`, tetapi GET dan POST pemeriksaan Ktor menjawab `401`. Sesi Ktor untuk tes HTTP dibuat sebagai fixture di database uji. |
+
+Hasil ini mendokumentasikan baseline dua API sebelum migrasi Go dan integrasi Android.
 
 ## Penyelesaian donasi dan reward — 23 November 2026
 
@@ -85,8 +144,7 @@ Build awal sempat gagal karena disk host, cache Gradle yang dipakai bersamaan li
 
 ## Yang belum dibuktikan/diimplementasikan
 
-- Runtime UI, instrumented persistence test dan flow emulator/perangkat belum dijalankan.
-- Visual final Figma belum diimplementasikan/diverifikasi; design context terkena kuota Starter, metadata dan referensi tersimpan.
-- UI bisnis PRD, AI, transaksi poin/redeem dan isolasi data bisnis masih template; backend auth dan migrasi akun/sesi sudah tersedia di Go.
+- Verifikasi produk lengkap, termasuk login serta pengiriman pemeriksaan dan foto dari Android ke backend, masih tertunda.
+- Pickup dari donatur, penyelesaian donasi, poin, dan redemption masih dalam backlog.
 - macOS/ARM belum diuji langsung; Windows telah diuji untuk backend Go di atas. Panduan dan batas tools Linux x86_64 ada di development.md.
 - Sebelum release: lengkapi ikon, kebijakan ekstraksi/backup data, HTTPS deployment, auth/Keystore, UI final serta semua AC.

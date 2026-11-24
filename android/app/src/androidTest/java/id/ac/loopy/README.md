@@ -1,17 +1,12 @@
 # loopy
 
-`CompletionPersistenceTest.kt` menguji transaksi, rollback, idempotensi, saldo kurang, dan persistensi Room demo E–F. `CompletionFlowTest.kt` menguji alur Compose admin → completion → batal/konfirmasi redeem → Reward-ku → Home → detail dan menyimpan screenshot ke external files aplikasi.
+`CompletionPersistenceTest.kt` memeriksa transaksi, rollback dan persistensi Room E–F. `CompletionFlowTest.kt` mempertahankan alur admin → poin → batal/konfirmasi redeem → Reward-ku → Home → detail setelah navigasi login/AI dari main digabungkan.
 
-Area tes perilaku PRD. Tulis assertions bermakna untuk validasi/error/role/transaksi dan persistence.
+Tes instrumentasi untuk persistensi lokal DataStore dan Room, serta UI pemeriksaan pakaian.
 
 ## Isi file dan perannya
 
-| File/folder | Peran dan isi yang diharapkan |
+| File atau folder | Kegunaan |
 | --- | --- |
-| `FoundationPersistenceTest.kt` | Instrumented test draft Room bertahan setelah database ditutup/dibuka. |
-
-## TODO
-
-- [ ] Lanjutkan file template sesuai docs/backlog.md, docs/api-contract.md dan docs/acceptance-tests.md.
-- [ ] Pertahankan UI → ViewModel → Repository → Data Source dan konfigurasi yang dapat dibuild.
-- [ ] Perbarui daftar file dan bukti cek setelah implementasi berubah.
+| [`FoundationPersistenceTest.kt`](FoundationPersistenceTest.kt) | Instrumented test draft Room bertahan setelah database ditutup/dibuka. |
+| [`feature`](feature/README.md) | Tes fitur menurut layar yang diuji. |

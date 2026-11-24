@@ -1,6 +1,6 @@
 # Loopy authentication in Go: flow, code, and theory
 
-This guide implements PRD v2.1 **F02**, the account fields in [data-model.md](data-model.md), and the auth endpoints in [api-contract.md](api-contract.md). Read the flow first, then the code map and theory. The runnable source lives in [`backend/go/`](../backend/go/README.md). The original Kotlin/Ktor scaffold remains as a reference; Docker runs the Go service.
+This guide implements PRD v2.1 **F02**, the account fields in [data-model.md](data-model.md), and the auth endpoints in [api-contract.md](api-contract.md). Read the flow first, then the code map and theory. The runnable source lives in [`backend/go/`](../backend/go/README.md). Docker runs the same Go service for authentication, clothing checks, and pickup review.
 
 ## 1. Authentication flow
 
@@ -128,7 +128,7 @@ digest := sha256.Sum256([]byte(token))
 // For owner-only queries use the authenticated user's ID in WHERE user_id=$1.
 ```
 
-These snippets explain the mechanisms; follow the linked source for complete error handling, transactions, and tests. Admin business endpoints and Android Retrofit wiring remain separate work.
+These snippets explain the mechanisms; follow the linked source for complete error handling, transactions, and tests. The Android client uses Retrofit for registration, login, and serialized refresh in memory.
 
 ### Walkthrough: from JSON to a committed account
 
