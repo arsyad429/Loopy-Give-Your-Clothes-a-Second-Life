@@ -29,7 +29,7 @@ sequenceDiagram
 
 1. Accept only `name`, `email`, and `password`. Reject unknown fields, including `role`, `userId`, and `totalPoints`.
 2. Trim name and email, lowercase the entire email as a deliberate Loopy account policy. Never trim or lowercase the password.
-3. Validate name (1–100 Unicode characters, no control characters), email (plain address, at most 254 bytes), and password (15–128 Unicode characters, at most 512 bytes). This password policy is an implementation decision; the PRD does not specify a length.
+3. Validate name (1–100 Unicode characters, no control characters), email (plain address, at most 254 bytes), and password (8–128 Unicode characters, at most 512 bytes). This password policy is an implementation decision; the PRD does not specify a length.
 4. Generate a UUID and an Argon2id password hash with a fresh random salt.
 5. Generate an access token and a separate refresh token, each with 32 random bytes. Persist their SHA-256 hashes only.
 6. Insert the user (`USER`, 0 points) and session in one transaction. A unique database constraint handles duplicate emails, including simultaneous requests. If session creation fails, the user insert rolls back.
@@ -88,7 +88,7 @@ Session response for register, login, and refresh:
 `GET /v1/auth/me` returns the `user` object directly. An example validation failure:
 
 ```json
-{"error":{"code":"VALIDATION_ERROR","message":"Check the submitted fields.","fieldErrors":{"password":"Use 15–128 characters (at most 512 bytes)."}}}
+{"error":{"code":"VALIDATION_ERROR","message":"Check the submitted fields.","fieldErrors":{"password":"Use 8–128 characters (at most 512 bytes)."}}}
 ```
 
 Errors: 400 malformed JSON/unknown fields; 401 invalid credentials/session; 403 authenticated but wrong role; 409 duplicate email; 413 body over 16 KiB; 415 non-JSON body; 422 field validation; 429 auth rate limit; 500 unexpected server failure; 503 readiness failure. Do not expose SQL, stack traces, password hashes, or tokens in errors/logs.

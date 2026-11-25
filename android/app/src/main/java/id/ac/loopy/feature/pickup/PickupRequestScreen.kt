@@ -2,6 +2,7 @@ package id.ac.loopy.feature.pickup
 
 import android.app.DatePickerDialog
 import android.graphics.BitmapFactory
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,15 +18,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,8 +38,10 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -46,6 +52,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -437,35 +444,25 @@ private fun QuantityStepper(
             color = MaterialTheme.colorScheme.onSurface,
         )
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            OutlinedButton(
+            QuantityStepButton(
+                increase = false,
                 onClick = onDecrement,
                 enabled = enabled && quantity > 1,
-                modifier = Modifier
-                    .size(48.dp)
-                    .semantics { contentDescription = "Kurangi jumlah pakaian" },
-                shape = CircleShape,
-            ) {
-                Text("-", style = MaterialTheme.typography.titleLarge)
-            }
+            )
             Text(
                 text = "$quantity pakaian",
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f, fill = false).widthIn(min = 96.dp),
             )
-            OutlinedButton(
+            QuantityStepButton(
+                increase = true,
                 onClick = onIncrement,
                 enabled = enabled && quantity < 100,
-                modifier = Modifier
-                    .size(48.dp)
-                    .semantics { contentDescription = "Tambah jumlah pakaian" },
-                shape = CircleShape,
-            ) {
-                Text("+", style = MaterialTheme.typography.titleLarge)
-            }
+            )
         }
         error?.let {
             Text(
@@ -473,6 +470,31 @@ private fun QuantityStepper(
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
             )
+        }
+    }
+}
+
+@Composable
+private fun QuantityStepButton(increase: Boolean, enabled: Boolean, onClick: () -> Unit) {
+    val description = if (increase) "Tambah jumlah pakaian" else "Kurangi jumlah pakaian"
+    FilledTonalIconButton(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = Modifier.size(48.dp).semantics { contentDescription = description },
+        shape = RoundedCornerShape(14.dp),
+        colors = IconButtonDefaults.filledTonalIconButtonColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        ),
+    ) {
+        val color = LocalContentColor.current
+        Canvas(Modifier.size(16.dp)) {
+            val stroke = 2.dp.toPx()
+            val inset = stroke / 2
+            drawLine(color, Offset(inset, center.y), Offset(size.width - inset, center.y), stroke, StrokeCap.Round)
+            if (increase) {
+                drawLine(color, Offset(center.x, inset), Offset(center.x, size.height - inset), stroke, StrokeCap.Round)
+            }
         }
     }
 }

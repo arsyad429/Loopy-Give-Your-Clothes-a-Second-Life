@@ -23,7 +23,7 @@ func TestRegistrationPolicy(t *testing.T) {
 		{"display email", func(r *RegisterRequest) { r.Email = "Neva <neva@example.test>" }},
 		{"invalid email", func(r *RegisterRequest) { r.Email = "missing-at" }},
 		{"email newline", func(r *RegisterRequest) { r.Email = "neva@exam\nple.test" }},
-		{"short password", func(r *RegisterRequest) { r.Password = strings.Repeat("a", 14) }},
+		{"short password", func(r *RegisterRequest) { r.Password = strings.Repeat("🧥", 7) }},
 		{"long password", func(r *RegisterRequest) { r.Password = strings.Repeat("a", 129) }},
 	} {
 		t.Run(test.name, func(t *testing.T) {
@@ -35,9 +35,11 @@ func TestRegistrationPolicy(t *testing.T) {
 		})
 	}
 	base.Name = strings.Repeat("衣", 100)
-	base.Password = strings.Repeat("🧥", 128)
-	if _, err := ValidateRegistration(base); err != nil {
-		t.Fatalf("unicode boundary rejected: %v", err)
+	for _, length := range []int{8, 128} {
+		base.Password = strings.Repeat("🧥", length)
+		if _, err := ValidateRegistration(base); err != nil {
+			t.Fatalf("password with %d Unicode characters rejected: %v", length, err)
+		}
 	}
 }
 

@@ -14,7 +14,7 @@ class AuthFeedbackTest {
     fun registrationValidationUsesLocalMessagesForKnownFields() {
         val response = failure(
             422,
-            """{"error":{"fieldErrors":{"password":"Use 15–128 characters (at most 512 bytes).","unknown":"Internal error"}}}""",
+            """{"error":{"fieldErrors":{"password":"Use 8–128 characters (at most 512 bytes).","unknown":"Internal error"}}}""",
         )
 
         assertEquals(
