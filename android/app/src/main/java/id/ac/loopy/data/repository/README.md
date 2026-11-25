@@ -1,6 +1,6 @@
 # repository
 
-`CompletionDemoRepository.kt` menangani transaksi Room demo E–F: kredit unik per donasi, validasi saldo ulang, idempotensi, serta riwayat penukaran. Data lokal ini terpisah dari AuthRepository dan ClothingCheckRepository yang menggunakan API Go.
+`RewardRepositoryImpl.kt` menghubungkan saldo, katalog, redeem dan riwayat ke API Go melalui AuthRepository. Data transaksi server tidak dicampur dengan draft Room.
 
 Repository untuk autentikasi, pemeriksaan pakaian, dan demo fondasi aplikasi, beserta template akses data fitur berikutnya.
 
@@ -14,4 +14,4 @@ Repository untuk autentikasi, pemeriksaan pakaian, dan demo fondasi aplikasi, be
 | [`DonationRepositoryImpl.kt`](DonationRepositoryImpl.kt) | TEMPLATE — TODO: implementasi DonationRepository, mapper DTO/domain, remote source, cache sesuai kebutuhan. submit eligible check + konfirmasi bersih; observe/refresh daftar milik user; detail; status/history; idempotency submit. Pertahankan CancellationException; expose error terstruktur tanpa data pribadi. |
 | [`FoundationRepository.kt`](FoundationRepository.kt) | Repository demo DataStore+Room+Retrofit, pintu akses ViewModel. |
 | [`HomeRepository.kt`](HomeRepository.kt) | Memuat saldo dan donasi terbaru untuk S04 melalui sesi Go yang aktif. |
-| [`RewardRepositoryImpl.kt`](RewardRepositoryImpl.kt) | TEMPLATE — TODO: implementasi RewardRepository, mapper DTO/domain, remote source, cache sesuai kebutuhan. saldo + katalog; redeem transaction idempotent; history; jangan mutasi saldo lokal sebagai sumber kebenaran. Pertahankan CancellationException; expose error terstruktur tanpa data pribadi. |
+| [`RewardRepositoryImpl.kt`](RewardRepositoryImpl.kt) | Saldo, katalog, penukaran idempoten dan riwayat lewat API, memakai Bearer/refresh akun aktif. |

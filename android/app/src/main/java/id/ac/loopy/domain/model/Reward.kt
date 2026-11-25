@@ -1,3 +1,6 @@
 package id.ac.loopy.domain.model
 
-// TEMPLATE PRD §8 — TODO: data class Reward: rewardId, rewardName, description, image, requiredPoints, rewardType, isActive. Katalog tetap 10/20/30 poin.
+data class Reward(
+    val rewardId: String, val name: String, val description: String, val icon: String,
+    val requiredPoints: Int, val type: String, val isActive: Boolean,
+)

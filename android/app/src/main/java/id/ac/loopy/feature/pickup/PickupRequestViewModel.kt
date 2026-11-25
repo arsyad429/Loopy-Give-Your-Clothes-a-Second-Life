@@ -6,12 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
-import id.ac.loopy.data.repository.CompletionDemoRepository
 import id.ac.loopy.domain.model.AiResult
-import id.ac.loopy.domain.model.ClothingCheck
-import id.ac.loopy.domain.model.ClothingType
 import id.ac.loopy.domain.model.CreateDonationSubmission
-import id.ac.loopy.domain.model.DonationStatus
 import id.ac.loopy.domain.repository.ClothingCheckRepository
 import id.ac.loopy.domain.repository.DonationRepository
 import kotlinx.coroutines.CancellationException
@@ -42,32 +38,19 @@ class PickupRequestViewModel(
     private val donorName: String,
     private val clothingCheckRepository: ClothingCheckRepository?,
     private val donationRepository: DonationRepository?,
-    private val demoRepository: CompletionDemoRepository? = null,
     private val clockMillis: () -> Long = System::currentTimeMillis,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         PickupRequestUiState(
             donorName = donorName.ifBlank { "Donatur Loopy" },
-            isDemoMode = donationRepository == null && demoRepository != null,
             isLoadingCheck = checkId.isNotBlank() && clothingCheckRepository != null,
             cleanAndSafeConfirmed = checkId.isNotBlank(),
         ),
     )
     val uiState: StateFlow<PickupRequestUiState> = _uiState.asStateFlow()
 
-    init {
-        if (donationRepository == null && demoRepository != null && checkId.isBlank()) {
-            _uiState.update {
-                it.copy(
-                    isLoadingCheck = false,
-                    check = sampleDemoCheck(donorName),
-                )
-            }
-        } else {
-            loadClothingCheck()
-        }
-    }
+    init { loadClothingCheck() }
 
     @MainThread
     fun retryLoadCheck() {
@@ -188,31 +171,6 @@ class PickupRequestViewModel(
                                 city = created.city,
                                 preferredDate = created.preferredDate,
                                 preferredTime = created.preferredTime,
-                                isLocalDemo = false,
-                            ),
-                        )
-                    }
-                } else if (demoRepository != null) {
-                    val readableDate = PickupRequestValidator.formatReadableDate(current.preferredDate.trim())
-                    val scheduleLabel = "Preferensi: $readableDate · ${current.preferredTime.trim()}"
-                    val fullAddress = "${current.pickupAddress.trim()}, ${current.city.trim()}"
-                    val created = demoRepository.createPendingDonation(
-                        quantity = current.quantity,
-                        schedule = scheduleLabel,
-                        address = fullAddress,
-                    )
-                    ensureActive()
-                    _uiState.update {
-                        it.copy(
-                            isSubmitting = false,
-                            submittedDonation = SubmittedPickupSummary(
-                                donationId = created.id,
-                                status = DonationStatus.PENDING_REVIEW,
-                                quantity = created.quantity,
-                                city = current.city.trim(),
-                                preferredDate = current.preferredDate.trim(),
-                                preferredTime = current.preferredTime.trim(),
-                                isLocalDemo = true,
                             ),
                         )
                     }
@@ -324,16 +282,6 @@ class PickupRequestViewModel(
             )
         }
     }
-
-    private fun sampleDemoCheck(name: String) = ClothingCheck(
-        checkId = "demo-check-01",
-        userId = name.ifBlank { "demo-user" },
-        clothingPhoto = "",
-        clothingType = ClothingType.SHIRT,
-        aiResult = AiResult.POTENTIALLY_ELIGIBLE,
-        aiDescription = "Pakaian terlihat utuh dan bersih pada foto (Mode pratinjau demo).",
-        createdAt = "",
-    )
 }
 
 internal fun pickupHttpFeedback(error: HttpException): Pair<String, Map<String, String>> {

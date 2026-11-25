@@ -11,4 +11,4 @@ Bentuk JSON untuk Retrofit, termasuk health, akun, token sesi, dan hasil pemerik
 | [`ClothingCheckDto.kt`](ClothingCheckDto.kt) | Respons hasil dari Go dan konversi ke model domain ClothingCheck. |
 | [`DonationDto.kt`](DonationDto.kt) | TEMPLATE — TODO: request/response DTO Donation sesuai docs/api-contract.md. Nama field JSON, nullable, timestamps ISO-8601 dan error response harus disepakati backend. |
 | [`HealthDto.kt`](HealthDto.kt) | DTO JSON status dan mode liveness backend. |
-| [`RewardDto.kt`](RewardDto.kt) | TEMPLATE — TODO: request/response DTO Reward sesuai docs/api-contract.md. Nama field JSON, nullable, timestamps ISO-8601 dan error response harus disepakati backend. |
+| [`RewardDto.kt`](RewardDto.kt) | JSON katalog reward, saldo, redemption dan hasil replay dari API Go. |

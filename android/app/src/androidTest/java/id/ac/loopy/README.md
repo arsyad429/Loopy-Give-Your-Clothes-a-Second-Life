@@ -1,6 +1,6 @@
 # loopy
 
-`CompletionPersistenceTest.kt` memeriksa transaksi, rollback dan persistensi Room E–F. `CompletionFlowTest.kt` mempertahankan alur admin → poin → batal/konfirmasi redeem → Reward-ku → Home → detail setelah navigasi login/AI dari main digabungkan.
+`RewardsScreenTest.kt` memeriksa saldo kurang, pembatalan tanpa transaksi, konfirmasi penukaran dan riwayat/saldo yang dikembalikan repository. Fixture hanya digunakan pada tes; aplikasi memakai API. Tes demo Room lama dihapus bersama implementasi demonya.
 
 Tes instrumentasi untuk persistensi lokal DataStore dan Room, serta UI pemeriksaan pakaian.
 

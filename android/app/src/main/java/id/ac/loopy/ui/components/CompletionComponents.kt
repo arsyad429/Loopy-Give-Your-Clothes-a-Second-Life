@@ -20,14 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import id.ac.loopy.R
-import id.ac.loopy.data.local.DemoDonation
 import id.ac.loopy.domain.model.DonationStatus
 import id.ac.loopy.domain.model.DonationSummaryItem
-import id.ac.loopy.feature.rewards.CompletionUiState
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 
 @Composable
 internal fun LoopyCard(
@@ -93,16 +88,6 @@ internal fun UserBottomBar(selected: String, onNavigate: (String) -> Unit) {
 }
 
 @Composable
-internal fun DonationCard(item: DemoDonation, onOpen: () -> Unit) {
-    DonationCard(
-        title = "${item.quantity} pakaian · #${item.id}",
-        subtitle = if (item.status == "COMPLETED") "Selesai · +10 poin" else item.schedule,
-        status = DonationStatus.valueOf(item.status),
-        onOpen = onOpen,
-    )
-}
-
-@Composable
 internal fun DonationCard(item: DonationSummaryItem, onOpen: () -> Unit) {
     val shortId = item.donationId.substringBefore('-').uppercase(Locale.ROOT)
     DonationCard("${item.quantity} pakaian · #$shortId", item.city, item.status, onOpen)
@@ -121,17 +106,3 @@ private fun DonationCard(title: String, subtitle: String, status: DonationStatus
         }
     }
 }
-
-@Composable
-internal fun CompletionFeedback(state: CompletionUiState, onRetry: () -> Unit) {
-    if (state.loading || state.busy) Text(if (state.loading) "Memuat data lokal…" else "Menyimpan…", style = MaterialTheme.typography.bodySmall)
-    state.error?.let {
-        LoopyInfo("Belum berhasil", it, isError = true)
-        LoopyButton("Muat ulang", onRetry, enabled = !state.busy)
-    }
-    state.message?.let { LoopyInfo("Berhasil", it) }
-}
-
-internal fun rewardDate(at: Long): String = SimpleDateFormat("d MMM yyyy · HH.mm 'WIB'", Locale.forLanguageTag("id-ID")).apply {
-    timeZone = TimeZone.getTimeZone("Asia/Jakarta")
-}.format(Date(at))

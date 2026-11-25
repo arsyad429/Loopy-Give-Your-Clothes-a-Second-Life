@@ -1,3 +1,9 @@
 package id.ac.loopy.domain.model
 
-// TEMPLATE PRD §8 — TODO: data class Redemption: redemptionId, userId, rewardId, pointsUsed, rewardDetails, redeemedAt.
+data class Redemption(
+    val redemptionId: String, val rewardId: String, val rewardName: String,
+    val description: String, val icon: String, val type: String,
+    val pointsUsed: Int, val redeemedAt: String,
+)
+
+data class RedemptionResult(val redemption: Redemption, val remainingBalance: Int, val replayed: Boolean)

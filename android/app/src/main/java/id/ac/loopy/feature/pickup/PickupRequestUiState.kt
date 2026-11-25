@@ -22,7 +22,6 @@ data class SubmittedPickupSummary(
     val city: String,
     val preferredDate: String,
     val preferredTime: String,
-    val isLocalDemo: Boolean = false,
 ) {
     val shortId: String
         get() = if (donationId.length > 8 && donationId.contains('-')) {
@@ -37,7 +36,6 @@ data class PickupRequestUiState(
     val check: ClothingCheck? = null,
     val isLoadingCheck: Boolean = false,
     val checkLoadError: String? = null,
-    val isDemoMode: Boolean = false,
     val phoneNumber: String = "",
     val pickupAddress: String = "",
     val city: String = "",

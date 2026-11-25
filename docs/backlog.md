@@ -12,8 +12,8 @@ PRD belum membagi pemilik implementasi. Neva/Rio/Alex/Arsyad tetap mengikuti tan
 | 6 | Pickup submit idempotent | pickup, backend donations | AC07–08, request/history atomik |
 | 7 | API Go untuk ringkasan, antrean, detail, jadwal, dan penolakan sudah tersedia. Lanjut integrasi Android dan penyediaan foto privat. | admin Android, backend/go, docs/donation-review-go.md | AC09–11 teruji dengan data sungguhan |
 | 8 | My Donations+tracking detail | donations | AC12,19 tanpa GPS |
-| 9 | Transisi status dan ledger +10 tersedia di API Go dan demo Room; lanjut integrasi akun/API | backend/go/rewards_*, CompletionDemoRepository | AC13 lokal teruji; integrasi produk menunggu |
-| 10 | Katalog/redeem/history tersedia di API Go dan demo Android; lanjut sambungan server | feature/rewards, backend/go/rewards_* | AC14–18 lokal teruji; integrasi produk menunggu |
+| 9 | Transisi status admin dan kredit +10 melalui API terintegrasi Android | feature/admin, backend/go | Uji status dan idempotensi dengan PostgreSQL |
+| 10 | Katalog, saldo, redeem dan riwayat terintegrasi Android ke API akun aktif | feature/rewards, RewardRepositoryImpl | Uji Retrofit, state dan UI; lanjut verifikasi VM tim |
 | 11 | UI Figma final+integrasi/demo | components/theme/features | AC01–20+aksesibilitas |
 | Setelah MVP | Profil/settings/OTP | profile/settings/verification | Kontrak/scope disepakati |
 

@@ -1,6 +1,6 @@
 # donations
 
-S08–S09 menampilkan daftar/filter, detail per ID, dan timeline pada demo Room debug tanpa sesi login. API pembacaan donasi pemilik sudah tersedia; integrasi Android ke akun server serta POST pengajuan pickup masih menunggu implementasi.
+S08–S09 menggunakan API Go akun aktif untuk daftar/filter, detail per ID dan timeline status. Pengajuan pickup juga menggunakan API. Overload demo Room lama telah dihapus.
 
 ## Isi file dan perannya
 

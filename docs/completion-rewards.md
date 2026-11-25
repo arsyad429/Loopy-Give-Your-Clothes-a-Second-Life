@@ -1,60 +1,60 @@
 # Penyelesaian donasi dan penukaran reward
 
-Implementasi PRD 6.5–6.6 dan flowchart E–F mencakup konfirmasi penjemputan, penyelesaian donasi dengan 10 poin satu kali, katalog reward, konfirmasi penukaran, debit poin, dan riwayat penukaran. Frontend Kotlin Compose berjalan dalam mode demo lokal dengan Room. Backend Go menyediakan API PostgreSQL yang terpisah dan siap diintegrasikan. Koneksi frontend ke API dan deployment VM belum dikerjakan.
+Alur PRD 6.5–6.6 dan flowchart E–F menggunakan Android Kotlin/Compose → API Go → PostgreSQL. Admin mengonfirmasi penjemputan dan penerimaan; server memberi 10 poin satu kali setelah donasi selesai. Pengguna membaca saldo, memilih katalog server, mengonfirmasi penukaran, dan melihat riwayat akun sendiri.
 
-## Mencoba frontend tanpa VM
+## Menjalankan
 
-1. Buka folder `android/` di Android Studio dan jalankan varian **debug**.
-2. Menu pratinjau menampilkan **Demo E–F · Admin penyelesaian donasi & poin**. Buka pengajuan **LP021** yang sudah dijadwalkan.
-3. Tekan **Konfirmasi sudah dijemput** dan konfirmasi dialog. Status menjadi Dijemput, saldo tetap 20 poin.
-4. Tekan **Selesaikan donasi (+10 poin)** setelah penerimaan dikonfirmasi. Status menjadi Selesai dan saldo menjadi 30 poin. Pengajuan yang selesai tidak memiliki tombol pemberian poin ulang.
-5. Kembali ke menu pratinjau dan buka **S10 · Rewards & My Rewards**. Pilih reward. Membatalkan dialog tidak mengubah saldo; konfirmasi mengurangi poin sesuai biaya dan membuka tab Reward-ku.
-6. Buka Beranda dan Donasiku melalui navigasi bawah untuk melihat saldo serta status yang sama. Tutup dan buka ulang aplikasi untuk memeriksa persistensi.
+1. Jalankan backend dan PostgreSQL sesuai [panduan backend](backend.md), atau gunakan server tim yang sudah aktif.
+2. Buka folder `android/` di Android Studio. Atur `LOOPY_API_BASE_URL` di Gradle properties ke base URL server, diakhiri `/`. Default debug `http://10.0.2.2:8080/` mengarah ke port 8080 komputer dari emulator. Contoh bila API Docker memakai port 8082: `LOOPY_API_BASE_URL=http://10.0.2.2:8082/`.
+3. Build ulang dan jalankan aplikasi. Aplikasi membuka landing/login, lalu dashboard sesuai peran akun.
+4. Login sebagai admin. Pada donasi yang sudah dijadwalkan, konfirmasikan `PICKED_UP`, lalu `COMPLETED` setelah penerimaan benar-benar dikonfirmasi.
+5. Login sebagai pemilik donasi. Home dan Rewards mengambil saldo server. Pilih reward, batalkan atau konfirmasikan penukaran, lalu lihat tab **Reward-ku**.
+6. Tombol **Muat ulang** mengambil saldo, katalog, dan riwayat terbaru. Home dan Rewards juga memperbarui data ketika layar kembali aktif.
 
-Data awal merupakan ilustrasi: LP018 dan LP017 masing-masing memiliki satu transaksi perolehan 10 poin. LP021 disediakan sebagai pengajuan terjadwal untuk pengujian penyelesaian. LP024 masih menunggu verifikasi. Data ini tidak menciptakan akun atau saldo server. Database `loopy-completion-demo.db` terpisah dari database draft `loopy.db` dan hanya dibuka pada build debug. Mode ini tidak menyimulasikan seluruh proses autentikasi, pengajuan pickup, atau sinkronisasi.
+Backend diperlukan. VM tidak wajib untuk pengembangan jika Go/PostgreSQL berjalan lokal. Kode menggunakan konfigurasi URL dan sesi login yang sama dengan fitur lain; tidak ada URL VM atau token yang ditanam dalam kode.
 
-Frontend mengikuti Figma S04 `2:87`, S08 `2:93`, S09 `2:94`, S10 `2:95`, dialog `6:674`, dan Reward-ku `6:734`. Font Plus Jakarta Sans menggunakan resource lokal, termasuk bobot ExtraBold 800. Ikon asli Figma disimpan di `assets/figma_rewards/` dan dirender ke PNG xxxhdpi. Tidak ada URL aset sementara saat runtime. Konten memakai layout responsif dan scroll, tanpa menyalin status bar sistem dari mockup.
+## Implementasi Android
 
-## Kode frontend
+Semua lokasi berikut relatif terhadap `android/app/src/main/java/id/ac/loopy/`.
 
 | Lokasi | Peran |
 | --- | --- |
-| `data/local/CompletionDemoDatabase.kt` | Entitas, DAO, dan database Room demo: donasi, ledger poin, dan redemption. |
-| `data/repository/CompletionDemoRepository.kt` | Transaksi lokal: validasi urutan status, kredit unik per donasi, validasi saldo ulang, dan idempotensi penukaran. |
-| `feature/rewards/CompletionViewModel.kt` | StateFlow bersama, Coroutines, status loading/busy/error/sukses, dan pencegahan klik berulang. |
-| `feature/rewards/RewardsScreen.kt` | Katalog, saldo, dialog konfirmasi, tombol saldo tidak cukup, dan Reward-ku. |
-| `feature/rewards/CompletionAdminScreen.kt` | Daftar demo admin; detail memakai komponen verifikasi yang sudah ada. |
-| `feature/home/`, `feature/donations/` | Saldo Home, daftar donasi, dan detail timeline untuk alur penyelesaian. |
-| `ui/components/CompletionComponents.kt` | Kartu, ikon, saldo, feedback, dan navigasi bawah yang dipakai bersama. |
+| `data/remote/api/RewardApi.kt` | Retrofit untuk saldo, katalog, penukaran dan riwayat. |
+| `data/remote/dto/RewardDto.kt`, `data/mapper/RewardMapper.kt` | Kontrak JSON dan pemetaan domain. |
+| `data/repository/RewardRepositoryImpl.kt` | Bearer dari akun aktif dan refresh token lewat AuthRepository. |
+| `feature/rewards/RewardsViewModel.kt` | Loading/error/sukses, pembatalan saat akun berubah, pencegahan klik berulang, dan penyimpanan kunci percobaan penukaran di SavedStateHandle. |
+| `feature/rewards/RewardsScreen.kt` | Saldo, katalog server, konfirmasi/batal, saldo kurang, riwayat, dan pemeriksaan permintaan tertunda. |
+| `feature/admin/` | Peninjauan, jadwal, dan perubahan status melalui API admin yang sudah terintegrasi. |
+| `feature/home/`, `feature/donations/` | Ringkasan saldo serta daftar/detail donasi melalui API. |
 
-Semua lokasi pada tabel relatif terhadap `android/app/src/main/java/id/ac/loopy/`. Pada integrasi berikutnya, data akun aktif dan hasil API menggantikan data demo; jangan mengunggah ledger/saldo demo menjadi saldo server. Kredit poin dan keputusan admin tetap divalidasi server.
+Nama, biaya, status aktif, dan riwayat reward berasal dari server. Saldo tidak dikurangi secara optimistis di HP. Setelah POST berhasil, aplikasi membaca saldo terkini; saldo pada respons replay tidak dipakai sebagai saldo terbaru. Jika pembaruan gagal setelah POST berhasil, UI tetap menyatakan penukaran berhasil dan meminta muat ulang.
 
-## Backend API
+Respons jaringan yang hilang atau HTTP 5xx meninggalkan permintaan tertunda. Tombol pemeriksaan mengulangi reward dan Idempotency-Key yang sama; penukaran lain diblokir sampai hasilnya jelas. Kunci bertahan selama ViewModel/navigasi dan pemulihan SavedState Android tersedia. Ini bukan penyimpanan permanen lintas uninstall/force-stop. Riwayat transaksi tetap disimpan server.
 
-Jalankan backend lokal sesuai [panduan backend](backend.md). PostgreSQL diperlukan; VM tidak diperlukan. Setelah penggabungan dengan main, Vision tetap memakai migrasi versi 3, sedangkan katalog reward, snapshot redemption, dan ledger poin memakai versi 4. Jika database development pernah menjalankan versi 3 reward dari branch lama, migrasi mengenali tabelnya, memindahkan catatan versinya ke 4, lalu menerapkan Vision versi 3 tanpa menghapus saldo atau riwayat. Migrasi tidak memberikan poin retroaktif untuk donasi lama yang sudah selesai sebelum fitur ini tersedia.
+Demo E–F, database Room demo, route admin contoh, dan overload layar berbasis data contoh telah dihapus. Database demo yang mungkin pernah dibuat di HP tidak dibaca atau diunggah. Room untuk draft penjemputan dan pengaturan lokal tetap terpisah dari transaksi server. Font dan ikon Figma lokal tetap digunakan.
 
-| Endpoint | Akses dan perilaku |
+## Endpoint
+
+| Endpoint | Akses |
 | --- | --- |
-| `POST /v1/admin/donations/{id}/status` | ADMIN; body `{"targetStatus":"PICKED_UP","expectedVersion":2}` atau `{"targetStatus":"COMPLETED","expectedVersion":3}`. |
-| `GET /v1/donations` | USER; daftar hanya milik akun pada token; filter/pagination sama dengan antrean admin. |
-| `GET /v1/donations/{id}` | USER; detail dan riwayat hanya milik akun pada token. Akun lain mendapat 404. |
-| `GET /v1/points/balance` | USER; `balance` dan `updatedAt`. |
-| `GET /v1/rewards` | USER; `items` katalog aktif dengan `rewardId`, `name`, `description`, `icon`, `requiredPoints`, `type`, `isActive`. |
-| `POST /v1/redemptions` | USER; body `{"rewardId":"eco-supporter-badge"}` dan satu header `Idempotency-Key`. |
-| `GET /v1/redemptions` | USER; `items` riwayat sendiri dengan snapshot nama, deskripsi, ikon, tipe, biaya, dan waktu penukaran. |
+| `POST /v1/admin/donations/{id}/status` | ADMIN; `targetStatus` PICKED_UP/COMPLETED dan `expectedVersion`. |
+| `GET /v1/donations`, `GET /v1/donations/{id}` | USER; hanya donasi pemilik token. |
+| `GET /v1/points/balance` | USER; saldo ledger server. |
+| `GET /v1/rewards` | USER; katalog aktif. |
+| `POST /v1/redemptions` | USER; body `{ "rewardId": "..." }` dan header `Idempotency-Key`. |
+| `GET /v1/redemptions` | USER; riwayat snapshot reward akun sendiri. |
 
-ID reward awal: `eco-supporter-badge` (10), `loopy-digital-wallpaper` (20), dan `voucher-demo` (30). Voucher berlabel simulasi; tidak ada integrasi merchant atau transaksi uang. Reward digital pada tahap ini dicatat dan ditampilkan dalam riwayat; pengunduhan berkas wallpaper belum disediakan.
+Server memvalidasi peran, versi status, ketersediaan reward, harga dan saldo. Kredit donasi serta debit penukaran bersifat transaksional/idempoten. Lihat [kontrak API](api-contract.md). Migrasi Vision tetap versi 3 dan rewards versi 4; kompatibilitas database branch lama dipertahankan.
 
-Penukaran pertama mengembalikan 201 dengan `redemption`, `remainingBalance`, dan `replayed:false`. Pengulangan key yang sama untuk reward yang sama mengembalikan 200 dan redemption yang sama dengan `replayed:true`; `remainingBalance` pada replay adalah saldo setelah transaksi aslinya, sehingga klien perlu membaca saldo terkini bila ada transaksi lain. Key yang sama untuk reward berbeda menghasilkan 409 `IDEMPOTENCY_CONFLICT`. Gunakan 8–128 huruf ASCII, angka, underscore, atau tanda hubung; UUID cocok. Key dipertahankan untuk retry satu transaksi dan diganti untuk penukaran baru yang disengaja.
-
-Urutan wajib adalah `PICKUP_SCHEDULED → PICKED_UP → COMPLETED`. Hanya transisi terakhir memberikan 10 poin per pengajuan, berapa pun jumlah pakaian. Backend mengambil pemilik donasi, harga reward, role, dan saldo dari database. `expectedVersion` yang basi menghasilkan 409 `VERSION_CONFLICT`; skip/reverse/final menghasilkan 409 `INVALID_TRANSITION`. Saldo kurang menghasilkan 409 `INSUFFICIENT_POINTS`, reward nonaktif/tidak ditemukan menghasilkan 404 `REWARD_NOT_FOUND`.
-
-Penyelesaian mengunci pengajuan dan menyimpan status, riwayat, ledger, serta saldo dalam satu transaksi. Ledger memiliki `UNIQUE(donation_id)`. Penukaran mengunci akun, memeriksa idempotency dan harga aktif, lalu menyimpan snapshot redemption, debit ledger, dan saldo dalam satu transaksi. Kegagalan salah satu penulisan membatalkan semuanya. Dua key penukaran berbeda tetap tidak dapat menggunakan saldo yang sama secara bersamaan.
+Katalog awal server masih mencakup badge 10 poin, wallpaper 20 poin dan voucher simulasi 30 poin sesuai kontrak produk. Integrasi merchant serta pengunduhan berkas wallpaper belum tersedia; koneksi API tidak mengubah batasan hadiah tersebut.
 
 ## Verifikasi
 
-Backend: set `TEST_DATABASE_URL` ke PostgreSQL khusus pengujian, lalu jalankan `go test -count=1 -cover ./...`, `go vet ./...`, dan `go build ./...` dari `backend/go/`. `rewards_integration_test.go` memeriksa alur HTTP, role/ownership, urutan status, kredit sekali, replay/conflict, saldo kurang, konkurensi, dan rollback PostgreSQL.
+Dari `android/`: `./gradlew assembleDebug testDebugUnitTest lintDebug connectedDebugAndroidTest` (PowerShell: `.\\gradlew.bat`).
 
-Android: jalankan `./gradlew assembleDebug testDebugUnitTest lintDebug` serta `./gradlew connectedDebugAndroidTest`. Pada PowerShell gunakan `.\gradlew.bat`. `CompletionPersistenceTest` memeriksa kredit sekali, idempotensi, saldo kurang, rollback Room, dan tutup/buka database. `CompletionFlowTest` memeriksa navigasi admin → penyelesaian → batal/konfirmasi redeem → Reward-ku → saldo Home → detail donasi. Screenshot disimpan pada external files aplikasi dan disalin ke `/sdcard/Download/completion-*.png` pada emulator pengujian agar tetap tersedia setelah runner membersihkan aplikasi. Salinan lokal hasil QA berada di `artifacts/completion-rewards/` (diabaikan Git).
+- `RewardRepositoryHttpTest`: request Retrofit sungguhan ke server HTTP pengujian lokal; JSON, Bearer/refresh, path endpoint, body dan Idempotency-Key.
+- `RewardsViewModelTest`: retry respons tidak pasti, pemulihan kunci, replay, saldo terbaru, saldo kurang, kegagalan refresh setelah sukses, dan isolasi pergantian akun.
+- `RewardsScreenTest`: saldo kurang, batal tanpa POST, konfirmasi dan riwayat/saldo hasil repository. Fixture hanya ada di source test.
+- Backend: `TEST_DATABASE_URL=... go test ./...` dengan PostgreSQL pengujian.
 
-Status integrasi akun/API dan pembuktian hasil aktual dicatat pada [verification.md](verification.md). Pengujian lokal ini tidak membuktikan koneksi VM, HTTPS deployment, atau sinkronisasi cloud.
+Hasil aktual dicatat pada [verification.md](verification.md). Pengujian lokal tidak membuktikan deployment atau keterjangkauan VM tim.

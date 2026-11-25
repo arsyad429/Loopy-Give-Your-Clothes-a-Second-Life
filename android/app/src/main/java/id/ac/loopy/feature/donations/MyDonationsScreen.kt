@@ -15,7 +15,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.loopy.domain.model.DonationStatus
-import id.ac.loopy.feature.rewards.CompletionUiState
 import id.ac.loopy.ui.components.*
 import java.util.Locale
 
@@ -91,41 +90,5 @@ fun MyDonationsScreen(
                 LoopyButton("Perbarui daftar", viewModel::refresh, outlined = true)
             }
         }
-    }
-}
-
-@Composable
-@OptIn(ExperimentalLayoutApi::class)
-fun MyDonationsScreen(
-    state: CompletionUiState, onNavigate: (String) -> Unit,
-    onOpen: (String) -> Unit, onAccount: () -> Unit, onRetry: () -> Unit,
-) {
-    var filter by rememberSaveable { mutableStateOf("Semua") }
-    val items = state.donations.filter {
-        when (filter) {
-            "Aktif" -> it.status !in listOf("COMPLETED", "REJECTED")
-            "Selesai" -> it.status == "COMPLETED"
-            "Ditolak" -> it.status == "REJECTED"
-            else -> true
-        }
-    }
-    LoopyScreen("Donasiku", onAccount = onAccount, bottomBar = { UserBottomBar("s08", onNavigate) }) {
-        LoopyIntro("Setiap donasi\npunya cerita.", "Pantau perjalanan pakaian yang kamu bagikan.")
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf("Semua", "Aktif", "Selesai", "Ditolak").forEach { label ->
-                FilterChip(selected = filter == label, onClick = { filter = label }, label = { Text(label) }, shape = CircleShape, border = null,
-                    colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MaterialTheme.colorScheme.primary, selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        containerColor = MaterialTheme.colorScheme.surface, labelColor = MaterialTheme.colorScheme.onSurfaceVariant))
-            }
-        }
-        CompletionFeedback(state, onRetry)
-        if (!state.loading && items.isEmpty()) LoopyInfo("Belum ada hasil", "Tidak ada donasi pada filter ini.")
-        val active = items.filter { it.status !in listOf("COMPLETED", "REJECTED") }
-        val history = items.filter { it.status in listOf("COMPLETED", "REJECTED") }
-        if (active.isNotEmpty()) Text("Pengajuan aktif", style = MaterialTheme.typography.titleLarge)
-        active.forEach { item -> DonationCard(item) { onOpen(item.id) } }
-        if (history.isNotEmpty()) Text("Riwayat donasi", style = MaterialTheme.typography.titleLarge)
-        history.forEach { item -> DonationCard(item) { onOpen(item.id) } }
-        Text("Demo lokal · belum terhubung ke server.", style = MaterialTheme.typography.bodySmall)
     }
 }

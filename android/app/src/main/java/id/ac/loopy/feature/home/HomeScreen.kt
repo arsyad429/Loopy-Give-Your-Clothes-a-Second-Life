@@ -21,8 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import id.ac.loopy.feature.rewards.CompletionUiState
-import id.ac.loopy.ui.components.CompletionFeedback
 import id.ac.loopy.ui.components.DonationCard
 import id.ac.loopy.ui.components.LoopyAsset
 import id.ac.loopy.ui.components.LoopyButton
@@ -133,26 +131,6 @@ internal fun HomeContent(
                 TextButton(onClick = { showAccount = false }, enabled = !logoutBusy) { Text("Tutup") }
             },
         )
-    }
-}
-
-/** S04 preview with the separate local completion demo data. */
-@Composable
-internal fun HomeScreen(
-    state: CompletionUiState,
-    onNavigate: (String) -> Unit,
-    onDonation: (String) -> Unit,
-    onCheck: () -> Unit,
-    onAccount: () -> Unit,
-    onRetry: () -> Unit,
-) {
-    HomeLayout(name = "Arsyad", onNavigate = onNavigate, onAccount = onAccount, onCheck = onCheck) {
-        PointsCard(state.balance) { onNavigate("s10") }
-        CompletionFeedback(state, onRetry)
-        Text("Donasi terakhirmu", style = MaterialTheme.typography.titleLarge)
-        state.donations.firstOrNull()?.let { DonationCard(it) { onDonation(it.id) } }
-        if (!state.loading && state.donations.isEmpty()) LoopyInfo("Belum ada donasi", "Pengajuanmu akan muncul di sini.")
-        Text("Demo lokal", style = MaterialTheme.typography.bodySmall)
     }
 }
 

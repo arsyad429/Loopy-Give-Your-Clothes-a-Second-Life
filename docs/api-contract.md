@@ -35,7 +35,7 @@ Enum status: PENDING_REVIEW/PICKUP_SCHEDULED/PICKED_UP/COMPLETED/REJECTED. AI: P
 
 Pengajuan dan redemption menggunakan idempotency key dengan cakupan akun dan operasi untuk retry. Pada peninjauan admin, `expectedVersion` mencegah keputusan yang sama diterapkan dua kali. Klien membaca detail terbaru setelah `409`.
 
-Android memakai kontrak auth, pemeriksaan, pengajuan pickup, Donasiku, dan peninjauan/status admin di atas. Katalog dan penukaran reward di Android masih memakai demo Room khusus debug. AI dipanggil server dan hasilnya menjadi penilaian awal. OTP, settings, dan profil tambahan memerlukan kontrak tersendiri.
+Android memakai kontrak auth, pemeriksaan, pengajuan pickup, Donasiku, dan peninjauan/status admin di atas. Saldo, katalog, penukaran dan riwayat reward Android juga menggunakan endpoint akun aktif; demo Room E–F telah dihapus. AI dipanggil server dan hasilnya menjadi penilaian awal. OTP, settings, dan profil tambahan memerlukan kontrak tersendiri.
 
 ## Kontrak pemeriksaan pakaian Go
 
