@@ -12,6 +12,12 @@ import (
 	"unicode/utf8"
 )
 
+const (
+	MinPasswordLength = 8
+	MaxPasswordLength = 128
+	maxPasswordBytes  = 512
+)
+
 // User represents a public Loopy account profile.
 type User struct {
 	ID          string `json:"userId"`
@@ -78,7 +84,7 @@ func ValidateRegistration(req RegisterRequest) (RegisterRequest, error) {
 		fields["email"] = "Enter a valid email address (at most 254 bytes)."
 	}
 	if !ValidPassword(req.Password) {
-		fields["password"] = "Use 15–128 characters (at most 512 bytes)."
+		fields["password"] = fmt.Sprintf("Use %d–%d characters (at most %d bytes).", MinPasswordLength, MaxPasswordLength, maxPasswordBytes)
 	}
 	if len(fields) != 0 {
 		return req, &APIError{Status: 422, Code: "VALIDATION_ERROR", Message: "Check the submitted fields.", Fields: fields}
@@ -101,7 +107,7 @@ func ValidEmail(email string) bool {
 // ValidPassword checks passphrase rune and byte length policy.
 func ValidPassword(password string) bool {
 	n := utf8.RuneCountInString(password)
-	return utf8.ValidString(password) && n >= 15 && n <= 128 && len(password) <= 512
+	return utf8.ValidString(password) && n >= MinPasswordLength && n <= MaxPasswordLength && len(password) <= maxPasswordBytes
 }
 
 // NewID generates a random UUIDv4 string.

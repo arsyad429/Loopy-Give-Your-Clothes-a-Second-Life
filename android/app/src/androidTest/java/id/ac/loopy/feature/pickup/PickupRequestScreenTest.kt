@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -56,7 +57,7 @@ class PickupRequestScreenTest {
                     onAddressChange = { state = state.copy(pickupAddress = it, fieldErrors = state.fieldErrors - "pickupAddress") },
                     onCityChange = { state = state.copy(city = it, fieldErrors = state.fieldErrors - "city") },
                     onIncrementQuantity = { state = state.copy(quantity = state.quantity + 1) },
-                    onDecrementQuantity = {},
+                    onDecrementQuantity = { state = state.copy(quantity = state.quantity - 1) },
                     onDateSelected = {},
                     onTimeSelected = { state = state.copy(preferredTime = it, fieldErrors = state.fieldErrors - "preferredTime") },
                     onNotesChange = { state = state.copy(notes = it) },
@@ -96,6 +97,15 @@ class PickupRequestScreenTest {
         compose.onNodeWithContentDescription("Nomor telepon").performScrollTo().performTextInput("081234567890")
         compose.onNodeWithContentDescription("Alamat penjemputan").performScrollTo().performTextInput("Jl. Veteran No. 12")
         compose.onNodeWithContentDescription("Kota / Area").performScrollTo().performTextInput("Malang")
+
+        val decrease = compose.onNodeWithContentDescription("Kurangi jumlah pakaian")
+        val increase = compose.onNodeWithContentDescription("Tambah jumlah pakaian")
+        decrease.performScrollTo().assertIsNotEnabled()
+        increase.performClick()
+        compose.onNodeWithText("2 pakaian").assertIsDisplayed()
+        decrease.performClick().assertIsNotEnabled()
+        compose.onNodeWithText("1 pakaian").assertIsDisplayed()
+
         compose.onNodeWithText(PreferredTimeSlots.first()).performScrollTo().performClick()
 
         compose.onNodeWithText("Ajukan Penjemputan").performClick()

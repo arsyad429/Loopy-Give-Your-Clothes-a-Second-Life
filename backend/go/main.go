@@ -159,7 +159,7 @@ func createAdmin(ctx context.Context, pg *store.PGStore) error {
 		Password: os.Getenv("LOOPY_ADMIN_PASSWORD"),
 	})
 	if err != nil {
-		return errors.New("set valid LOOPY_ADMIN_NAME, LOOPY_ADMIN_EMAIL, LOOPY_ADMIN_PASSWORD (15–128 characters)")
+		return fmt.Errorf("set valid LOOPY_ADMIN_NAME, LOOPY_ADMIN_EMAIL, LOOPY_ADMIN_PASSWORD (%d–%d characters)", domain.MinPasswordLength, domain.MaxPasswordLength)
 	}
 	account, err := httpapi.MakeAccount(req)
 	if err != nil {

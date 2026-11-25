@@ -149,7 +149,7 @@ No default user or admin password is seeded. In Bash, enter a password privately
 ```bash
 export LOOPY_ADMIN_NAME='Loopy Admin'
 export LOOPY_ADMIN_EMAIL='admin@example.com'
-read -r -s -p 'Admin password (15–128 characters): ' LOOPY_ADMIN_PASSWORD
+read -r -s -p 'Admin password (8–128 characters): ' LOOPY_ADMIN_PASSWORD
 printf '\n'
 export LOOPY_ADMIN_PASSWORD
 docker compose -f compose.lxc.yaml run --rm \

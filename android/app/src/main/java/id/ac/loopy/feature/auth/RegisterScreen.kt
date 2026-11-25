@@ -16,7 +16,7 @@ import id.ac.loopy.ui.components.LoopyIntro
 import id.ac.loopy.ui.components.LoopyScreen
 import id.ac.loopy.ui.components.LoopyTextField
 
-private const val MinimumPasswordLength = 15
+private const val MinimumPasswordLength = 8
 private const val MaximumPasswordLength = 128
 private const val MaximumPasswordBytes = 512
 

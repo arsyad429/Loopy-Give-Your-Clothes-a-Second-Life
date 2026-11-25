@@ -161,7 +161,8 @@ func TestPostgresAuthFlow(t *testing.T) {
 		}
 	}
 
-	registered := decodeSession(request("POST", "/v1/auth/register", `{"name":" Neva ","email":" Neva@Example.test ","password":"a long sample passphrase"}`, ""), 201)
+	assertStatus(request("POST", "/v1/auth/register", `{"name":"Neva","email":"neva@example.test","password":"Loopy!8"}`, ""), 422)
+	registered := decodeSession(request("POST", "/v1/auth/register", `{"name":" Neva ","email":" Neva@Example.test ","password":"Loopy!82"}`, ""), 201)
 	if registered.User.Role != "USER" || registered.User.TotalPoints != 0 || registered.User.Name != "Neva" || registered.User.Email != "neva@example.test" {
 		t.Fatal("registration defaults/normalization failed")
 	}
@@ -175,7 +176,7 @@ func TestPostgresAuthFlow(t *testing.T) {
 	}
 	assertStatus(request("GET", "/v1/auth/me", "", registered.AccessToken), 200)
 	assertStatus(request("GET", "/v1/auth/me", "", registered.RefreshToken), 401)
-	second := decodeSession(request("POST", "/v1/auth/login", `{"email":"NEVA@example.test","password":"a long sample passphrase"}`, ""), 200)
+	second := decodeSession(request("POST", "/v1/auth/login", `{"email":"NEVA@example.test","password":"Loopy!82"}`, ""), 200)
 	refreshed := decodeSession(request("POST", "/v1/auth/refresh", fmt.Sprintf(`{"refreshToken":%q}`, registered.RefreshToken), ""), 200)
 	assertStatus(request("GET", "/v1/auth/me", "", registered.AccessToken), 401)
 	assertStatus(request("GET", "/v1/auth/me", "", refreshed.AccessToken), 200)
