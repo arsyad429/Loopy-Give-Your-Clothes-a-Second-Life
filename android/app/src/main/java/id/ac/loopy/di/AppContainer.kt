@@ -49,6 +49,7 @@ class AppContainer(context: Context) {
     )
 
     internal val adminRepository = AdminRepositoryImpl(retrofit.create(AdminApi::class.java), authRepository)
+    internal val adminPickupScheduleDrafts = database.adminPickupScheduleDraftDao()
 
     val donationRepository = DonationRepositoryImpl(
         retrofit.create(DonationApi::class.java),
