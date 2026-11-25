@@ -24,6 +24,22 @@ class AuthRepositoryImpl(private val api: AuthApi) {
         current.value = api.register(RegisterRequest(name, email, password))
     }
 
+    suspend fun logout() = mutex.withLock {
+        val active = current.value ?: return@withLock
+        try {
+            try {
+                api.logout("Bearer ${active.accessToken}")
+            } catch (error: HttpException) {
+                if (error.code() != 401) throw error
+                val renewed = refreshLocked(active)
+                api.logout("Bearer ${renewed.accessToken}")
+            }
+        } catch (error: HttpException) {
+            if (error.code() != 401) throw error
+        }
+        current.value = null
+    }
+
     suspend fun <T> withBearer(request: suspend (String) -> T): T {
         val original = current.value ?: error("Silakan masuk terlebih dahulu.")
         try {
@@ -39,17 +55,19 @@ class AuthRepositoryImpl(private val api: AuthApi) {
             if (active.accessToken != original.accessToken) {
                 active
             } else {
-                try {
-                    api.refresh(RefreshRequest(active.refreshToken)).also {
-                        current.value = it
-                    }
-                } catch (e: HttpException) {
-                    if (e.code() == 401) current.value = null
-                    throw e
-                }
+                refreshLocked(active)
             }
         }
 
         return request("Bearer ${renewed.accessToken}")
+    }
+
+    private suspend fun refreshLocked(active: SessionDto): SessionDto {
+        try {
+            return api.refresh(RefreshRequest(active.refreshToken)).also { current.value = it }
+        } catch (error: HttpException) {
+            if (error.code() == 401) current.value = null
+            throw error
+        }
     }
 }

@@ -50,12 +50,19 @@ fun HomeScreen(
     onBack: () -> Unit,
     onCheckClothing: () -> Unit,
     onMyDonations: (() -> Unit)? = null,
+    onLogout: (() -> Unit)? = null,
+    logoutBusy: Boolean = false,
+    logoutError: String? = null,
 ) {
     LoopyScreen(title = "Loopy", onBack = onBack) {
         Text("Halo, $name", style = MaterialTheme.typography.headlineMedium)
         LoopyButton("Periksa pakaian", onClick = onCheckClothing)
         if (onMyDonations != null) {
             LoopyButton("Donasiku", onClick = onMyDonations, outlined = true)
+        }
+        logoutError?.let { LoopyInfo("Gagal keluar", it, isError = true) }
+        if (onLogout != null) {
+            LoopyButton(if (logoutBusy) "Mengakhiri sesi…" else "Keluar", onLogout, enabled = !logoutBusy, outlined = true)
         }
     }
 }

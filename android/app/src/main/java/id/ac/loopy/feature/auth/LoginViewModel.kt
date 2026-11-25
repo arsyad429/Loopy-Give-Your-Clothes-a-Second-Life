@@ -47,6 +47,28 @@ class LoginViewModel(private val auth: AuthRepositoryImpl) : ViewModel() {
         auth.register(name, email, password)
     }
 
+    private val _logoutError = MutableStateFlow<String?>(null)
+    val logoutError = _logoutError.asStateFlow()
+
+    fun logout(onSuccess: () -> Unit) {
+        if (_busy.value) return
+        _busy.value = true
+        _logoutError.value = null
+        viewModelScope.launch {
+            try {
+                auth.logout()
+                clearFeedback()
+                onSuccess()
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                _logoutError.value = "Sesi belum bisa diakhiri. Periksa koneksi, lalu coba lagi."
+            } finally {
+                _busy.value = false
+            }
+        }
+    }
+
     fun clearFeedback() {
         _loginFeedback.value = null
         _registerFeedback.value = null

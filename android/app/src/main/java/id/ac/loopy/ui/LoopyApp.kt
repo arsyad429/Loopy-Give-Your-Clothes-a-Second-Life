@@ -39,8 +39,11 @@ import id.ac.loopy.BuildConfig
 import id.ac.loopy.di.AppContainer
 import id.ac.loopy.domain.model.DonationStatus
 import id.ac.loopy.feature.admin.AdminDashboardScreen
+import id.ac.loopy.feature.admin.AdminDashboardViewModel
 import id.ac.loopy.feature.admin.AdminDonationDetailScreen
+import id.ac.loopy.feature.admin.AdminDonationDetailViewModel
 import id.ac.loopy.feature.admin.DonationRequestsScreen
+import id.ac.loopy.feature.admin.DonationRequestsViewModel
 import id.ac.loopy.feature.admin.SampleDonationReviews
 import id.ac.loopy.feature.admin.formatPickupSchedule
 import id.ac.loopy.feature.auth.LoginScreen
@@ -83,9 +86,8 @@ private val PreviewScreens = listOf(
     "s08" to "S08 · My Donations",
     "s09" to "S09 · Donation Detail",
     "s10" to "S10 · Rewards & My Rewards",
-    "a01" to "A01 · Admin Dashboard",
-    "a02" to "A02 · Donation Requests",
-    "a03/LP024" to "A03 · Admin Donation Detail",
+    "demo-admin-requests" to "A02 · Contoh antrean donasi",
+    "demo-admin-review/LP024" to "A03 · Contoh verifikasi donasi",
     "s11" to "S11 · Profil User",
     "s12" to "S12 · Settings",
     "a04" to "A04 · Profil Admin",
@@ -106,12 +108,14 @@ fun LoopyApp(
     val goBack: () -> Unit = { completion?.dismissMessage(); nav.popBackStack() }
     val clothingCheckRepository = container.clothingCheckRepository
     val donationRepository = container.donationRepository
+    val adminRepository = container.adminRepository
     val authFactory = remember(container) {
         viewModelFactory { initializer { LoginViewModel(container.authRepository) } }
     }
     val authModel: LoginViewModel = viewModel(factory = authFactory)
     val session by authModel.session.collectAsStateWithLifecycle()
     val submitting by authModel.busy.collectAsStateWithLifecycle()
+    val logoutError by authModel.logoutError.collectAsStateWithLifecycle()
     val loginFeedback by authModel.loginFeedback.collectAsStateWithLifecycle()
     val registerFeedback by authModel.registerFeedback.collectAsStateWithLifecycle()
 
@@ -127,6 +131,7 @@ fun LoopyApp(
         }
     }
 
+    val logout: () -> Unit = { authModel.logout { goToAccountScreen(null) } }
     val completionState = completion?.state?.collectAsStateWithLifecycle()?.value ?: CompletionUiState()
     val userNavigate: (String) -> Unit = { route ->
         completion?.dismissMessage()
@@ -225,6 +230,9 @@ fun LoopyApp(
                             onBack = goBack,
                             onCheckClothing = { nav.navigate("s05") },
                             onMyDonations = { nav.navigate("s08") },
+                            onLogout = logout,
+                            logoutBusy = submitting,
+                            logoutError = logoutError,
                         )
                     }
                 }
@@ -435,7 +443,53 @@ fun LoopyApp(
                     if (BuildConfig.DEBUG && completion != null && session == null) RewardsScreen(completionState, userNavigate, account, completion::redeem, refreshCompletion, completion::dismissMessage)
                     else TemplateScreen("Rewards", "Integrasi donasi dan reward ke akun aktif belum terhubung.", goBack)
                 }
-                composable("a01") { AdminDashboardScreen(goBack) }
+                composable("a01") { entry ->
+                    val admin = session?.user
+                    if (admin?.role != "ADMIN") {
+                        LaunchedEffect(admin?.role) { goToAccountScreen(admin?.role) }
+                        return@composable
+                    }
+                    val factory = remember(adminRepository) {
+                        viewModelFactory { initializer { AdminDashboardViewModel(adminRepository) } }
+                    }
+                    val model = viewModel<AdminDashboardViewModel>(entry, key = admin.userId, factory = factory)
+                    AdminDashboardScreen(
+                        model = model,
+                        name = admin.name,
+                        onOpenRequests = { nav.navigate("a02") },
+                        onLogout = logout,
+                        logoutBusy = submitting,
+                        logoutError = logoutError,
+                    )
+                }
+                composable("a02") { entry ->
+                    val admin = session?.user
+                    if (admin?.role != "ADMIN") {
+                        LaunchedEffect(admin?.role) { goToAccountScreen(admin?.role) }
+                        return@composable
+                    }
+                    val factory = remember(adminRepository) {
+                        viewModelFactory { initializer { DonationRequestsViewModel(adminRepository) } }
+                    }
+                    val model = viewModel<DonationRequestsViewModel>(entry, key = admin.userId, factory = factory)
+                    DonationRequestsScreen(model, goBack) { id -> nav.navigate("a03/${Uri.encode(id)}") }
+                }
+                composable(
+                    route = "a03/{id}",
+                    arguments = listOf(navArgument("id") { type = NavType.StringType }),
+                ) { entry ->
+                    val admin = session?.user
+                    if (admin?.role != "ADMIN") {
+                        LaunchedEffect(admin?.role) { goToAccountScreen(admin?.role) }
+                        return@composable
+                    }
+                    val id = entry.arguments?.getString("id").orEmpty()
+                    val factory = remember(adminRepository, id) {
+                        viewModelFactory { initializer { AdminDonationDetailViewModel(id, adminRepository) } }
+                    }
+                    val model = viewModel<AdminDonationDetailViewModel>(entry, key = admin.userId, factory = factory)
+                    AdminDonationDetailScreen(model, clothingCheckRepository::downloadPhoto, goBack)
+                }
                 composable("s11") { UserProfileScreen(goBack) }
                 composable("s12") { SettingsScreen(goBack) }
                 composable("a04") { AdminProfileScreen(goBack) }
@@ -473,15 +527,15 @@ fun LoopyApp(
                         )
                     }
 
-                    composable("a02") {
+                    composable("demo-admin-requests") {
                         DonationRequestsScreen(
                             reviews = previews,
                             onBack = goBack,
-                            onOpen = { id -> nav.navigate("a03/$id") },
+                            onOpen = { id -> nav.navigate("demo-admin-review/$id") },
                         )
                     }
 
-                    composable("a03/{id}") { entry ->
+                    composable("demo-admin-review/{id}") { entry ->
                         val review = previews.firstOrNull { it.id == entry.arguments?.getString("id") }
 
                         if (review == null) {

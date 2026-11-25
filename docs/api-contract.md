@@ -2,7 +2,7 @@
 
 Akun, pemeriksaan pakaian, dan admin berjalan pada satu API Go. Gunakan base URL yang sama untuk login, hasil pemeriksaan, dan foto privat. [Panduan backend](backend.md) · [Kontrak autentikasi Go](auth-go.md) · [Kontrak peninjauan donasi Go](donation-review-go.md)
 
-**Endpoint yang tersedia** mencakup health/readiness, autentikasi, pemeriksaan/foto privat, peninjauan/status admin, pembacaan donasi milik pengguna, saldo, katalog, penukaran, dan riwayat reward. [Kontrak penyelesaian dan reward](completion-rewards.md). `POST /v1/donations` masih direncanakan.
+**Endpoint yang tersedia** mencakup health/readiness, autentikasi, pemeriksaan/foto privat, pengajuan dan pembacaan donasi, peninjauan/status admin, saldo, katalog, penukaran, dan riwayat reward. [Kontrak penyelesaian dan reward](completion-rewards.md).
 
 | Metode/path | Akses | Request → respons target | Fitur |
 | --- | --- | --- | --- |
@@ -32,9 +32,9 @@ Nama akun/foto/jenis pakaian diambil server dari akun/check, bukan dipercaya dar
 
 Enum status: PENDING_REVIEW/PICKUP_SCHEDULED/PICKED_UP/COMPLETED/REJECTED. AI: POTENTIALLY_ELIGIBLE/NEEDS_RECHECK/NOT_RECOMMENDED. Error usulan `{"error":{"code":"INSUFFICIENT_POINTS","message":"Poin belum cukup","fieldErrors":{}}}`. Status: 400/422 input,401 sesi,403 akses,404 tidak ditemukan,409 concurrency/idempotency conflict,413 file besar,415 MIME,429 rate limit,502/503 AI. Jangan membocorkan stack trace/PII.
 
-Rencana idempotency untuk pengajuan dan redemption memakai actor, operation, key, dan hash payload. Pada peninjauan admin, `expectedVersion` mencegah keputusan yang sama diterapkan dua kali. Klien membaca detail terbaru setelah `409`.
+Pengajuan dan redemption menggunakan idempotency key dengan cakupan akun dan operasi untuk retry. Pada peninjauan admin, `expectedVersion` mencegah keputusan yang sama diterapkan dua kali. Klien membaca detail terbaru setelah `409`.
 
-Android telah menggunakan kontrak auth dan pemeriksaan di atas. Integrasi API admin/donasi/reward ke Android serta endpoint pengajuan pengguna masih direncanakan. Demo Room untuk penyelesaian dan reward terpisah dari sesi akun server. AI dipanggil server dan hasilnya menjadi penilaian awal. OTP, settings, dan profil tambahan memerlukan kontrak tersendiri.
+Android memakai kontrak auth, pemeriksaan, pengajuan pickup, Donasiku, dan peninjauan/status admin di atas. Katalog dan penukaran reward di Android masih memakai demo Room khusus debug. AI dipanggil server dan hasilnya menjadi penilaian awal. OTP, settings, dan profil tambahan memerlukan kontrak tersendiri.
 
 ## Kontrak pemeriksaan pakaian Go
 

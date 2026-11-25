@@ -7,10 +7,12 @@ import id.ac.loopy.data.local.LoopyDatabase
 import id.ac.loopy.data.local.CompletionDemoDatabase
 import id.ac.loopy.data.repository.CompletionDemoRepository
 import id.ac.loopy.data.local.preferences.UserPreferencesDataSource
+import id.ac.loopy.data.remote.api.AdminApi
 import id.ac.loopy.data.remote.api.AuthApi
 import id.ac.loopy.data.remote.api.ClothingCheckApi
 import id.ac.loopy.data.remote.api.DonationApi
 import id.ac.loopy.data.remote.api.HealthApi
+import id.ac.loopy.data.repository.AdminRepositoryImpl
 import id.ac.loopy.data.repository.AuthRepositoryImpl
 import id.ac.loopy.data.repository.ClothingCheckRepositoryImpl
 import id.ac.loopy.data.repository.DonationRepositoryImpl
@@ -43,6 +45,8 @@ class AppContainer(context: Context) {
         retrofit.create(ClothingCheckApi::class.java),
         authRepository,
     )
+
+    internal val adminRepository = AdminRepositoryImpl(retrofit.create(AdminApi::class.java), authRepository)
 
     val donationRepository = DonationRepositoryImpl(
         retrofit.create(DonationApi::class.java),

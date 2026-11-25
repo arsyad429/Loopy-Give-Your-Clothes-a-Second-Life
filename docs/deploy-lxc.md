@@ -2,7 +2,7 @@
 
 This guide assumes a **Proxmox unprivileged LXC running Ubuntu 24.04/26.04 or Debian 12/13**, with systemd and a reachable LAN IP. Run the Linux commands as root **inside the LXC**, except the explicitly marked Proxmox host command. If Docker already works there, skip its installation.
 
-The repository provides [`compose.lxc.yaml`](../compose.lxc.yaml), a standalone deployment file for the Go API and PostgreSQL. It adds restart policies, bounded container logs, a required database password, and a configurable API bind address. PostgreSQL has persistent storage and no published port. The Android build container is not included. Auth is the only implemented business feature; see [auth-go.md](auth-go.md).
+The repository provides [`compose.lxc.yaml`](../compose.lxc.yaml), a standalone deployment file for the Go API and PostgreSQL. It adds restart policies, bounded container logs, a required database password, and a configurable API bind address. PostgreSQL has persistent storage and no published port. The Android build container is not included. The API serves auth, clothing checks, pickup submissions, donation review and status, and rewards. See the [API contract](api-contract.md).
 
 No remote deployment has been performed by Codex. Docker/LXC runtime behavior must be verified on your server using the checks below.
 
@@ -125,7 +125,7 @@ docker compose -f compose.lxc.yaml up --build -d --wait
 docker compose -f compose.lxc.yaml ps
 ```
 
-The first build downloads Go dependencies and images. The API runs account/session migrations automatically. There is no separate SQL import or Go installation on the LXC.
+The first build downloads Go dependencies and images. The API applies the SQL migrations automatically. There is no separate SQL import or Go installation on the LXC.
 
 For LAN binding, verify inside the LXC, replacing the example IP:
 
@@ -169,9 +169,16 @@ cd android
 ./gradlew assembleDebug -PLOOPY_API_BASE_URL=http://192.168.1.50:8080/
 ```
 
-Docker on the LXC runs the API; Android remains on your emulator/device. Setting `LOOPY_API_BASE_URL` on the server does not reconfigure an APK already installed on a phone. API deployment also does not implement the pending Android auth screens/repository wiring.
+Docker on the LXC runs the API. Pass the API URL when building the APK, then install the new APK on the device. The debug property is `LOOPY_API_BASE_URL`.
 
-For public use, terminate HTTPS at your reverse proxy and set Android to `https://api.your-domain.com/`. For example, with Caddy installed directly in this same LXC, leave `API_BIND_ADDRESS=127.0.0.1` and configure:
+For release builds, terminate HTTPS at your reverse proxy and set the Android base URL via Gradle. Configure release signing before distributing the APK.
+
+```sh
+cd android
+./gradlew assembleRelease -PLOOPY_RELEASE_API_BASE_URL=https://api.your-domain.com/
+```
+
+For example, with Caddy installed directly in the same LXC, use `API_BIND_ADDRESS=127.0.0.1` and configure:
 
 ```caddyfile
 api.your-domain.com {
