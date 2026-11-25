@@ -1,3 +1,5 @@
+import java.net.URI
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -33,8 +35,16 @@ android {
             buildConfigField("String", "API_BASE_URL", "\"$apiUrl\"")
         }
         release {
-            // Ganti dengan endpoint HTTPS deployment sebelum rilis.
-            buildConfigField("String", "API_BASE_URL", "\"https://api.example.invalid/\"")
+            // Build verifikasi bisa berjalan tanpa endpoint deployment.
+            val property = "LOOPY_RELEASE_API_BASE_URL"
+            val apiUrl = providers.gradleProperty(property).getOrElse("https://api.example.invalid/")
+            val invalidUrl = "$property harus berupa base URL HTTPS yang diakhiri /"
+            val uri = requireNotNull(runCatching { URI(apiUrl) }.getOrNull()) { invalidUrl }
+            require(
+                uri.scheme == "https" && uri.host != null && uri.userInfo == null &&
+                    uri.query == null && uri.fragment == null && apiUrl.endsWith("/"),
+            ) { invalidUrl }
+            buildConfigField("String", "API_BASE_URL", "\"${uri.toASCIIString()}\"")
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }

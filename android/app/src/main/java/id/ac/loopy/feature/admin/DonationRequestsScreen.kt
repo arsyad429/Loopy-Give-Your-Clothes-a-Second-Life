@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,7 +20,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.loopy.domain.model.DonationStatus
+import id.ac.loopy.ui.components.LoopyButton
 import id.ac.loopy.ui.components.LoopyInfo
 import id.ac.loopy.ui.components.LoopyIntro
 import id.ac.loopy.ui.components.LoopyScreen
@@ -80,22 +85,79 @@ internal fun DonationRequestsScreen(
         }
 
         visibleReviews.forEach { review ->
-            Card(
-                onClick = { onOpen(review.id) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(18.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Text("#${review.id} · ${review.donor}", style = MaterialTheme.typography.titleMedium)
-                    Text("${review.quantity} pakaian · ${review.city}", style = MaterialTheme.typography.bodyMedium)
-                    Text("Diajukan ${review.submittedAt}", style = MaterialTheme.typography.bodySmall)
-                    StatusBadge(review.status)
-                }
+            DonationQueueCard(review.id, review.donor, review.quantity, review.city, review.submittedAt, review.status) {
+                onOpen(review.id)
             }
+        }
+    }
+}
+
+private val queueFilters = listOf(
+    DonationStatus.PENDING_REVIEW to "Pending",
+    DonationStatus.PICKUP_SCHEDULED to "Terjadwal",
+    DonationStatus.PICKED_UP to "Dijemput",
+    DonationStatus.COMPLETED to "Selesai",
+    DonationStatus.REJECTED to "Ditolak",
+)
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+internal fun DonationRequestsScreen(
+    model: DonationRequestsViewModel,
+    onBack: () -> Unit,
+    onOpen: (String) -> Unit,
+) {
+    val state by model.state.collectAsStateWithLifecycle()
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { model.refresh() }
+
+    LoopyScreen(title = "Pengajuan", onBack = onBack) {
+        LoopyIntro("Antrean donasi", "Periksa pengajuan yang paling lama menunggu.")
+        LoopyTextField("Cari pengajuan", state.query, model::search, placeholder = "ID, nama, atau kota")
+
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            queueFilters.forEach { (status, label) ->
+                FilterChip(selected = state.status == status, onClick = { model.filter(status) }, label = { Text(label) })
+            }
+        }
+
+        state.items.forEach { item ->
+            DonationQueueCard(item.donationId, item.donorName, item.quantity, item.city, formatAdminTimestamp(item.createdAt), item.status) {
+                onOpen(item.donationId)
+            }
+        }
+        when {
+            state.loading -> CircularProgressIndicator()
+            state.error != null -> {
+                LoopyInfo("Antrean belum tersedia", state.error.orEmpty(), isError = true)
+                LoopyButton("Coba lagi", model::retry, outlined = true)
+            }
+            state.items.isEmpty() -> LoopyInfo("Belum ada pengajuan", "Coba kata kunci atau pilih status lain.")
+            state.nextCursor != null -> LoopyButton("Muat pengajuan berikutnya", model::loadMore, outlined = true)
+        }
+    }
+}
+
+@Composable
+private fun DonationQueueCard(
+    id: String,
+    donor: String,
+    quantity: Int,
+    city: String,
+    submittedAt: String,
+    status: DonationStatus,
+    onClick: () -> Unit,
+) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+    ) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("#$id · $donor", style = MaterialTheme.typography.titleMedium)
+            Text("$quantity pakaian · $city", style = MaterialTheme.typography.bodyMedium)
+            Text("Diajukan $submittedAt", style = MaterialTheme.typography.bodySmall)
+            StatusBadge(status)
         }
     }
 }

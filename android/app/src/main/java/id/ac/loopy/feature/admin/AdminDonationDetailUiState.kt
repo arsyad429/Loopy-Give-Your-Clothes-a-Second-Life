@@ -1,6 +1,46 @@
 package id.ac.loopy.feature.admin
 
+import id.ac.loopy.domain.model.AiResult
+import id.ac.loopy.domain.model.DonationRequest
 import id.ac.loopy.domain.model.DonationStatus
+import java.text.SimpleDateFormat
+import java.util.Locale
+
+internal data class AdminDonationDetailUiState(
+    val donation: DonationRequest? = null,
+    val busy: Boolean = false,
+    val message: String? = null,
+    val error: String? = null,
+)
+
+internal fun DonationRequest.toReview(): DonationReview = DonationReview(
+    id = donationId,
+    submittedAt = formatAdminTimestamp(createdAt),
+    donor = donorName,
+    city = city,
+    phone = phoneNumber,
+    address = pickupAddress,
+    clothing = clothingCheck.clothingType.label,
+    quantity = quantity,
+    assessment = when (clothingCheck.aiResult) {
+        AiResult.POTENTIALLY_ELIGIBLE -> "Berpotensi layak"
+        AiResult.NEEDS_RECHECK -> "Perlu dicek ulang"
+        AiResult.NOT_RECOMMENDED -> "Tidak direkomendasikan"
+    },
+    assessmentDescription = clothingCheck.aiDescription,
+    preference = "$preferredDate · $preferredTime",
+    notes = notes,
+    status = status,
+    schedule = scheduledAt?.let(::formatAdminTimestamp),
+    rejectionReason = rejectionReason,
+)
+
+internal fun formatAdminTimestamp(value: String): String {
+    val withoutFraction = if (value.endsWith("Z") && '.' in value) value.substringBefore('.') + "Z" else value
+    val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ROOT).apply { isLenient = false }
+    val at = runCatching { parser.parse(withoutFraction)?.time }.getOrNull()
+    return at?.let(::formatPickupSchedule) ?: value
+}
 
 internal data class DonationReview(
     val id: String,

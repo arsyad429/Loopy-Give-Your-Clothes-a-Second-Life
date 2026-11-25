@@ -3,6 +3,7 @@ package id.ac.loopy.feature.admin
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,12 +24,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -36,7 +41,9 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.loopy.R
+import id.ac.loopy.domain.model.DonationStatusHistory
 import id.ac.loopy.domain.model.DonationStatus
 import id.ac.loopy.ui.components.LoopyButton
 import id.ac.loopy.ui.components.LoopyInfo
@@ -45,6 +52,9 @@ import id.ac.loopy.ui.components.RejectRequestDialog
 import id.ac.loopy.ui.components.ScheduleConfirmDialog
 import id.ac.loopy.ui.components.StatusBadge
 import id.ac.loopy.ui.components.LoopyCard
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -57,6 +67,54 @@ private const val PastPickupMessage = "Jadwal ini sudah lewat. Pilih tanggal ata
 
 @Composable
 internal fun AdminDonationDetailScreen(
+    model: AdminDonationDetailViewModel,
+    loadPhoto: suspend (String) -> ByteArray,
+    onBack: () -> Unit,
+) {
+    val state by model.state.collectAsStateWithLifecycle()
+    val donation = state.donation
+    if (donation == null) {
+        LoopyScreen(title = "Verifikasi donasi", onBack = onBack) {
+            if (state.busy) CircularProgressIndicator()
+            state.error?.let {
+                LoopyInfo("Detail belum tersedia", it, isError = true)
+                LoopyButton("Muat ulang detail", model::refresh, outlined = true)
+            }
+        }
+        return
+    }
+
+    val checkId = donation.clothingCheck.checkId
+    val photo by produceState<ImageBitmap?>(null, checkId) {
+        value = try {
+            val bytes = loadPhoto(checkId)
+            withContext(Dispatchers.Default) {
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+            }
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (_: Exception) {
+            null
+        }
+    }
+    val review = remember(donation) { donation.toReview() }
+    AdminDonationDetailScreen(
+        review = review,
+        onBack = onBack,
+        onSchedule = model::schedule,
+        onReject = model::reject,
+        photo = photo,
+        onAdvance = model::advance,
+        busy = state.busy,
+        completionMessage = state.message,
+        completionError = state.error,
+        history = donation.history,
+        live = true,
+    )
+}
+
+@Composable
+internal fun AdminDonationDetailScreen(
     review: DonationReview,
     onBack: () -> Unit,
     onSchedule: (Long) -> Unit,
@@ -66,6 +124,8 @@ internal fun AdminDonationDetailScreen(
     busy: Boolean = false,
     completionMessage: String? = null,
     completionError: String? = null,
+    history: List<DonationStatusHistory> = emptyList(),
+    live: Boolean = false,
 ) {
     var advanceOpen by rememberSaveable(review.id) { mutableStateOf(false) }
     val nextStatus = when (review.status) {
@@ -98,7 +158,7 @@ internal fun AdminDonationDetailScreen(
                     )
                 }
 
-                LoopyButton("Setujui & jadwalkan", onClick = {
+                LoopyButton("Setujui & jadwalkan", enabled = !busy, onClick = {
                     scheduleError = when {
                         date == 0L && minutes < 0 -> "Pilih tanggal dan jam penjemputan terlebih dahulu."
                         date == 0L -> "Pilih tanggal penjemputan terlebih dahulu."
@@ -109,7 +169,7 @@ internal fun AdminDonationDetailScreen(
                     scheduleOpen = scheduleError == null
                 })
 
-                LoopyButton("Tolak pengajuan", onClick = { rejectionOpen = true }, outlined = true)
+                LoopyButton("Tolak pengajuan", onClick = { rejectionOpen = true }, enabled = !busy, outlined = true)
             }
         } else if (onAdvance != null && nextStatus != null) {
             {
@@ -130,7 +190,8 @@ internal fun AdminDonationDetailScreen(
             LoopyInfo("Donasi selesai", "10 poin telah ditambahkan satu kali untuk pengajuan ini.")
         }
 
-        ClothingPhoto(review.clothing, photo)
+        if (busy && live) Text("Menyimpan perubahan…", style = MaterialTheme.typography.bodySmall)
+        ClothingPhoto(review.clothing, photo, live)
         LoopyInfo(review.assessment, review.assessmentDescription)
 
         Text("Data pengajuan", style = MaterialTheme.typography.titleLarge)
@@ -152,11 +213,20 @@ internal fun AdminDonationDetailScreen(
         review.schedule?.let { LoopyInfo("Jadwal final", it) }
         review.rejectionReason?.let { LoopyInfo("Alasan penolakan", it, isError = true) }
 
+        if (history.isNotEmpty()) {
+            Text("Riwayat status", style = MaterialTheme.typography.titleLarge)
+            history.forEach { event ->
+                StatusBadge(event.newStatus)
+                Text(formatAdminTimestamp(event.updatedAt), style = MaterialTheme.typography.bodySmall)
+            }
+        }
+
         if (pending) {
             Text("Jadwal final", style = MaterialTheme.typography.titleLarge)
 
             LoopyButton(
                 label = if (date == 0L) "Pilih tanggal" else formatPickupDate(date),
+                enabled = !busy,
                 onClick = {
                     selectPickupDate(context, date) {
                         date = it
@@ -168,6 +238,7 @@ internal fun AdminDonationDetailScreen(
 
             LoopyButton(
                 label = if (minutes < 0) "Pilih jam (WIB)" else String.format(Indonesian, "%02d.%02d WIB", minutes / 60, minutes % 60),
+                enabled = !busy,
                 onClick = {
                     val initial = if (minutes >= 0) minutes else 9 * 60
 
@@ -222,7 +293,7 @@ internal fun AdminDonationDetailScreen(
 }
 
 @Composable
-private fun ClothingPhoto(clothing: String, photo: ImageBitmap?) {
+private fun ClothingPhoto(clothing: String, photo: ImageBitmap?, live: Boolean) {
     val colors = MaterialTheme.colorScheme
 
     if (photo != null) {
@@ -249,7 +320,7 @@ private fun ClothingPhoto(clothing: String, photo: ImageBitmap?) {
                     modifier = Modifier.size(48.dp),
                 )
 
-                Text("$clothing · Ilustrasi", color = colors.onPrimaryContainer, style = MaterialTheme.typography.labelMedium)
+                Text(if (live) "$clothing · Foto belum tersedia" else "$clothing · Ilustrasi", color = colors.onPrimaryContainer, style = MaterialTheme.typography.labelMedium)
             }
         }
     }

@@ -83,6 +83,19 @@ class DonationRepositoryImplTest {
         assertNull(donationApi.lastListQuery)
     }
 
+    @Test
+    fun logoutRefreshesExpiredAccessTokenAndClearsSessionAfterRevocation() = runBlocking {
+        val api = FakeAuthApi().apply { expireAccessTokenOnLogout = true }
+        val auth = AuthRepositoryImpl(api)
+        auth.login("neva@example.test", "secret-passphrase-123")
+
+        auth.logout()
+
+        assertEquals(listOf("Bearer token-1", "Bearer token-2"), api.logoutBearers)
+        assertEquals(1, api.refreshCalls)
+        assertNull(auth.session.value)
+    }
+
     private fun sampleSubmission() = CreateDonationSubmission(
         checkId = "chk-1",
         cleanAndSafeConfirmed = true,
@@ -97,6 +110,15 @@ class DonationRepositoryImplTest {
 
     private class FakeAuthApi : AuthApi {
         var refreshCalls = 0
+        var expireAccessTokenOnLogout = false
+        val logoutBearers = mutableListOf<String>()
+
+        override suspend fun logout(bearer: String) {
+            logoutBearers += bearer
+            if (expireAccessTokenOnLogout && bearer == "Bearer token-1") {
+                throw HttpException(Response.error<Unit>(401, "".toResponseBody()))
+            }
+        }
 
         override suspend fun login(request: LoginRequest) = SessionDto(
             accessToken = "token-1",
