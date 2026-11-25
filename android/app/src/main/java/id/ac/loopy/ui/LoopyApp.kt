@@ -58,6 +58,7 @@ import id.ac.loopy.feature.donations.DonationDetailViewModel
 import id.ac.loopy.feature.donations.MyDonationsScreen
 import id.ac.loopy.feature.donations.MyDonationsViewModel
 import id.ac.loopy.feature.home.HomeScreen
+import id.ac.loopy.feature.home.HomeViewModel
 import id.ac.loopy.feature.landing.LandingScreen
 import id.ac.loopy.feature.pickup.PickupRequestScreen
 import id.ac.loopy.feature.pickup.PickupRequestViewModel
@@ -141,7 +142,7 @@ fun LoopyApp(
             restoreState = true
         }
     }
-    val openDonation: (String) -> Unit = { nav.navigate("s09/$it") }
+    val openDonation: (String) -> Unit = { id -> nav.navigate("s09/${Uri.encode(id)}") { launchSingleTop = true } }
     val account: () -> Unit = { nav.navigate("s11") }
     val refreshCompletion: () -> Unit = { completion?.prepare() }
 
@@ -217,7 +218,7 @@ fun LoopyApp(
                     )
                 }
 
-                composable("s04") {
+                composable("s04") { entry ->
                     val user = session?.user
                     val role = user?.role
                     if (BuildConfig.DEBUG && completion != null && user == null) {
@@ -225,11 +226,18 @@ fun LoopyApp(
                     } else if (user?.role != "USER") {
                         LaunchedEffect(role) { goToAccountScreen(role) }
                     } else {
+                        val repository = container.homeRepository
+                        val factory = remember(repository) {
+                            viewModelFactory { initializer { HomeViewModel(repository) } }
+                        }
+                        val model = viewModel<HomeViewModel>(entry, key = user.userId, factory = factory)
                         HomeScreen(
+                            viewModel = model,
                             name = user.name,
-                            onBack = goBack,
-                            onCheckClothing = { nav.navigate("s05") },
-                            onMyDonations = { nav.navigate("s08") },
+                            onCheckClothing = { nav.navigate("s05") { launchSingleTop = true } },
+                            onMyDonations = { nav.navigate("s08") { launchSingleTop = true } },
+                            onRewards = { nav.navigate("s10") { launchSingleTop = true } },
+                            onDonation = openDonation,
                             onLogout = logout,
                             logoutBusy = submitting,
                             logoutError = logoutError,
@@ -441,7 +449,7 @@ fun LoopyApp(
                 }
                 composable("s10") {
                     if (BuildConfig.DEBUG && completion != null && session == null) RewardsScreen(completionState, userNavigate, account, completion::redeem, refreshCompletion, completion::dismissMessage)
-                    else TemplateScreen("Rewards", "Integrasi donasi dan reward ke akun aktif belum terhubung.", goBack)
+                    else TemplateScreen("Rewards", "Katalog dan penukaran reward untuk akun aktif belum tersedia di aplikasi.", goBack)
                 }
                 composable("a01") { entry ->
                     val admin = session?.user

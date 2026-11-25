@@ -11,4 +11,5 @@ Deklarasi endpoint Retrofit untuk health, sesi, dan pemeriksaan yang disediakan 
 | [`ClothingCheckApi.kt`](ClothingCheckApi.kt) | Upload multipart, detail berdasarkan ID, dan unduhan JPEG privat dengan bearer token. |
 | [`DonationApi.kt`](DonationApi.kt) | TEMPLATE — TODO: Retrofit suspend endpoints Donation, lihat docs/api-contract.md. submit eligible check + konfirmasi bersih; observe/refresh daftar milik user; detail; status/history; idempotency submit. |
 | [`HealthApi.kt`](HealthApi.kt) | Retrofit suspend GET /health. |
+| [`HomeApi.kt`](HomeApi.kt) | Mengambil saldo dan ringkasan donasi terbaru milik akun aktif. |
 | [`RewardApi.kt`](RewardApi.kt) | TEMPLATE — TODO: Retrofit suspend endpoints Reward, lihat docs/api-contract.md. saldo + katalog; redeem transaction idempotent; history; jangan mutasi saldo lokal sebagai sumber kebenaran. |

@@ -12,11 +12,13 @@ import id.ac.loopy.data.remote.api.AuthApi
 import id.ac.loopy.data.remote.api.ClothingCheckApi
 import id.ac.loopy.data.remote.api.DonationApi
 import id.ac.loopy.data.remote.api.HealthApi
+import id.ac.loopy.data.remote.api.HomeApi
 import id.ac.loopy.data.repository.AdminRepositoryImpl
 import id.ac.loopy.data.repository.AuthRepositoryImpl
 import id.ac.loopy.data.repository.ClothingCheckRepositoryImpl
 import id.ac.loopy.data.repository.DonationRepositoryImpl
 import id.ac.loopy.data.repository.FoundationRepository
+import id.ac.loopy.data.repository.RemoteHomeRepository
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -52,6 +54,8 @@ class AppContainer(context: Context) {
         retrofit.create(DonationApi::class.java),
         authRepository,
     )
+
+    internal val homeRepository = RemoteHomeRepository(retrofit.create(HomeApi::class.java), authRepository)
 
     val foundationRepository = FoundationRepository(
         UserPreferencesDataSource(context),

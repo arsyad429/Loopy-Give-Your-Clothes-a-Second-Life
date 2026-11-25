@@ -22,6 +22,7 @@ type DonationRepository interface {
 	CreateDonation(context.Context, CreateDonationSubmission) (DonationDetail, bool, error)
 	DonationSummary(context.Context) (DonationSummary, error)
 	ListDonations(context.Context, DonationFilter) ([]DonationItem, error)
+	LatestDonation(context.Context, string) (*DonationItem, error)
 	DonationDetail(context.Context, string) (DonationDetail, error)
 	ReviewDonation(context.Context, DonationDecision) (DonationDetail, error)
 }
