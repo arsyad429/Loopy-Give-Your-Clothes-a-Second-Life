@@ -40,7 +40,7 @@ Dari `backend/go`, jalankan `go test ./...`, `go vet ./...`, dan `go build ./...
 
 ## Status fitur
 
-Backend aktif menyediakan autentikasi, pemeriksaan/foto privat, verifikasi/jadwal/penolakan, transisi `PICKUP_SCHEDULED → PICKED_UP → COMPLETED` dengan 10 poin satu kali, pembacaan donasi pemilik, saldo, katalog, redeem, dan riwayat. Android menggunakan API untuk auth dan pemeriksaan; penyelesaian/reward masih berupa demo Room debug yang terpisah dari akun aktif. Email OTP, pengajuan pickup pengguna, dan integrasi Android ke API donasi/reward masih menunggu implementasi. [Kontrak API](api-contract.md) · [Panduan E–F](completion-rewards.md)
+Backend aktif menyediakan autentikasi, pemeriksaan/foto privat, verifikasi/jadwal/penolakan, transisi `PICKUP_SCHEDULED → PICKED_UP → COMPLETED` dengan 10 poin satu kali, pembacaan donasi pemilik, saldo, katalog, redeem, dan riwayat. Android menggunakan API untuk auth, pemeriksaan, pickup, donasi, admin dan reward. Saldo serta transaksi reward bersumber dari PostgreSQL; demo Room E–F telah dihapus. OTP dan fitur tambahan profil/settings memerlukan kontrak tersendiri. [Kontrak API](api-contract.md) · [Panduan E–F](completion-rewards.md)
 
 ## Pemeriksaan pakaian Go
 

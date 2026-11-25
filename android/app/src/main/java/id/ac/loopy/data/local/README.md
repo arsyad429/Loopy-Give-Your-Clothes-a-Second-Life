@@ -2,7 +2,6 @@
 
 LoopyDatabase menyimpan draft pickup dengan Room. Preferensi tema memakai DataStore.
 
-`CompletionDemoDatabase.kt` menyimpan donasi, ledger poin, dan redemption E–F pada database debug terpisah. Draft yang sudah ada dan saldo akun server tidak diubah oleh data demo.
 
 ## Isi file dan perannya
 

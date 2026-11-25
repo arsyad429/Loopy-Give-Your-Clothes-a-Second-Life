@@ -1,3 +1,9 @@
 package id.ac.loopy.data.mapper
 
-// TEMPLATE — TODO: RewardMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong.
+import id.ac.loopy.data.remote.dto.RewardDto
+import id.ac.loopy.data.remote.dto.RedemptionDto
+import id.ac.loopy.domain.model.Reward
+import id.ac.loopy.domain.model.Redemption
+
+fun RewardDto.toDomain() = Reward(rewardId, name, description, icon, requiredPoints, type, isActive)
+fun RedemptionDto.toDomain() = Redemption(redemptionId, rewardId, rewardName, description, icon, type, pointsUsed, redeemedAt)

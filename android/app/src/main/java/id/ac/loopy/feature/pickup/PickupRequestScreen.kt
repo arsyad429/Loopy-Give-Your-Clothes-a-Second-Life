@@ -154,13 +154,6 @@ internal fun PickupRequestContent(
             description = "Lengkapi alamat dan preferensi jadwal agar admin dapat menjadwalkan kurir.",
         )
 
-        if (state.isDemoMode) {
-            LoopyInfo(
-                title = "Mode demo lokal",
-                description = "Pengajuan valid akan disimpan ke Room lokal sebagai Pending Review dan muncul di My Donations.",
-            )
-        }
-
         when {
             state.isLoadingCheck -> {
                 LoopyCard {
@@ -184,7 +177,6 @@ internal fun PickupRequestContent(
                 EligibleCheckSummaryCard(
                     check = state.check,
                     donorName = state.donorName,
-                    isDemoMode = state.isDemoMode,
                     loadPrivatePhoto = loadPrivatePhoto,
                 )
 
@@ -347,12 +339,11 @@ internal fun PickupRequestContent(
 private fun EligibleCheckSummaryCard(
     check: ClothingCheck,
     donorName: String,
-    isDemoMode: Boolean,
     loadPrivatePhoto: (suspend (String) -> ByteArray)?,
 ) {
     val isPreview = LocalInspectionMode.current
     val loader = loadPrivatePhoto
-    val canFetchPhoto = !isPreview && !isDemoMode && loader != null && check.checkId.isNotBlank()
+    val canFetchPhoto = !isPreview && loader != null && check.checkId.isNotBlank()
     val bitmap by key(check.checkId, canFetchPhoto) {
         produceState<ImageBitmap?>(null) {
             if (canFetchPhoto) {

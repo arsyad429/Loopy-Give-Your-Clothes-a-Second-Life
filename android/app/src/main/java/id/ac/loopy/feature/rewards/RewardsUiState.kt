@@ -1,6 +1,18 @@
 package id.ac.loopy.feature.rewards
 
-// TEMPLATE S10 (F09/F10) — belum ada implementasi bisnis.
-// TODO: buat RewardsUiState: data class immutable berisi nilai form/data, field errors, loading, error, serta event sukses tanpa menyimpan NavController.
-// Kebutuhan: Saldo server; katalog 10/20/30 poin; tombol disable jika tidak cukup; dialog konfirmasi; idempotency; riwayat My Rewards; voucher berlabel demo.
-// Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus.
+import id.ac.loopy.domain.model.Reward
+import id.ac.loopy.domain.model.Redemption
+
+data class RewardsUiState(
+    val balance: Int? = null,
+    val rewards: List<Reward> = emptyList(),
+    val redemptions: List<Redemption> = emptyList(),
+    val loading: Boolean = false,
+    val busy: Boolean = false,
+    val loaded: Boolean = false,
+    val selected: Reward? = null,
+    val pending: Boolean = false,
+    val error: String? = null,
+    val redeemError: String? = null,
+    val message: String? = null,
+)

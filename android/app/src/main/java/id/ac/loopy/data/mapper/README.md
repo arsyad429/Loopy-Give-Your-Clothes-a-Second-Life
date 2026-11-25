@@ -10,4 +10,4 @@ Template mapper antara DTO, domain, dan cache. Konversi hasil pemeriksaan yang a
 | [`AuthMapper.kt`](AuthMapper.kt) | TEMPLATE — TODO: AuthMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
 | [`ClothingCheckMapper.kt`](ClothingCheckMapper.kt) | TEMPLATE — TODO: ClothingCheckMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
 | [`DonationMapper.kt`](DonationMapper.kt) | TEMPLATE — TODO: DonationMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
-| [`RewardMapper.kt`](RewardMapper.kt) | TEMPLATE — TODO: RewardMapper: DTO nullable/JSON → model domain; tidak memasukkan PII ke log dan tidak menyamakan gagal dengan data kosong. |
+| [`RewardMapper.kt`](RewardMapper.kt) | Pemetaan katalog dan snapshot redemption dari DTO server ke domain. |

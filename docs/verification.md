@@ -1,5 +1,24 @@
 # Hasil verifikasi Loopy
 
+## Integrasi Rewards ke API akun aktif — 25 November 2026
+
+Branch `feature/rewards-api-integration` mengganti demo Room E–F dengan RewardApi/RewardRepositoryImpl dan RewardsViewModel. Admin completion tetap memakai endpoint yang sudah tersedia dari main. Katalog/nama/biaya, saldo serta riwayat berasal dari Go/PostgreSQL. Retry memakai reward dan Idempotency-Key yang sama; sesudah sukses/replay aplikasi mengambil saldo terkini. Perubahan akun membatalkan request dan membersihkan state pengguna sebelumnya.
+
+Demo database/repository/ViewModel, overload layar demo, schema Room demo, tes demo lama serta menu pratinjau aplikasi dihapus. Draft Room yang masih dipakai dipertahankan; data demo lama di perangkat tidak dibaca maupun diunggah.
+
+| Pemeriksaan | Hasil |
+| --- | --- |
+| Android build dan unit test | `assembleDebug testDebugUnitTest` lulus; 44 tes, 0 gagal/error/skip. Delapan tes baru meliputi request HTTP Retrofit, refresh Bearer, body/header idempotensi, replay, jaringan gagal, saldo kurang, pemulihan key dan pergantian akun. |
+| Android emulator | `connectedDebugAndroidTest` lulus: 15 tes, 0 gagal/skip pada Pixel_7 API 37.1. RewardsScreenTest memeriksa tombol saldo kurang, batal tanpa transaksi, konfirmasi, saldo server dan riwayat. |
+| Android lint | `lintDebug` lulus; laporan memiliki 0 error. Peringatan yang dilaporkan lint tidak diperlakukan sebagai bukti UI sudah benar. |
+| Go/PostgreSQL | `TEST_DATABASE_URL=... go test ./...` lulus pada database lokal port 15439. Suite mencakup upgrade dua riwayat migrasi dan flow API donasi selesai → kredit +10 → redeem/replay/saldo kurang. Schema pengujian terisolasi dan dibersihkan oleh suite. |
+| Struktur source | `check-scaffold.py` lulus pada salinan source yang akan masuk Git. Pada workspace langsung, direktori `.github/modernize` hasil tooling yang tidak masuk Git tetap memunculkan empat temuan README; folder tersebut tidak diubah. |
+
+Percobaan instrumentasi pertama berhenti sebelum tes: Logcat mencatat `lowmemorykiller` membunuh proses aplikasi. Pengulangan cold boot dengan RAM emulator 4096 MB dan heap Gradle 1024 MB lulus. Perubahan kapasitas emulator hanya memakai argumen peluncuran; konfigurasi proyek dan ukuran VM backend tidak diubah.
+
+Batas bukti: tes HTTP Android memakai server pengujian lokal; tes Go memakai PostgreSQL nyata lokal. Base URL debug mengikuti konfigurasi Gradle proyek. Saat diperiksa, API lokal port 8090 belum aktif. Koneksi/deployment ke VM tim belum diverifikasi dan tidak diubah. Katalog server masih memiliki voucher simulasi sesuai kontrak; tidak ada integrasi merchant atau unduh wallpaper.
+
+
 ## Penggabungan login AI dengan penyelesaian dan reward — 24 November 2026
 
 Resolusi merge `main` (`429f7fb`) ke branch `feature/donation-completion-rewards` mempertahankan login/register Go, upload dan hasil Vision, demo Room E–F, serta API penyelesaian/poin/reward. Dua puluh file yang semula masih berisi penanda konflik diselesaikan berdasarkan fungsi masing-masing. Backend aktif tetap Go dan perubahan penghapusan scaffold Ktor dari main dipertahankan.
