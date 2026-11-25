@@ -46,6 +46,22 @@ class CompletionDemoRepository(private val db: CompletionDemoDatabase) {
         if (target == DonationStatus.COMPLETED) dao.insertPoints(DemoPointEntry("earn:$id", 10))
     }
 
+    suspend fun createPendingDonation(quantity: Int, schedule: String, address: String): DemoDonation = db.withTransaction {
+        val now = System.currentTimeMillis()
+        val id = "LP" + ((now % 900) + 100).toString().padStart(3, '0')
+        val uniqueId = if (dao.donation(id) == null) id else "LP${now % 100000}"
+        val donation = DemoDonation(
+            id = uniqueId,
+            quantity = quantity,
+            status = DonationStatus.PENDING_REVIEW.name,
+            schedule = schedule,
+            address = address,
+            updatedAt = now,
+        )
+        dao.insertDonation(donation)
+        donation
+    }
+
     suspend fun redeem(rewardId: String, requestKey: String) = db.withTransaction {
         val previous = dao.redemption(requestKey)
         if (previous != null) {
