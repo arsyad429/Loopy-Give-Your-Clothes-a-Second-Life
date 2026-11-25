@@ -51,10 +51,13 @@ import id.ac.loopy.feature.clothingcheck.CheckResultViewModel
 import id.ac.loopy.feature.clothingcheck.ClothingDetectorScreen
 import id.ac.loopy.feature.clothingcheck.ClothingDetectorViewModel
 import id.ac.loopy.feature.donations.DonationDetailScreen
+import id.ac.loopy.feature.donations.DonationDetailViewModel
 import id.ac.loopy.feature.donations.MyDonationsScreen
+import id.ac.loopy.feature.donations.MyDonationsViewModel
 import id.ac.loopy.feature.home.HomeScreen
 import id.ac.loopy.feature.landing.LandingScreen
 import id.ac.loopy.feature.pickup.PickupRequestScreen
+import id.ac.loopy.feature.pickup.PickupRequestViewModel
 import id.ac.loopy.feature.profile.AdminProfileScreen
 import id.ac.loopy.feature.profile.UserProfileScreen
 import id.ac.loopy.feature.rewards.RewardsScreen
@@ -102,6 +105,7 @@ fun LoopyApp(
     val nav = rememberNavController()
     val goBack: () -> Unit = { completion?.dismissMessage(); nav.popBackStack() }
     val clothingCheckRepository = container.clothingCheckRepository
+    val donationRepository = container.donationRepository
     val authFactory = remember(container) {
         viewModelFactory { initializer { LoginViewModel(container.authRepository) } }
     }
@@ -220,6 +224,7 @@ fun LoopyApp(
                             name = user.name,
                             onBack = goBack,
                             onCheckClothing = { nav.navigate("s05") },
+                            onMyDonations = { nav.navigate("s08") },
                         )
                     }
                 }
@@ -292,24 +297,139 @@ fun LoopyApp(
                         },
                     )
                 }
-                composable("s07") { PickupRequestScreen(goBack) }
+                composable("s07") { entry ->
+                    if (BuildConfig.DEBUG && completion != null && session == null) {
+                        val demoRepo = container.completionDemoRepository
+                        val factory = remember(demoRepo) {
+                            viewModelFactory {
+                                initializer {
+                                    PickupRequestViewModel(
+                                        checkId = "",
+                                        donorName = "Arsyad",
+                                        clothingCheckRepository = null,
+                                        donationRepository = null,
+                                        demoRepository = demoRepo,
+                                    )
+                                }
+                            }
+                        }
+                        val model = viewModel<PickupRequestViewModel>(
+                            viewModelStoreOwner = entry,
+                            factory = factory,
+                        )
+                        PickupRequestScreen(
+                            viewModel = model,
+                            onBack = goBack,
+                            onRecheck = { nav.navigate("s05") },
+                            onGoToMyDonations = {
+                                nav.navigate("s08") {
+                                    popUpTo("templates") { inclusive = false }
+                                    launchSingleTop = true
+                                }
+                            },
+                        )
+                    } else {
+                        PickupRequestScreen(
+                            viewModel = null,
+                            onBack = goBack,
+                            onRecheck = { nav.navigate("s05") },
+                            onGoToMyDonations = { nav.navigate("s08") },
+                        )
+                    }
+                }
                 composable(
                     route = "s07/{checkId}",
                     arguments = listOf(navArgument("checkId") { type = NavType.StringType }),
-                ) {
-                    PickupRequestScreen(goBack)
+                ) { entry ->
+                    val user = session?.user
+                    val role = user?.role
+                    if (role != "USER") {
+                        LaunchedEffect(role) { goToAccountScreen(role) }
+                        return@composable
+                    }
+                    val checkId = entry.arguments?.getString("checkId").orEmpty()
+                    val donorName = user.name
+                    val factory = remember(clothingCheckRepository, donationRepository, checkId, donorName) {
+                        viewModelFactory {
+                            initializer {
+                                PickupRequestViewModel(
+                                    checkId = checkId,
+                                    donorName = donorName,
+                                    clothingCheckRepository = clothingCheckRepository,
+                                    donationRepository = donationRepository,
+                                )
+                            }
+                        }
+                    }
+                    val model = viewModel<PickupRequestViewModel>(
+                        viewModelStoreOwner = entry,
+                        factory = factory,
+                    )
+                    PickupRequestScreen(
+                        viewModel = model,
+                        loadPrivatePhoto = clothingCheckRepository::downloadPhoto,
+                        onBack = goBack,
+                        onRecheck = {
+                            nav.navigate("s05") {
+                                popUpTo("s05") { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        },
+                        onGoToMyDonations = {
+                            nav.navigate("s08") {
+                                popUpTo("s04") { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        },
+                    )
                 }
-                composable("s08") {
-                    if (BuildConfig.DEBUG && completion != null && session == null) MyDonationsScreen(completionState, userNavigate, openDonation, account, refreshCompletion)
-                    else TemplateScreen("Donasiku", "Integrasi donasi dan reward ke akun aktif belum terhubung.", goBack)
+                composable("s08") { entry ->
+                    val role = session?.user?.role
+                    if (BuildConfig.DEBUG && completion != null && session == null) {
+                        MyDonationsScreen(completionState, userNavigate, openDonation, account, refreshCompletion)
+                    } else if (role != "USER") {
+                        LaunchedEffect(role) { goToAccountScreen(role) }
+                    } else {
+                        val factory = remember(donationRepository) {
+                            viewModelFactory {
+                                initializer { MyDonationsViewModel(donationRepository) }
+                            }
+                        }
+                        val model = viewModel<MyDonationsViewModel>(
+                            viewModelStoreOwner = entry,
+                            factory = factory,
+                        )
+                        MyDonationsScreen(
+                            viewModel = model,
+                            onBack = goBack,
+                            onOpen = openDonation,
+                            onCheckClothing = { nav.navigate("s05") },
+                        )
+                    }
                 }
                 composable("s09") {
                     if (BuildConfig.DEBUG && completion != null && session == null) DonationDetailScreen(completionState.donations.firstOrNull(), goBack, userNavigate)
-                    else TemplateScreen("Detail donasi", "Integrasi donasi ke akun aktif belum terhubung.", goBack)
+                    else TemplateScreen("Detail donasi", "Pilih donasi dari daftar Donasiku.", goBack)
                 }
                 composable("s09/{id}") { entry ->
-                    if (BuildConfig.DEBUG && completion != null && session == null) DonationDetailScreen(completionState.donations.find { it.id == entry.arguments?.getString("id") }, goBack, userNavigate)
-                    else TemplateScreen("Detail donasi", "Integrasi donasi ke akun aktif belum terhubung.", goBack)
+                    val role = session?.user?.role
+                    if (BuildConfig.DEBUG && completion != null && session == null) {
+                        DonationDetailScreen(completionState.donations.find { it.id == entry.arguments?.getString("id") }, goBack, userNavigate)
+                    } else if (role != "USER") {
+                        LaunchedEffect(role) { goToAccountScreen(role) }
+                    } else {
+                        val donationId = entry.arguments?.getString("id").orEmpty()
+                        val factory = remember(donationRepository, donationId) {
+                            viewModelFactory {
+                                initializer { DonationDetailViewModel(donationId, donationRepository) }
+                            }
+                        }
+                        val model = viewModel<DonationDetailViewModel>(
+                            viewModelStoreOwner = entry,
+                            factory = factory,
+                        )
+                        DonationDetailScreen(viewModel = model, onBack = goBack)
+                    }
                 }
                 composable("s10") {
                     if (BuildConfig.DEBUG && completion != null && session == null) RewardsScreen(completionState, userNavigate, account, completion::redeem, refreshCompletion, completion::dismissMessage)

@@ -1,4 +1,12 @@
 package id.ac.loopy.domain.repository
 
-// TEMPLATE — TODO: interface DonationRepository dengan suspend one-shot dan Flow untuk observasi.
-// Kontrak: submit eligible check + konfirmasi bersih; observe/refresh daftar milik user; detail; status/history; idempotency submit.
+import id.ac.loopy.domain.model.CreateDonationSubmission
+import id.ac.loopy.domain.model.DonationRequest
+import id.ac.loopy.domain.model.DonationStatus
+import id.ac.loopy.domain.model.DonationSummaryItem
+
+interface DonationRepository {
+    suspend fun createDonation(submission: CreateDonationSubmission): DonationRequest
+    suspend fun listMyDonations(status: DonationStatus? = null, query: String? = null): List<DonationSummaryItem>
+    suspend fun getDonationDetail(donationId: String): DonationRequest
+}

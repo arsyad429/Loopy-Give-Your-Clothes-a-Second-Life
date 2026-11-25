@@ -9,9 +9,11 @@ import id.ac.loopy.data.repository.CompletionDemoRepository
 import id.ac.loopy.data.local.preferences.UserPreferencesDataSource
 import id.ac.loopy.data.remote.api.AuthApi
 import id.ac.loopy.data.remote.api.ClothingCheckApi
+import id.ac.loopy.data.remote.api.DonationApi
 import id.ac.loopy.data.remote.api.HealthApi
 import id.ac.loopy.data.repository.AuthRepositoryImpl
 import id.ac.loopy.data.repository.ClothingCheckRepositoryImpl
+import id.ac.loopy.data.repository.DonationRepositoryImpl
 import id.ac.loopy.data.repository.FoundationRepository
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -39,6 +41,11 @@ class AppContainer(context: Context) {
     val clothingCheckRepository = ClothingCheckRepositoryImpl(
         context,
         retrofit.create(ClothingCheckApi::class.java),
+        authRepository,
+    )
+
+    val donationRepository = DonationRepositoryImpl(
+        retrofit.create(DonationApi::class.java),
         authRepository,
     )
 

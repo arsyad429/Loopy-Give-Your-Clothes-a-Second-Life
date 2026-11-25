@@ -45,9 +45,17 @@ fun HomeScreen(
  * Menyediakan akses ke pemeriksaan pakaian untuk pengguna yang sudah masuk.
  */
 @Composable
-fun HomeScreen(name: String, onBack: () -> Unit, onCheckClothing: () -> Unit) {
+fun HomeScreen(
+    name: String,
+    onBack: () -> Unit,
+    onCheckClothing: () -> Unit,
+    onMyDonations: (() -> Unit)? = null,
+) {
     LoopyScreen(title = "Loopy", onBack = onBack) {
-        Text("Halo, $name")
+        Text("Halo, $name", style = MaterialTheme.typography.headlineMedium)
         LoopyButton("Periksa pakaian", onClick = onCheckClothing)
+        if (onMyDonations != null) {
+            LoopyButton("Donasiku", onClick = onMyDonations, outlined = true)
+        }
     }
 }
