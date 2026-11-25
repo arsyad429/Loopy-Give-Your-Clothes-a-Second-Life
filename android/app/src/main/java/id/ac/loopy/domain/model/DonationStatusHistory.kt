@@ -1,3 +1,9 @@
 package id.ac.loopy.domain.model
 
-// TEMPLATE PRD §8 — TODO: data class DonationStatusHistory: historyId, donationId, previousStatus nullable, newStatus, updatedBy, updatedAt.
+data class DonationStatusHistory(
+    val version: Long,
+    val previousStatus: DonationStatus?,
+    val newStatus: DonationStatus,
+    val updatedBy: String,
+    val updatedAt: String,
+)
