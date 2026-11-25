@@ -11,6 +11,19 @@ internal data class AdminDonationDetailUiState(
     val busy: Boolean = false,
     val message: String? = null,
     val error: String? = null,
+    val scheduleDraft: PickupScheduleSelection = PickupScheduleSelection(),
+    val savingDraft: Boolean = false,
+    val draftError: PickupScheduleDraftError? = null,
+)
+
+internal enum class PickupScheduleDraftError(val message: String) {
+    LOAD("Draft di perangkat ini belum bisa dimuat."),
+    SAVE("Perubahan draft belum tersimpan di perangkat ini."),
+}
+
+internal data class PickupScheduleSelection(
+    val dateMillis: Long? = null,
+    val minutesOfDay: Int? = null,
 )
 
 internal fun DonationRequest.toReview(): DonationReview = DonationReview(

@@ -484,8 +484,12 @@ fun LoopyApp(
                         return@composable
                     }
                     val id = entry.arguments?.getString("id").orEmpty()
-                    val factory = remember(adminRepository, id) {
-                        viewModelFactory { initializer { AdminDonationDetailViewModel(id, adminRepository) } }
+                    val factory = remember(container, id, admin.userId) {
+                        viewModelFactory {
+                            initializer {
+                                AdminDonationDetailViewModel(id, adminRepository, admin.userId, container.adminPickupScheduleDrafts)
+                            }
+                        }
                     }
                     val model = viewModel<AdminDonationDetailViewModel>(entry, key = admin.userId, factory = factory)
                     AdminDonationDetailScreen(model, clothingCheckRepository::downloadPhoto, goBack)
