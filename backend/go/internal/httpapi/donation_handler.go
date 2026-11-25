@@ -17,6 +17,7 @@ func (s *Server) mountDonationRoutes(mux *http.ServeMux) {
 		return s.Authenticate(RequireRole("ADMIN", handler))
 	}
 	mux.Handle("POST /v1/donations", s.Authenticate(RequireRole("USER", http.HandlerFunc(s.createDonation))))
+	mux.Handle("GET /v1/donations/latest", s.Authenticate(RequireRole("USER", http.HandlerFunc(s.latestDonation))))
 	mux.Handle("GET /v1/admin/summary", admin(s.donationSummary))
 	mux.Handle("GET /v1/admin/donations", admin(s.listDonations))
 	mux.Handle("GET /v1/admin/donations/{id}", admin(s.getDonation))
@@ -63,6 +64,17 @@ func (s *Server) createDonation(w http.ResponseWriter, r *http.Request) {
 		status = http.StatusCreated
 	}
 	writeJSON(w, status, detail)
+}
+
+func (s *Server) latestDonation(w http.ResponseWriter, r *http.Request) {
+	item, err := s.donations.LatestDonation(r.Context(), currentPrincipal(r).User.ID)
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, struct {
+		Item *domain.DonationItem `json:"item"`
+	}{Item: item})
 }
 
 func (s *Server) donationSummary(w http.ResponseWriter, r *http.Request) {

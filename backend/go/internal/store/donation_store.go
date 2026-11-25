@@ -139,6 +139,24 @@ func (s *PGStore) ListDonations(ctx context.Context, filter domain.DonationFilte
 	return items, rows.Err()
 }
 
+// LatestDonation returns the authenticated owner's most recently created donation.
+func (s *PGStore) LatestDonation(ctx context.Context, ownerID string) (*domain.DonationItem, error) {
+	var item domain.DonationItem
+	err := s.pool.QueryRow(ctx, `SELECT `+donationItemColumns+`
+		FROM donation_requests d JOIN users u ON u.user_id = d.user_id
+		WHERE d.user_id = $1
+		ORDER BY d.created_at DESC, d.donation_id DESC LIMIT 1`, ownerID).
+		Scan(donationItemFields(&item)...)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	item.UseUTC()
+	return &item, nil
+}
+
 // DonationDetail returns the complete donation detail and history inside a repeatable-read snapshot.
 func (s *PGStore) DonationDetail(ctx context.Context, id string) (domain.DonationDetail, error) {
 	tx, err := s.pool.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.RepeatableRead, AccessMode: pgx.ReadOnly})

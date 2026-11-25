@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -73,6 +74,7 @@ internal fun LoopyScreen(
     bottomBar: (@Composable () -> Unit)? = null,
     onAccount: (() -> Unit)? = null,
     contentSpacing: Int = 20,
+    accountInitial: String = "A",
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
@@ -133,8 +135,18 @@ internal fun LoopyScreen(
 
                         Text(title, color = screenColors.primary, style = if (title == "loopy ↻") ScreenTypography.headlineMedium else ScreenTypography.titleLarge, modifier = Modifier.weight(1f))
                         if (onAccount != null) {
-                            Box(Modifier.size(40.dp).background(if (screenColors.background.luminance() > 0.5f) Color(0xFFEEE7FA) else Color(0xFF383044), CircleShape).clickable(role = Role.Button, onClick = onAccount), contentAlignment = Alignment.Center) {
-                                Text("A", color = screenColors.onSurface, style = ScreenTypography.labelLarge)
+                            Box(
+                                modifier = Modifier.size(48.dp)
+                                    .clickable(role = Role.Button, onClick = onAccount)
+                                    .semantics { contentDescription = "Akun" },
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Box(
+                                    modifier = Modifier.size(40.dp).background(pointsCardColor(), CircleShape),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(accountInitial, color = screenColors.onSurface, style = ScreenTypography.labelLarge)
+                                }
                             }
                         }
                     }

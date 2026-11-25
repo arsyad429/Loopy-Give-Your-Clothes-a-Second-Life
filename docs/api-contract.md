@@ -16,6 +16,7 @@ Akun, pemeriksaan pakaian, dan admin berjalan pada satu API Go. Gunakan base URL
 | GET /v1/checks/{id}/photo | Owner/admin | Bearer → JPEG privat | F05 |
 | POST /v1/donations | User | Idempotency-Key; checkId,cleanAndSafeConfirmed,phoneNumber,pickupAddress,city,quantity,preferredDate,preferredTime,notes → donationId/PENDING_REVIEW | F06 |
 | GET /v1/donations | User | status/query/cursor → items,nextCursor milik user token | F03/F08 |
+| GET /v1/donations/latest | USER | Ringkasan donasi terbaru milik akun dalam `item`. Akun tanpa donasi menerima `{"item":null}`. | F03 |
 | GET /v1/donations/{id} | Owner | detail+history+jadwal final+rejectionReason | F08 |
 | GET /v1/admin/summary | Admin | total, pending, scheduled, pickedUp, completed, rejected | F07 |
 | GET /v1/admin/donations | Admin | status/query/limit/cursor → items,nextCursor | F07 |

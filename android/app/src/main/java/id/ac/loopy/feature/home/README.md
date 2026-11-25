@@ -1,20 +1,11 @@
-# home
+# S04 Beranda pengguna
 
-S04 menyapa pengguna yang sudah masuk dan menyediakan tombol Periksa pakaian untuk membuka S05.
+S04 menyapa akun aktif, membuka pemeriksaan pakaian S05, dan menampilkan saldo Loopy Points serta donasi terakhir dari Go. Kartu donasi membuka detail S09. Navigasi bawah mengarah ke Donasiku dan Rewards. Menu akun menyediakan logout.
 
-Overload Home berbasis `CompletionUiState` mempertahankan desain Figma, saldo, dan donasi terakhir pada demo Room debug tanpa sesi login. Home pengguna yang login tetap memakai nama akun dan membuka pemeriksaan Go. Saldo demo tidak dipakai sebagai saldo akun server.
-
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
+| File | Kegunaan |
 | --- | --- |
-| [`HomeScreen.kt`](HomeScreen.kt) | Menyapa pengguna yang sudah masuk dan membuka S05 melalui callback. |
-| [`HomeUiState.kt`](HomeUiState.kt) | TEMPLATE S04 (F03/F09) — belum ada implementasi bisnis. TODO: buat HomeUiState: data class immutable berisi nilai form/data, field errors, loading, error, serta event sukses tanpa menyimpan NavController. Kebutuhan: Greeting; Check Your Clothes; donasi terakhir; saldo server; My Donations; Rewards; akun dan logout. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
-| [`HomeViewModel.kt`](HomeViewModel.kt) | TEMPLATE S04 (F03/F09) — belum ada implementasi bisnis. TODO: buat HomeViewModel: ViewModel dengan private MutableStateFlow, StateFlow immutable, viewModelScope, cancellation, loading/success/error dan cegah request berulang. Kebutuhan: Greeting; Check Your Clothes; donasi terakhir; saldo server; My Donations; Rewards; akun dan logout. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
+| [HomeScreen.kt](HomeScreen.kt) | Tata letak S04, tombol pemeriksaan, kartu saldo dan donasi, navigasi, serta menu akun. |
+| [HomeUiState.kt](HomeUiState.kt) | State saldo, donasi, loading, dan kegagalan untuk setiap bagian. |
+| [HomeViewModel.kt](HomeViewModel.kt) | Memuat saldo dan donasi melalui HomeRepository, termasuk refresh saat beranda dibuka kembali. |
 
-## TODO
-
-- [ ] **S04 / F03/F09**: Donasi terakhir, saldo server, My Donations, Rewards, akun dan logout.
-- [ ] Screen stateless menerima state/callback; UiState immutable; ViewModel via repository, StateFlow dan viewModelScope.
-- [ ] Loading/error/empty, cancellation/retry dan anti double-submit, sesuai fitur.
-- [ ] Cocokkan node di docs/screen-map.md dan lengkapi AC terkait sebelum menandai selesai.
+Home menampilkan saldo nol hanya jika Go mengirimkannya. Ketika refresh gagal, data yang sebelumnya berhasil dimuat tetap terlihat dengan keterangan. Mode demo debug tetap memakai Room. S10 untuk akun aktif masih berupa halaman sementara.

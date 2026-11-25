@@ -498,6 +498,19 @@ func TestPostgresDonationReviewAndCompletionFlow(t *testing.T) {
 	expect(request("POST", review+"/status", `{"targetStatus":"PICKED_UP","expectedVersion":2}`, adminToken, ""), 200, &detail)
 	expect(request("POST", review+"/status", `{"targetStatus":"COMPLETED","expectedVersion":3}`, adminToken, ""), 200, &detail)
 
+	latestPath := "/v1/donations/latest"
+	expect(request("GET", latestPath, "", "", ""), 401, nil)
+	expect(request("GET", latestPath, "", adminToken, ""), 403, nil)
+	var latest struct{ Item *domain.DonationItem }
+	expect(request("GET", latestPath, "", owner.AccessToken, ""), 200, &latest)
+	if latest.Item == nil || latest.Item.ID != third {
+		t.Fatalf("latest donation: %+v", latest.Item)
+	}
+	expect(request("GET", latestPath, "", other.AccessToken, ""), 200, &latest)
+	if latest.Item != nil {
+		t.Fatal("another donor must not see the owner's latest donation")
+	}
+
 	var balance domain.PointsBalance
 	expect(request("GET", "/v1/points/balance", "", owner.AccessToken, ""), 200, &balance)
 	if balance.Balance != 10 {

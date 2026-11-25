@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import id.ac.loopy.R
 import id.ac.loopy.data.local.DemoDonation
 import id.ac.loopy.domain.model.DonationStatus
+import id.ac.loopy.domain.model.DonationSummaryItem
 import id.ac.loopy.feature.rewards.CompletionUiState
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -93,13 +94,29 @@ internal fun UserBottomBar(selected: String, onNavigate: (String) -> Unit) {
 
 @Composable
 internal fun DonationCard(item: DemoDonation, onOpen: () -> Unit) {
+    DonationCard(
+        title = "${item.quantity} pakaian · #${item.id}",
+        subtitle = if (item.status == "COMPLETED") "Selesai · +10 poin" else item.schedule,
+        status = DonationStatus.valueOf(item.status),
+        onOpen = onOpen,
+    )
+}
+
+@Composable
+internal fun DonationCard(item: DonationSummaryItem, onOpen: () -> Unit) {
+    val shortId = item.donationId.substringBefore('-').uppercase(Locale.ROOT)
+    DonationCard("${item.quantity} pakaian · #$shortId", item.city, item.status, onOpen)
+}
+
+@Composable
+private fun DonationCard(title: String, subtitle: String, status: DonationStatus, onOpen: () -> Unit) {
     LoopyCard(modifier = Modifier.clickable(role = Role.Button, onClick = onOpen), padding = 16, radius = 20) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Box(Modifier.background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp)).padding(12.dp)) { LoopyAsset("shirt", 28) }
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("${item.quantity} pakaian · #${item.id}", style = MaterialTheme.typography.labelLarge)
-                Text(if (item.status == "COMPLETED") "Selesai · +10 poin" else item.schedule, style = MaterialTheme.typography.bodySmall)
-                StatusBadge(DonationStatus.valueOf(item.status))
+                Text(title, style = MaterialTheme.typography.labelLarge)
+                Text(subtitle, style = MaterialTheme.typography.bodySmall)
+                StatusBadge(status)
             }
         }
     }
