@@ -21,8 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -110,6 +108,14 @@ internal fun AdminDonationDetailScreen(
         completionError = state.error,
         history = donation.history,
         live = true,
+        scheduleDraft = state.scheduleDraft,
+        savingDraft = state.savingDraft,
+        draftError = state.draftError,
+        onDraftChange = model::updateScheduleDraft,
+        onDraftRetry = {
+            if (state.draftError == PickupScheduleDraftError.LOAD) model.refresh()
+            else model.updateScheduleDraft(state.scheduleDraft)
+        },
     )
 }
 
@@ -126,6 +132,11 @@ internal fun AdminDonationDetailScreen(
     completionError: String? = null,
     history: List<DonationStatusHistory> = emptyList(),
     live: Boolean = false,
+    scheduleDraft: PickupScheduleSelection? = null,
+    savingDraft: Boolean = false,
+    draftError: PickupScheduleDraftError? = null,
+    onDraftChange: ((PickupScheduleSelection) -> Unit)? = null,
+    onDraftRetry: (() -> Unit)? = null,
 ) {
     var advanceOpen by rememberSaveable(review.id) { mutableStateOf(false) }
     val nextStatus = when (review.status) {
@@ -134,15 +145,29 @@ internal fun AdminDonationDetailScreen(
         else -> null
     }
     LaunchedEffect(review.status) { advanceOpen = false }
-    var date by rememberSaveable(review.id) { mutableLongStateOf(0) }
-    var minutes by rememberSaveable(review.id) { mutableIntStateOf(-1) }
+    var demoDate by rememberSaveable(review.id) { mutableStateOf<Long?>(null) }
+    var demoMinutes by rememberSaveable(review.id) { mutableStateOf<Int?>(null) }
+    val selection = scheduleDraft ?: PickupScheduleSelection(demoDate, demoMinutes)
+    val date = selection.dateMillis
+    val minutes = selection.minutesOfDay
     var scheduleOpen by rememberSaveable(review.id) { mutableStateOf(false) }
     var rejectionOpen by rememberSaveable(review.id) { mutableStateOf(false) }
     var scheduleError by rememberSaveable(review.id) { mutableStateOf<String?>(null) }
 
     val context = LocalContext.current
     val pending = review.status == DonationStatus.PENDING_REVIEW
-    val pickupAt = if (date > 0 && minutes >= 0) date + minutes * 60_000L else null
+    val pickupAt = if (date != null && minutes != null) date + minutes * 60_000L else null
+    val scheduleEnabled = !busy && !savingDraft
+
+    fun updateSelection(updated: PickupScheduleSelection) {
+        if (onDraftChange == null) {
+            demoDate = updated.dateMillis
+            demoMinutes = updated.minutesOfDay
+        } else {
+            onDraftChange(updated)
+        }
+        scheduleError = null
+    }
 
     LoopyScreen(
         title = "Verifikasi donasi",
@@ -158,10 +183,10 @@ internal fun AdminDonationDetailScreen(
                     )
                 }
 
-                LoopyButton("Setujui & jadwalkan", enabled = !busy, onClick = {
+                LoopyButton("Setujui & jadwalkan", enabled = scheduleEnabled, onClick = {
                     scheduleError = when {
-                        date == 0L && minutes < 0 -> "Pilih tanggal dan jam penjemputan terlebih dahulu."
-                        date == 0L -> "Pilih tanggal penjemputan terlebih dahulu."
+                        date == null && minutes == null -> "Pilih tanggal dan jam penjemputan terlebih dahulu."
+                        date == null -> "Pilih tanggal penjemputan terlebih dahulu."
                         pickupAt == null -> "Pilih jam penjemputan terlebih dahulu."
                         pickupAt <= System.currentTimeMillis() -> PastPickupMessage
                         else -> null
@@ -169,7 +194,7 @@ internal fun AdminDonationDetailScreen(
                     scheduleOpen = scheduleError == null
                 })
 
-                LoopyButton("Tolak pengajuan", onClick = { rejectionOpen = true }, enabled = !busy, outlined = true)
+                LoopyButton("Tolak pengajuan", onClick = { rejectionOpen = true }, enabled = scheduleEnabled, outlined = true)
             }
         } else if (onAdvance != null && nextStatus != null) {
             {
@@ -225,31 +250,47 @@ internal fun AdminDonationDetailScreen(
             Text("Jadwal final", style = MaterialTheme.typography.titleLarge)
 
             LoopyButton(
-                label = if (date == 0L) "Pilih tanggal" else formatPickupDate(date),
-                enabled = !busy,
+                label = if (date == null) "Pilih tanggal" else formatPickupDate(date),
+                enabled = scheduleEnabled,
                 onClick = {
-                    selectPickupDate(context, date) {
-                        date = it
-                        scheduleError = null
+                    selectPickupDate(context, date ?: 0L) {
+                        updateSelection(selection.copy(dateMillis = it))
                     }
                 },
                 outlined = true,
             )
 
             LoopyButton(
-                label = if (minutes < 0) "Pilih jam (WIB)" else String.format(Indonesian, "%02d.%02d WIB", minutes / 60, minutes % 60),
-                enabled = !busy,
+                label = if (minutes == null) "Pilih jam (WIB)" else String.format(Indonesian, "%02d.%02d WIB", minutes / 60, minutes % 60),
+                enabled = scheduleEnabled,
                 onClick = {
-                    val initial = if (minutes >= 0) minutes else 9 * 60
+                    val initial = minutes ?: 9 * 60
 
                     TimePickerDialog(context, { _, hour, minute ->
-                        minutes = hour * 60 + minute
-                        scheduleError = null
+                        updateSelection(selection.copy(minutesOfDay = hour * 60 + minute))
                     }, initial / 60, initial % 60, true).show()
                 },
                 outlined = true,
             )
 
+            if (onDraftChange != null) {
+                when {
+                    savingDraft -> Text("Menyimpan draft…", style = MaterialTheme.typography.bodySmall)
+                    draftError != null -> {
+                        LoopyInfo("Draft jadwal", draftError.message, isError = true)
+                        if (onDraftRetry != null) {
+                            LoopyButton("Coba lagi", onDraftRetry, enabled = scheduleEnabled, outlined = true)
+                        }
+                    }
+                    date != null || minutes != null -> Text(
+                        "Draft tersimpan di perangkat ini.",
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+                if (date != null || minutes != null) {
+                    LoopyButton("Hapus draft", { updateSelection(PickupScheduleSelection()) }, enabled = scheduleEnabled, outlined = true)
+                }
+            }
             Text("Jadwal final wajib diisi untuk menyetujui pengajuan.", style = MaterialTheme.typography.bodySmall)
         }
 
