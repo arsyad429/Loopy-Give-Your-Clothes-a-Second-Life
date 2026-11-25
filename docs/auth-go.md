@@ -9,10 +9,13 @@ sequenceDiagram
     participant A as Android
     participant G as Go API
     participant P as PostgreSQL
-    A->>G: POST /v1/auth/register (name, email, password)
-    G->>G: Validate input, normalize email, hash password
-    G->>P: Transaction: insert USER with 0 points + session
-    P-->>G: Commit (unique email enforced)
+    participant M as SMTP
+    A->>G: POST /v1/auth/register (name, email, password, username optional)
+    G->>P: Save pending signup and code digest
+    G->>M: Send the verification code
+    G-->>A: 202 challengeId and maskedEmail
+    A->>G: POST /v1/auth/register/verify (challengeId, code)
+    G->>P: Atomically create verified USER and session, then consume challenge
     G-->>A: 201 user + accessToken + refreshToken + expiry times
     A->>G: GET /v1/auth/me, Authorization: Bearer accessToken
     G->>P: Match token hash, check expiry, read current user
@@ -27,13 +30,15 @@ sequenceDiagram
 
 ### Register
 
-1. Accept only `name`, `email`, and `password`. Reject unknown fields, including `role`, `userId`, and `totalPoints`.
-2. Trim name and email, lowercase the entire email as a deliberate Loopy account policy. Never trim or lowercase the password.
-3. Validate name (1–100 Unicode characters, no control characters), email (plain address, at most 254 bytes), and password (8–128 Unicode characters, at most 512 bytes). This password policy is an implementation decision; the PRD does not specify a length.
-4. Generate a UUID and an Argon2id password hash with a fresh random salt.
-5. Generate an access token and a separate refresh token, each with 32 random bytes. Persist their SHA-256 hashes only.
-6. Insert the user (`USER`, 0 points) and session in one transaction. A unique database constraint handles duplicate emails, including simultaneous requests. If session creation fails, the user insert rolls back.
-7. Return HTTP 201 with the user and token pair. Android can go directly to Home because registration creates a session.
+1. Accept `name`, `email`, `password`, and optional `username`. Normalize name, email, and username. Usernames use 3–20 ASCII letters, digits, or underscores and are stored in lowercase. Passwords use 8–128 Unicode characters and at most 512 bytes.
+2. Store the Argon2id password hash and a digest of a random six-digit code in a pending registration. Send the code to the email address over SMTP and return HTTP 202 with `challengeId`, `maskedEmail`, `expiresInSeconds`, and `resendAfterSeconds`.
+3. The code expires after 5 minutes. The server permits at most 5 incorrect attempts per code. Resending after the 60-second cooldown replaces the previous code. Resend is available for 30 minutes from the first request.
+4. Correct verification consumes the challenge and creates a verified USER with 0 points and an active session in one transaction. Return HTTP 201 with the token pair.
+5. Subsequent login uses email and password. Existing accounts and admins provisioned by CLI can also sign in with their current credentials.
+
+A rejected initial SMTP delivery returns `503` and releases the pending reservation so the form can be submitted again. An expired or consumed challenge returns `410 OTP_EXPIRED`, a wrong code returns `422 OTP_INVALID`, and a locked code or cooldown returns `429`. If the app loses the challenge, resume by starting a fresh registration after the current code expires.
+
+For local API testing, set `AUTH_EMAIL_VERIFICATION_REQUIRED=false` to create accounts directly with HTTP 201. Normal deployments require verification. See the [VM SMTP setup](deploy-lxc.md#email-verification-for-registration).
 
 ### Login and role routing
 
@@ -58,15 +63,18 @@ All bodies use `Content-Type: application/json`. Auth responses send `Cache-Cont
 
 | Method and path | Request | Success | Access |
 | --- | --- | --- | --- |
-| `POST /v1/auth/register` | `{"name":"Neva","email":"neva@example.test","password":"a long sample passphrase"}` | 201 session response | Public |
+| `POST /v1/auth/register` | `name,email,password,username?` | 202 verification challenge | Public |
+| `POST /v1/auth/register/resend` | `challengeId` | 202 replacement code challenge | Public |
+| `POST /v1/auth/register/verify` | `challengeId,code` | 201 verified user and session | Public |
 | `POST /v1/auth/login` | `{"email":"neva@example.test","password":"a long sample passphrase"}` | 200 session response | Public |
 | `POST /v1/auth/refresh` | `{"refreshToken":"<refresh>"}` | 200 replacement session response | Refresh token |
-| `GET /v1/auth/me` | No body | 200 user object | Access token |
+| `GET /v1/auth/me` | No body | 200 user profile with email verification status | Access token |
+| `PATCH /v1/auth/me` | `name,username,currentPassword?,newPassword?` | 200 updated profile | Access token |
 | `POST /v1/auth/logout` | No body | 204, no body | Access token |
 | `GET /health` | No body | 200 `{"status":"ok","mode":"go-auth"}` | Public liveness |
 | `GET /ready` | No body | 200 if DB reachable; otherwise 503 | Public readiness |
 
-Session response for register, login, and refresh:
+Session response after registration verification, login, or refresh:
 
 ```json
 {
@@ -85,7 +93,7 @@ Session response for register, login, and refresh:
 }
 ```
 
-`GET /v1/auth/me` returns the `user` object directly. An example validation failure:
+`GET /v1/auth/me` and `PATCH /v1/auth/me` return the user object directly. It includes optional `username` and an `emailVerified` flag. Only the authenticated account can edit its profile. To change the password, supply both current and new passwords. A successful password change revokes the account’s other sessions. An example validation failure:
 
 ```json
 {"error":{"code":"VALIDATION_ERROR","message":"Check the submitted fields.","fieldErrors":{"password":"Use 8–128 characters (at most 512 bytes)."}}}

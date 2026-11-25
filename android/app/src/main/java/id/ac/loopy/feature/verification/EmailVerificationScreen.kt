@@ -1,6 +1,7 @@
 package id.ac.loopy.feature.verification
 
 import android.os.SystemClock
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,88 +32,69 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import id.ac.loopy.ui.components.LoopyButton
+import id.ac.loopy.feature.auth.EmailRegistrationState
 import id.ac.loopy.ui.components.LoopyInfo
 import id.ac.loopy.ui.components.LoopyIntro
 import id.ac.loopy.ui.components.LoopyScreen
 import kotlinx.coroutines.delay
 
-private const val DemoCode = "123456"
-private const val CodeLifetime = 300_000L
-private const val ResendDelay = 60_000L
-
 @Composable
-fun EmailVerificationScreen(
-    maskedEmail: String,
+internal fun EmailVerificationScreen(
+    state: EmailRegistrationState,
+    busy: Boolean,
     onBack: () -> Unit,
-    onEditEmail: () -> Unit,
-    onVerified: () -> Unit,
+    onVerify: (String) -> Unit,
+    onResend: () -> Unit,
+    onCodeEdit: () -> Unit,
 ) {
-    var code by remember { mutableStateOf("") }
-    var incorrectCode by remember { mutableStateOf(false) }
-    var sentAt by rememberSaveable { mutableLongStateOf(SystemClock.elapsedRealtime()) }
-    var now by remember { mutableLongStateOf(SystemClock.elapsedRealtime()) }
+    var code by remember(state.receivedAt) { mutableStateOf("") }
+    var now by remember(state.receivedAt) { mutableLongStateOf(SystemClock.elapsedRealtime()) }
+    val lifetimeMs = state.challenge.expiresInSeconds * 1_000L
 
-    LaunchedEffect(sentAt) {
-        while (now - sentAt < CodeLifetime) {
-            now = SystemClock.elapsedRealtime()
+    LaunchedEffect(state.receivedAt) {
+        while (now - state.receivedAt < lifetimeMs) {
             delay(1_000)
+            now = SystemClock.elapsedRealtime()
         }
     }
 
     val focusManager = LocalFocusManager.current
-    val elapsed = (now - sentAt).coerceAtLeast(0)
-    val expired = elapsed >= CodeLifetime
-    val secondsToResend = ((ResendDelay - elapsed + 999) / 1_000).coerceAtLeast(0)
+    val elapsed = (now - state.receivedAt).coerceAtLeast(0)
+    val expired = elapsed >= lifetimeMs
+    val secondsToResend = ((state.challenge.resendAfterSeconds * 1_000L - elapsed + 999) / 1_000).coerceAtLeast(0)
+    BackHandler { if (!busy) onBack() }
 
     LoopyScreen(
         title = "Verifikasi email",
-        onBack = onBack,
+        onBack = { if (!busy) onBack() },
         footer = {
             LoopyButton(
-                label = "Verifikasi & lanjut",
-                enabled = code.length == 6 && !expired,
+                label = if (busy) "Memproses…" else "Verifikasi & lanjut",
+                enabled = code.length == 6 && !expired && !busy && !state.codeLocked,
                 onClick = {
-                    val submittedAt = SystemClock.elapsedRealtime()
-                    now = submittedAt
-
-                    if (submittedAt - sentAt < CodeLifetime) {
-                        if (code == DemoCode) {
-                            focusManager.clearFocus()
-                            onVerified()
-                        } else {
-                            incorrectCode = true
-                        }
-                    }
+                    focusManager.clearFocus()
+                    onVerify(code)
                 },
             )
         },
     ) {
-        LoopyIntro("Masukkan kode", "Gunakan 6 digit kode untuk $maskedEmail.")
+        LoopyIntro("Masukkan kode", "Kami mengirim kode 6 digit ke ${state.challenge.maskedEmail}.")
 
-        VerificationCodeField(code, isError = incorrectCode || expired) {
+        VerificationCodeField(code, isError = state.error != null || expired) {
             code = it
-            incorrectCode = false
+            onCodeEdit()
         }
 
         when {
-            expired -> LoopyInfo("Kode kedaluwarsa", "Tekan Kirim ulang kode untuk mendapatkan kode baru.", isError = true)
-            incorrectCode -> LoopyInfo("Kode belum tepat", "Untuk pratinjau ini, coba masukkan $DemoCode.", isError = true)
-            else -> LoopyInfo("Kode pratinjau", "Gunakan $DemoCode. Kode berlaku selama 5 menit.")
+            state.error != null -> LoopyInfo("Verifikasi email", state.error, isError = true)
+            expired -> LoopyInfo("Kode kedaluwarsa", "Minta kode baru untuk melanjutkan.", isError = true)
+            else -> Text("Kode berlaku 5 menit. Periksa juga folder spam.", style = MaterialTheme.typography.bodyMedium)
         }
 
-        TextButton(
-            enabled = secondsToResend == 0L,
-            onClick = {
-                now = SystemClock.elapsedRealtime()
-                sentAt = now
-                code = ""
-                incorrectCode = false
-            },
-        ) {
+        TextButton(enabled = !busy && secondsToResend == 0L, onClick = onResend) {
             Text(if (secondsToResend > 0) "Kirim ulang kode dalam $secondsToResend detik" else "Kirim ulang kode")
         }
-
-        TextButton(onClick = onEditEmail) {
+        TextButton(enabled = !busy, onClick = onBack) {
             Text("Email salah? Ubah email")
         }
     }

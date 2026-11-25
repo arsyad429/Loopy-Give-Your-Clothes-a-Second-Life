@@ -43,6 +43,7 @@ import id.ac.loopy.feature.home.HomeViewModel
 import id.ac.loopy.feature.landing.LandingScreen
 import id.ac.loopy.feature.pickup.PickupRequestScreen
 import id.ac.loopy.feature.pickup.PickupRequestViewModel
+import id.ac.loopy.feature.profile.AccountViewModel
 import id.ac.loopy.feature.profile.AdminProfileScreen
 import id.ac.loopy.feature.profile.UserProfileScreen
 import androidx.lifecycle.createSavedStateHandle
@@ -52,6 +53,7 @@ import id.ac.loopy.feature.rewards.RewardsViewModel
 import id.ac.loopy.feature.rewards.RewardsScreen
 import id.ac.loopy.ui.components.TemplateScreen
 import id.ac.loopy.feature.settings.SettingsScreen
+import id.ac.loopy.feature.verification.EmailVerificationScreen
 
 @Composable
 fun LoopyApp(container: AppContainer) {
@@ -69,12 +71,20 @@ fun LoopyApp(container: AppContainer) {
     val logoutError by authModel.logoutError.collectAsStateWithLifecycle()
     val loginFeedback by authModel.loginFeedback.collectAsStateWithLifecycle()
     val registerFeedback by authModel.registerFeedback.collectAsStateWithLifecycle()
+    val emailRegistration by authModel.emailRegistration.collectAsStateWithLifecycle()
+    val profileFactory = remember(container) {
+        viewModelFactory { initializer { AccountViewModel(container.authRepository) } }
+    }
 
     fun goToAccountScreen(role: String?) {
         val route = when (role) {
             "USER" -> "s04"
             "ADMIN" -> "a01"
             else -> "s02"
+        }
+        if (role == null) {
+            nav.clearBackStack("s08")
+            nav.clearBackStack("s10")
         }
         nav.navigate(route) {
             popUpTo(nav.graph.startDestinationId)
@@ -91,7 +101,16 @@ fun LoopyApp(container: AppContainer) {
         }
     }
     val openDonation: (String) -> Unit = { id -> nav.navigate("s09/${Uri.encode(id)}") { launchSingleTop = true } }
-    val account: () -> Unit = { nav.navigate("s11") }
+    val account: () -> Unit = { nav.navigate("s11") { launchSingleTop = true } }
+    val adminAccount: () -> Unit = { nav.navigate("a04") { launchSingleTop = true } }
+    val settings: () -> Unit = { nav.navigate("s12") { launchSingleTop = true } }
+    val adminNavigate: (String) -> Unit = { route ->
+        nav.navigate(route) {
+            popUpTo("a01")
+            launchSingleTop = true
+        }
+    }
+    val openAdminDonation: (String) -> Unit = { id -> nav.navigate("a03/${Uri.encode(id)}") { launchSingleTop = true } }
 
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Box(Modifier.safeDrawingPadding()) {
@@ -127,8 +146,10 @@ fun LoopyApp(container: AppContainer) {
 
                 composable("s03") {
                     val role = session?.user?.role
-                    LaunchedEffect(role) {
+                    val challengeId = emailRegistration?.challenge?.challengeId
+                    LaunchedEffect(role, challengeId) {
                         if (role != null) goToAccountScreen(role)
+                        else if (challengeId != null) nav.navigate("s13") { launchSingleTop = true }
                     }
                     RegisterScreen(
                         onBack = {
@@ -145,6 +166,30 @@ fun LoopyApp(container: AppContainer) {
                         isSubmitting = submitting,
                         onFieldEdited = authModel::clearRegisterFieldFeedback,
                     )
+                }
+
+                composable("s13") {
+                    val role = session?.user?.role
+                    val state = emailRegistration
+                    when {
+                        role != null -> LaunchedEffect(role) { goToAccountScreen(role) }
+                        state == null -> LaunchedEffect(Unit) {
+                            if (!nav.popBackStack("s03", inclusive = false)) {
+                                nav.navigate("s03") { popUpTo("s13") { inclusive = true } }
+                            }
+                        }
+                        else -> EmailVerificationScreen(
+                            state = state,
+                            busy = submitting,
+                            onBack = {
+                                authModel.cancelEmailRegistration()
+                                goBack()
+                            },
+                            onVerify = authModel::verifyRegistration,
+                            onResend = authModel::resendRegistration,
+                            onCodeEdit = authModel::clearCodeError,
+                        )
+                    }
                 }
 
                 composable("s04") { entry ->
@@ -165,6 +210,7 @@ fun LoopyApp(container: AppContainer) {
                             onMyDonations = { nav.navigate("s08") { launchSingleTop = true } },
                             onRewards = { nav.navigate("s10") { launchSingleTop = true } },
                             onDonation = openDonation,
+                            onProfile = account,
                             onLogout = logout,
                             logoutBusy = submitting,
                             logoutError = logoutError,
@@ -308,6 +354,8 @@ fun LoopyApp(container: AppContainer) {
                             onBack = goBack,
                             onOpen = openDonation,
                             onCheckClothing = { nav.navigate("s05") },
+                            onNavigate = userNavigate,
+                            onAccount = account,
                         )
                     }
                 }
@@ -329,7 +377,7 @@ fun LoopyApp(container: AppContainer) {
                             viewModelStoreOwner = entry,
                             factory = factory,
                         )
-                        DonationDetailScreen(viewModel = model, onBack = goBack)
+                        DonationDetailScreen(viewModel = model, onBack = goBack, onNavigate = userNavigate)
                     }
                 }
                 composable("s10") { entry ->
@@ -364,7 +412,10 @@ fun LoopyApp(container: AppContainer) {
                     AdminDashboardScreen(
                         model = model,
                         name = admin.name,
-                        onOpenRequests = { nav.navigate("a02") },
+                        onOpenRequests = { adminNavigate("a02") },
+                        onOpenDonation = openAdminDonation,
+                        onNavigate = adminNavigate,
+                        onAccount = adminAccount,
                         onLogout = logout,
                         logoutBusy = submitting,
                         logoutError = logoutError,
@@ -380,7 +431,7 @@ fun LoopyApp(container: AppContainer) {
                         viewModelFactory { initializer { DonationRequestsViewModel(adminRepository) } }
                     }
                     val model = viewModel<DonationRequestsViewModel>(entry, key = admin.userId, factory = factory)
-                    DonationRequestsScreen(model, goBack) { id -> nav.navigate("a03/${Uri.encode(id)}") }
+                    DonationRequestsScreen(model, goBack, adminNavigate, adminAccount, openAdminDonation)
                 }
                 composable(
                     route = "a03/{id}",
@@ -402,9 +453,33 @@ fun LoopyApp(container: AppContainer) {
                     val model = viewModel<AdminDonationDetailViewModel>(entry, key = admin.userId, factory = factory)
                     AdminDonationDetailScreen(model, clothingCheckRepository::downloadPhoto, goBack)
                 }
-                composable("s11") { UserProfileScreen(goBack) }
-                composable("s12") { SettingsScreen(goBack) }
-                composable("a04") { AdminProfileScreen(goBack) }
+                composable("s11") { entry ->
+                    val user = session?.user
+                    if (user?.role != "USER") {
+                        LaunchedEffect(user?.role) { goToAccountScreen(user?.role) }
+                        return@composable
+                    }
+                    val model = viewModel<AccountViewModel>(entry, key = user.userId, factory = profileFactory)
+                    UserProfileScreen(model, goBack, settings, { userNavigate("s10") }, logout, submitting, logoutError)
+                }
+                composable("a04") { entry ->
+                    val admin = session?.user
+                    if (admin?.role != "ADMIN") {
+                        LaunchedEffect(admin?.role) { goToAccountScreen(admin?.role) }
+                        return@composable
+                    }
+                    val model = viewModel<AccountViewModel>(entry, key = admin.userId, factory = profileFactory)
+                    AdminProfileScreen(model, goBack, settings, { adminNavigate("a01") }, logout, submitting, logoutError)
+                }
+                composable("s12") { entry ->
+                    val user = session?.user
+                    if (user == null) {
+                        LaunchedEffect(Unit) { goToAccountScreen(null) }
+                        return@composable
+                    }
+                    val model = viewModel<AccountViewModel>(entry, key = user.userId, factory = profileFactory)
+                    SettingsScreen(model, goBack)
+                }
 
             }
         }

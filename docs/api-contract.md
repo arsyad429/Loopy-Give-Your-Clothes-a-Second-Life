@@ -6,11 +6,14 @@ Akun, pemeriksaan pakaian, dan admin berjalan pada satu API Go. Gunakan base URL
 
 | Metode/path | Akses | Request → respons target | Fitur |
 | --- | --- | --- | --- |
-| POST /v1/auth/register | Public | name,email,password → user USER/0 poin+session; email unik, role tidak diterima | F02 |
+| POST /v1/auth/register | Public | `name,email,password,username?` → `202` challenge OTP. Mode pengujian lokal tanpa OTP mengembalikan `201` sesi. | F02/S13 |
+| POST /v1/auth/register/resend | Public | `challengeId` → `202` challenge dengan kode baru | S13 |
+| POST /v1/auth/register/verify | Public | `challengeId,code` → `201` akun USER terverifikasi, 0 poin, access/refresh token | S13 |
 | POST /v1/auth/login | Public | email,password → access/refresh token, expiresAt,user | F02 |
 | POST /v1/auth/refresh | Refresh token | refreshToken → token pair baru, expiresAt,refreshExpiresAt,user; pair lama tidak berlaku | F02 |
 | POST /v1/auth/logout | Login | revoke session/refresh token →204 | F02 |
-| GET /v1/auth/me | Login | userId,name,email,role,totalPoints | F02/F03 |
+| GET /v1/auth/me | Login | `userId,name,email,username?,emailVerified,role,totalPoints` dari akun aktif | S11/A04 |
+| PATCH /v1/auth/me | Login | `name,username,currentPassword?,newPassword?` → `200` profil terbaru. Ubah kata sandi memerlukan kata sandi lama. | S12 |
 | POST /v1/checks | USER | Bearer + Idempotency-Key; multipart `image`, `clothingType` → objek pemeriksaan (201 baru, 200 replay) | F04/F05 |
 | GET /v1/checks/{id} | Owner/admin | Bearer → objek pemeriksaan tersimpan | F05 |
 | GET /v1/checks/{id}/photo | Owner/admin | Bearer → JPEG privat | F05 |
@@ -35,7 +38,7 @@ Enum status: PENDING_REVIEW/PICKUP_SCHEDULED/PICKED_UP/COMPLETED/REJECTED. AI: P
 
 Pengajuan dan redemption menggunakan idempotency key dengan cakupan akun dan operasi untuk retry. Pada peninjauan admin, `expectedVersion` mencegah keputusan yang sama diterapkan dua kali. Klien membaca detail terbaru setelah `409`.
 
-Android memakai kontrak auth, pemeriksaan, pengajuan pickup, Donasiku, dan peninjauan/status admin di atas. Saldo, katalog, penukaran dan riwayat reward Android juga menggunakan endpoint akun aktif; demo Room E–F telah dihapus. AI dipanggil server dan hasilnya menjadi penilaian awal. OTP, settings, dan profil tambahan memerlukan kontrak tersendiri.
+Android memakai kontrak auth, pemeriksaan, pengajuan pickup, Donasiku, dan peninjauan/status admin di atas. Saldo, katalog, penukaran dan riwayat reward Android juga menggunakan endpoint akun aktif; demo Room E–F telah dihapus. AI dipanggil server dan hasilnya menjadi penilaian awal. Profil donatur dan admin menggunakan API akun yang sama. Pendaftaran memakai verifikasi email, dan login berikutnya memakai email serta kata sandi. [Alur akun dan konfigurasi OTP](auth-go.md)
 
 ## Kontrak pemeriksaan pakaian Go
 

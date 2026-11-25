@@ -86,6 +86,8 @@ func insertTestUser(t *testing.T, pg *PGStore, email string) domain.User {
 	return user
 }
 
+const dropAccountExtensions = `DROP TABLE email_registrations; ALTER TABLE users DROP COLUMN username, DROP COLUMN email_verified_at; `
+
 func TestMergedMigrationPreservesBothVersionThreeHistories(t *testing.T) {
 	for _, original := range []string{"vision", "rewards"} {
 		t.Run(original, func(t *testing.T) {
@@ -96,13 +98,17 @@ func TestMergedMigrationPreservesBothVersionThreeHistories(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if err = pg.CreateSession(ctx, sess); err != nil {
+			account, err := pg.FindByEmail(ctx, user.Email)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err = pg.CreateSession(ctx, sess, account.PasswordHash); err != nil {
 				t.Fatal(err)
 			}
 
 			var redemptionID string
 			if original == "vision" {
-				_, err = pg.Pool().Exec(ctx, `DROP TABLE donation_submit_requests, point_transactions, redemptions, rewards;
+				_, err = pg.Pool().Exec(ctx, dropAccountExtensions+`DROP TABLE donation_submit_requests, point_transactions, redemptions, rewards;
 					DELETE FROM schema_migrations WHERE version>=4`, pgx.QueryExecModeSimpleProtocol)
 			} else {
 				if _, err = pg.Pool().Exec(ctx, `UPDATE users SET total_points=10 WHERE user_id=$1`, user.ID); err != nil {
@@ -113,9 +119,9 @@ func TestMergedMigrationPreservesBothVersionThreeHistories(t *testing.T) {
 					t.Fatal(redeemErr)
 				}
 				redemptionID = result.Redemption.ID
-				_, err = pg.Pool().Exec(ctx, `DROP TABLE donation_submit_requests, clothing_check_requests, clothing_check_photos;
+				_, err = pg.Pool().Exec(ctx, dropAccountExtensions+`DROP TABLE donation_submit_requests, clothing_check_requests, clothing_check_photos;
 					ALTER TABLE clothing_checks DROP COLUMN action_recommendation;
-					DELETE FROM schema_migrations WHERE version IN (3, 5);
+					DELETE FROM schema_migrations WHERE version IN (3, 5, 6, 7);
 					UPDATE schema_migrations SET version=3 WHERE version=4`, pgx.QueryExecModeSimpleProtocol)
 			}
 			if err != nil {
@@ -136,7 +142,7 @@ func TestMergedMigrationPreservesBothVersionThreeHistories(t *testing.T) {
 				to_regclass('clothing_check_photos') IS NOT NULL,
 				to_regclass('point_transactions') IS NOT NULL,
 				to_regclass('donation_submit_requests') IS NOT NULL`).Scan(&migrations, &hasPhotos, &hasLedger, &hasSubmit)
-			if err != nil || migrations != 5 || !hasPhotos || !hasLedger || !hasSubmit {
+			if err != nil || migrations != 7 || !hasPhotos || !hasLedger || !hasSubmit {
 				t.Fatalf("merged schema = %d, %v, %v, %v, %v", migrations, hasPhotos, hasLedger, hasSubmit, err)
 			}
 			if original == "rewards" {
@@ -161,10 +167,14 @@ func TestPickupMigrationPreservesAuth(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err = pg.CreateSession(ctx, sess); err != nil {
+	account, err := pg.FindByEmail(ctx, user.Email)
+	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = pg.Pool().Exec(ctx, `DROP TABLE donation_submit_requests, point_transactions, redemptions, rewards, clothing_check_requests, clothing_check_photos,
+	if err = pg.CreateSession(ctx, sess, account.PasswordHash); err != nil {
+		t.Fatal(err)
+	}
+	_, err = pg.Pool().Exec(ctx, dropAccountExtensions+`DROP TABLE donation_submit_requests, point_transactions, redemptions, rewards, clothing_check_requests, clothing_check_photos,
 		donation_status_history, donation_requests, clothing_checks;
 		DELETE FROM schema_migrations WHERE version>=2`, pgx.QueryExecModeSimpleProtocol)
 	if err != nil {
@@ -192,7 +202,11 @@ func TestVisionMigrationPreservesPickupRecords(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err = pg.CreateSession(ctx, sess); err != nil {
+	account, err := pg.FindByEmail(ctx, user.Email)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = pg.CreateSession(ctx, sess, account.PasswordHash); err != nil {
 		t.Fatal(err)
 	}
 

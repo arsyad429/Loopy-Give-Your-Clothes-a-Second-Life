@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 internal fun ScheduleConfirmDialog(
     summary: String,
     schedule: String,
+    address: String,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
@@ -25,6 +26,7 @@ internal fun ScheduleConfirmDialog(
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(summary)
                 Text(schedule, style = MaterialTheme.typography.titleMedium)
+                Text(address)
                 Text("Pengajuan akan berubah menjadi Dijadwalkan.")
             }
         },

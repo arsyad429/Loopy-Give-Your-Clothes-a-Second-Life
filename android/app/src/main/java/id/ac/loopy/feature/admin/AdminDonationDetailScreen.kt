@@ -298,6 +298,7 @@ internal fun AdminDonationDetailScreen(
             ScheduleConfirmDialog(
                 summary = "#${review.id} · ${review.quantity} pakaian",
                 schedule = formatPickupSchedule(pickupAt),
+                address = "${review.address}, ${review.city}",
                 onDismiss = { scheduleOpen = false },
                 onConfirm = {
                     scheduleOpen = false

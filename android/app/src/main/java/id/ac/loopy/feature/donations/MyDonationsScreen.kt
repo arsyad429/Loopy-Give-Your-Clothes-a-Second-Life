@@ -11,12 +11,10 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.loopy.domain.model.DonationStatus
 import id.ac.loopy.ui.components.*
-import java.util.Locale
 
 /** S08 (Akun aktif): daftar pengajuan donasi pengguna dari backend Go. */
 @Composable
@@ -26,11 +24,20 @@ fun MyDonationsScreen(
     onBack: () -> Unit,
     onOpen: (String) -> Unit,
     onCheckClothing: () -> Unit,
+    onNavigate: (String) -> Unit,
+    onAccount: () -> Unit,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val items = state.filteredItems
 
-    LoopyScreen(title = "Donasiku", onBack = onBack) {
+    LoopyScreen(
+        title = "Donasiku",
+        onBack = onBack,
+        onAccount = onAccount,
+        bottomBar = { UserBottomBar("s08", onNavigate) },
+        onRefresh = viewModel::refresh,
+        refreshing = state.isLoading && state.items.isNotEmpty(),
+    ) {
         LoopyIntro("Setiap donasi\npunya cerita.", "Pantau perjalanan pakaian yang kamu bagikan.")
 
         LoopyTextField(
@@ -59,7 +66,7 @@ fun MyDonationsScreen(
         }
 
         when {
-            state.isLoading -> {
+            state.isLoading && state.items.isEmpty() -> {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     CircularProgressIndicator()
                     Text("Memuat daftar donasimu…", style = MaterialTheme.typography.bodyMedium)
@@ -87,7 +94,7 @@ fun MyDonationsScreen(
                     Text("Riwayat donasi", style = MaterialTheme.typography.titleLarge)
                     history.forEach { item -> DonationCard(item) { onOpen(item.donationId) } }
                 }
-                LoopyButton("Perbarui daftar", viewModel::refresh, outlined = true)
+                LoopyButton("Perbarui daftar", viewModel::refresh, enabled = !state.isLoading, outlined = true)
             }
         }
     }

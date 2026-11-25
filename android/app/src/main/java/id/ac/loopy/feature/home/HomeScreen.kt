@@ -38,6 +38,7 @@ internal fun HomeScreen(
     onMyDonations: () -> Unit,
     onRewards: () -> Unit,
     onDonation: (String) -> Unit,
+    onProfile: () -> Unit,
     onLogout: () -> Unit,
     logoutBusy: Boolean,
     logoutError: String?,
@@ -53,6 +54,7 @@ internal fun HomeScreen(
         onRewards = onRewards,
         onDonation = onDonation,
         onRefresh = viewModel::refresh,
+        onProfile = onProfile,
         onLogout = onLogout,
         logoutBusy = logoutBusy,
         logoutError = logoutError,
@@ -71,6 +73,7 @@ internal fun HomeContent(
     onLogout: () -> Unit,
     logoutBusy: Boolean = false,
     logoutError: String? = null,
+    onProfile: (() -> Unit)? = null,
 ) {
     var showAccount by rememberSaveable { mutableStateOf(false) }
     HomeLayout(
@@ -119,6 +122,12 @@ internal fun HomeContent(
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(name)
+                    if (onProfile != null) {
+                        TextButton(onClick = {
+                            showAccount = false
+                            onProfile()
+                        }, enabled = !logoutBusy) { Text("Lihat profil") }
+                    }
                     if (logoutError != null) Text(logoutError, color = MaterialTheme.colorScheme.error)
                 }
             },

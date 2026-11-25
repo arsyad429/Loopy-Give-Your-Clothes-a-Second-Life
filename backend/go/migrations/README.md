@@ -7,3 +7,5 @@ Berisi skrip DDL berurutan yang di-embed ke binary Go melalui `embed.go`:
 3. `003_vision_and_private_photos.sql`: Foto privat (`clothing_check_photos`), rekomendasi aksi AI, dan idempotensi pemeriksaan (`clothing_check_requests`).
 4. `004_rewards_and_ledger.sql`: Katalog reward (`rewards`), penukaran (`redemptions`), dan ledger poin (`point_transactions`).
 5. `005_donation_submit_idempotency.sql`: Idempotensi pengajuan pickup donatur (`donation_submit_requests`).
+6. `006_account_profiles.sql`: Username unik opsional dan status verifikasi email. Akun yang sudah ada tetap dapat masuk.
+7. `007_email_registration.sql`: Pendaftaran sementara sebelum kode email diverifikasi.

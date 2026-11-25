@@ -24,6 +24,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.loopy.domain.model.DonationStatus
+import id.ac.loopy.ui.components.AdminBottomBar
 import id.ac.loopy.ui.components.LoopyButton
 import id.ac.loopy.ui.components.LoopyInfo
 import id.ac.loopy.ui.components.LoopyIntro
@@ -105,12 +106,19 @@ private val queueFilters = listOf(
 internal fun DonationRequestsScreen(
     model: DonationRequestsViewModel,
     onBack: () -> Unit,
+    onNavigate: (String) -> Unit,
+    onAccount: () -> Unit,
     onOpen: (String) -> Unit,
 ) {
     val state by model.state.collectAsStateWithLifecycle()
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { model.refresh() }
 
-    LoopyScreen(title = "Pengajuan", onBack = onBack) {
+    LoopyScreen(
+        title = "Pengajuan",
+        onBack = onBack,
+        onAccount = onAccount,
+        bottomBar = { AdminBottomBar("a02", onNavigate) },
+    ) {
         LoopyIntro("Antrean donasi", "Periksa pengajuan yang paling lama menunggu.")
         LoopyTextField("Cari pengajuan", state.query, model::search, placeholder = "ID, nama, atau kota")
 
@@ -138,7 +146,7 @@ internal fun DonationRequestsScreen(
 }
 
 @Composable
-private fun DonationQueueCard(
+internal fun DonationQueueCard(
     id: String,
     donor: String,
     quantity: Int,

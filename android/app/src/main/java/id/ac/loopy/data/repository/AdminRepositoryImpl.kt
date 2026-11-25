@@ -24,9 +24,9 @@ internal class AdminRepositoryImpl(
 ) {
     suspend fun summary() = auth.withBearer(api::summary)
 
-    suspend fun list(status: DonationStatus, query: String, cursor: String?): AdminDonationPage =
+    suspend fun list(status: DonationStatus, query: String, cursor: String?, limit: Int? = null): AdminDonationPage =
         auth.withBearer { bearer ->
-            val response = api.list(bearer, status.name, query.trim().ifBlank { null }, cursor)
+            val response = api.list(bearer, status.name, query.trim().ifBlank { null }, cursor, limit)
             AdminDonationPage(response.items.map { it.toDomain() }, response.nextCursor)
         }
 

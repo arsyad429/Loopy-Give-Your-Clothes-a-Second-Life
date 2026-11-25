@@ -19,12 +19,13 @@ import (
 
 // Server wires HTTP handlers, authentication, rate limiting, and routing.
 type Server struct {
-	auth      *AuthService
-	donations domain.DonationRepository
-	rewards   domain.RewardsRepository
-	checks    *ClothingCheckService
-	limiter   *authLimiter
-	hashSlots chan struct{}
+	emailRegistration *EmailRegistration
+	auth              *AuthService
+	donations         domain.DonationRepository
+	rewards           domain.RewardsRepository
+	checks            *ClothingCheckService
+	limiter           *authLimiter
+	hashSlots         chan struct{}
 }
 
 // NewServer constructs an HTTP API server with its domain services.
@@ -61,11 +62,14 @@ func (s *Server) Routes() http.Handler {
 	})
 
 	mux.Handle("POST /v1/auth/register", s.limit(true, http.HandlerFunc(s.register)))
+	mux.Handle("POST /v1/auth/register/resend", s.limit(false, http.HandlerFunc(s.resendRegistration)))
+	mux.Handle("POST /v1/auth/register/verify", s.limit(false, http.HandlerFunc(s.verifyRegistration)))
 	mux.Handle("POST /v1/auth/login", s.limit(true, http.HandlerFunc(s.login)))
 	mux.Handle("POST /v1/auth/refresh", s.limit(false, http.HandlerFunc(s.refresh)))
 	mux.Handle("GET /v1/auth/me", s.Authenticate(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, 200, currentPrincipal(r).User)
 	})))
+	mux.Handle("PATCH /v1/auth/me", s.Authenticate(s.limit(true, http.HandlerFunc(s.updateProfile))))
 	mux.Handle("POST /v1/auth/logout", s.Authenticate(http.HandlerFunc(s.logout)))
 
 	if s.donations != nil {

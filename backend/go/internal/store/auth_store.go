@@ -13,9 +13,15 @@ type executor interface {
 	Exec(context.Context, string, ...any) (pgconn.CommandTag, error)
 }
 
+const userColumns = `u.user_id::text,u.name,u.email,u.role,u.total_points,COALESCE(u.username,''),u.email_verified_at IS NOT NULL`
+
+func userFields(u *domain.User) []any {
+	return []any{&u.ID, &u.Name, &u.Email, &u.Role, &u.TotalPoints, &u.Username, &u.EmailVerified}
+}
+
 func scanUser(row pgx.Row) (domain.User, error) {
 	var u domain.User
-	err := row.Scan(&u.ID, &u.Name, &u.Email, &u.Role, &u.TotalPoints)
+	err := row.Scan(userFields(&u)...)
 	return u, storeError(err)
 }
 
@@ -27,8 +33,8 @@ func (s *PGStore) Register(ctx context.Context, a domain.Account, session domain
 	}
 	defer tx.Rollback(context.Background())
 
-	u, err := scanUser(tx.QueryRow(ctx, `INSERT INTO users(user_id,name,email,password_hash) VALUES($1,$2,$3,$4)
-		RETURNING user_id::text,name,email,role,total_points`, a.ID, a.Name, a.Email, a.PasswordHash))
+	u, err := scanUser(tx.QueryRow(ctx, `INSERT INTO users AS u (user_id,name,email,password_hash,username) VALUES($1,$2,$3,$4,NULLIF($5,''))
+		RETURNING `+userColumns, a.ID, a.Name, a.Email, a.PasswordHash, a.Username))
 	if err != nil {
 		return domain.User{}, err
 	}
@@ -43,16 +49,44 @@ func (s *PGStore) Register(ctx context.Context, a domain.Account, session domain
 
 // CreateAdmin creates a new ADMIN account.
 func (s *PGStore) CreateAdmin(ctx context.Context, a domain.Account) (domain.User, error) {
-	return scanUser(s.pool.QueryRow(ctx, `INSERT INTO users(user_id,name,email,password_hash,role) VALUES($1,$2,$3,$4,'ADMIN')
-		RETURNING user_id::text,name,email,role,total_points`, a.ID, a.Name, a.Email, a.PasswordHash))
+	return scanUser(s.pool.QueryRow(ctx, `INSERT INTO users AS u (user_id,name,email,password_hash,role,username) VALUES($1,$2,$3,$4,'ADMIN',NULLIF($5,''))
+		RETURNING `+userColumns, a.ID, a.Name, a.Email, a.PasswordHash, a.Username))
 }
 
 // FindByEmail retrieves an account by normalized email address.
 func (s *PGStore) FindByEmail(ctx context.Context, email string) (domain.Account, error) {
 	var a domain.Account
-	err := s.pool.QueryRow(ctx, `SELECT user_id::text,name,email,role,total_points,password_hash FROM users WHERE email=$1`, email).
-		Scan(&a.ID, &a.Name, &a.Email, &a.Role, &a.TotalPoints, &a.PasswordHash)
+	err := s.pool.QueryRow(ctx, `SELECT `+userColumns+`,u.password_hash FROM users u WHERE u.email=$1`, email).
+		Scan(append(userFields(&a.User), &a.PasswordHash)...)
 	return a, storeError(err)
+}
+
+// UpdateProfile applies edits and revokes other sessions when a password changes.
+func (s *PGStore) UpdateProfile(ctx context.Context, change domain.ProfileUpdate) (domain.User, error) {
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return domain.User{}, err
+	}
+	defer tx.Rollback(context.Background())
+
+	id := change.Principal.User.ID
+	u, err := scanUser(tx.QueryRow(ctx, `UPDATE users AS u SET name=$2,username=NULLIF($3,''),
+		password_hash=COALESCE(NULLIF($5,''),u.password_hash)
+		WHERE u.user_id=$1 AND ($4='' OR u.password_hash=$4)
+		RETURNING `+userColumns, id, change.Name, change.Username, change.OldPasswordHash, change.NewPasswordHash))
+	if err == domain.ErrNotFound {
+		return domain.User{}, domain.ErrProfileChanged
+	}
+	if err != nil {
+		return domain.User{}, err
+	}
+	if change.NewPasswordHash != "" {
+		_, err = tx.Exec(ctx, `DELETE FROM auth_sessions WHERE user_id=$1 AND session_id<>$2`, id, change.Principal.SessionID)
+		if err != nil {
+			return domain.User{}, err
+		}
+	}
+	return u, tx.Commit(ctx)
 }
 
 func insertSession(ctx context.Context, db executor, s domain.Session) error {
@@ -62,17 +96,26 @@ func insertSession(ctx context.Context, db executor, s domain.Session) error {
 }
 
 // CreateSession persists a new authentication session.
-func (s *PGStore) CreateSession(ctx context.Context, sess domain.Session) error {
-	return insertSession(ctx, s.pool, sess)
+func (s *PGStore) CreateSession(ctx context.Context, sess domain.Session, passwordHash string) error {
+	tag, err := s.pool.Exec(ctx, `WITH account AS (
+		SELECT user_id FROM users WHERE user_id=$2 AND password_hash=$7 FOR UPDATE
+	)
+	INSERT INTO auth_sessions(session_id,user_id,access_hash,refresh_hash,access_expires_at,refresh_expires_at)
+	SELECT $1,account.user_id,$3,$4,$5,$6 FROM account`,
+		sess.ID, sess.UserID, sess.AccessHash, sess.RefreshHash, sess.AccessExpiresAt, sess.RefreshExpiresAt, passwordHash)
+	if err == nil && tag.RowsAffected() == 0 {
+		return domain.ErrNotFound
+	}
+	return err
 }
 
 // Authenticate resolves an active principal from a hashed Bearer access token.
 func (s *PGStore) Authenticate(ctx context.Context, hash []byte) (domain.Principal, error) {
 	var p domain.Principal
-	err := s.pool.QueryRow(ctx, `SELECT u.user_id::text,u.name,u.email,u.role,u.total_points,s.session_id::text
+	err := s.pool.QueryRow(ctx, `SELECT `+userColumns+`,s.session_id::text
 		FROM auth_sessions s JOIN users u USING(user_id)
 		WHERE s.access_hash=$1 AND s.access_expires_at>now() AND s.refresh_expires_at>now()`, hash).
-		Scan(&p.User.ID, &p.User.Name, &p.User.Email, &p.User.Role, &p.User.TotalPoints, &p.SessionID)
+		Scan(append(userFields(&p.User), &p.SessionID)...)
 	return p, storeError(err)
 }
 
@@ -87,9 +130,9 @@ func (s *PGStore) Rotate(ctx context.Context, oldHash []byte, next domain.Sessio
 		access_expires_at=LEAST($4,refresh_expires_at)
 		WHERE refresh_hash=$1 AND refresh_expires_at>now()
 		RETURNING user_id,access_expires_at,refresh_expires_at)
-		SELECT u.user_id::text,u.name,u.email,u.role,u.total_points,r.access_expires_at,r.refresh_expires_at
+		SELECT `+userColumns+`,r.access_expires_at,r.refresh_expires_at
 		FROM rotated r JOIN users u USING(user_id)`, oldHash, next.AccessHash, next.RefreshHash, next.AccessExpiresAt).
-		Scan(&u.ID, &u.Name, &u.Email, &u.Role, &u.TotalPoints, &accessExpiry, &refreshExpiry)
+		Scan(append(userFields(&u), &accessExpiry, &refreshExpiry)...)
 	return u, accessExpiry.UTC(), refreshExpiry.UTC(), storeError(err)
 }
 

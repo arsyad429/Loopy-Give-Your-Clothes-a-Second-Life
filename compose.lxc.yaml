@@ -37,6 +37,14 @@ services:
       GROQ_API_KEY: "${GROQ_API_KEY:-}"
       GROQ_MODEL: "${GROQ_MODEL:-qwen/qwen3.8-27b}"
       GROQ_RESPONSE_MODE: "${GROQ_RESPONSE_MODE:-json_schema}"
+      AUTH_EMAIL_VERIFICATION_REQUIRED: "${AUTH_EMAIL_VERIFICATION_REQUIRED:-true}"
+      AUTH_OTP_HMAC_KEY: "${AUTH_OTP_HMAC_KEY:-}"
+      AUTH_SMTP_HOST: "${AUTH_SMTP_HOST:-}"
+      AUTH_SMTP_PORT: "${AUTH_SMTP_PORT:-}"
+      AUTH_SMTP_TLS_MODE: "${AUTH_SMTP_TLS_MODE:-starttls}"
+      AUTH_SMTP_USER: "${AUTH_SMTP_USER:-}"
+      AUTH_SMTP_PASSWORD: "${AUTH_SMTP_PASSWORD:-}"
+      AUTH_SMTP_FROM: "${AUTH_SMTP_FROM:-}"
     depends_on:
       db:
         condition: service_healthy

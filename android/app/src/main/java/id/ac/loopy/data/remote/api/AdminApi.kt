@@ -23,6 +23,7 @@ internal interface AdminApi {
         @Query("status") status: String,
         @Query("query") query: String?,
         @Query("cursor") cursor: String?,
+        @Query("limit") limit: Int? = null,
     ): DonationListResponseDto
 
     @GET("v1/admin/donations/{id}")

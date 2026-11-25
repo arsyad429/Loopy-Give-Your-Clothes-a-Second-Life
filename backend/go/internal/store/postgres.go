@@ -80,8 +80,13 @@ func storeError(err error) error {
 		return domain.ErrNotFound
 	}
 	var pgErr *pgconn.PgError
-	if errors.As(err, &pgErr) && pgErr.Code == "23505" && pgErr.ConstraintName == "users_email_key" {
-		return domain.ErrDuplicateEmail
+	if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+		switch pgErr.ConstraintName {
+		case "users_email_key":
+			return domain.ErrDuplicateEmail
+		case "users_username_key":
+			return domain.ErrDuplicateUsername
+		}
 	}
 	return err
 }

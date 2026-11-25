@@ -17,6 +17,12 @@ var rewardsAndLedgerSQL string
 //go:embed 005_donation_submit_idempotency.sql
 var donationSubmitIdempotencySQL string
 
+//go:embed 006_account_profiles.sql
+var accountProfilesSQL string
+
+//go:embed 007_email_registration.sql
+var emailRegistrationSQL string
+
 // Versions lists PostgreSQL DDL migrations in strict execution order (1..N).
 var Versions = []string{
 	accountsAndSessionsSQL,
@@ -24,4 +30,6 @@ var Versions = []string{
 	visionAndPrivatePhotosSQL,
 	rewardsAndLedgerSQL,
 	donationSubmitIdempotencySQL,
+	accountProfilesSQL,
+	emailRegistrationSQL,
 }

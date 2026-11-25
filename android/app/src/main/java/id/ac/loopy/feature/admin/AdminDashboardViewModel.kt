@@ -3,6 +3,7 @@ package id.ac.loopy.feature.admin
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.ac.loopy.data.repository.AdminRepositoryImpl
+import id.ac.loopy.domain.model.DonationStatus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,11 +23,14 @@ internal class AdminDashboardViewModel(private val repository: AdminRepositoryIm
         _state.update { it.copy(loading = true, error = null) }
         request = viewModelScope.launch {
             try {
-                _state.value = AdminDashboardUiState(summary = repository.summary(), loading = false)
+                val summary = repository.summary()
+                _state.update { it.copy(summary = summary) }
+                val pending = repository.list(DonationStatus.PENDING_REVIEW, "", null, limit = 3).items
+                _state.value = AdminDashboardUiState(summary = summary, pending = pending, loading = false)
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (error: Exception) {
-                _state.update { it.copy(loading = false, error = error.adminMessage("Ringkasan gagal dimuat.")) }
+                _state.update { it.copy(loading = false, error = error.adminMessage("Data dashboard gagal dimuat.")) }
             }
         }
     }
