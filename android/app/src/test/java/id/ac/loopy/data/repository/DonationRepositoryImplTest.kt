@@ -9,9 +9,13 @@ import id.ac.loopy.data.remote.dto.DonationDetailDto
 import id.ac.loopy.data.remote.dto.DonationItemDto
 import id.ac.loopy.data.remote.dto.DonationListResponseDto
 import id.ac.loopy.data.remote.dto.LoginRequest
+import id.ac.loopy.data.remote.dto.ProfileUpdateRequest
 import id.ac.loopy.data.remote.dto.RefreshRequest
 import id.ac.loopy.data.remote.dto.RegisterRequest
+import id.ac.loopy.data.remote.dto.RegistrationStartDto
+import id.ac.loopy.data.remote.dto.ResendRegistrationRequest
 import id.ac.loopy.data.remote.dto.SessionDto
+import id.ac.loopy.data.remote.dto.VerifyRegistrationRequest
 import id.ac.loopy.domain.model.CreateDonationSubmission
 import id.ac.loopy.domain.model.DonationStatus
 import kotlinx.coroutines.runBlocking
@@ -126,7 +130,15 @@ class DonationRepositoryImplTest {
             user = AuthUserDto("user-1", "Neva", "USER"),
         )
 
-        override suspend fun register(request: RegisterRequest) = login(LoginRequest(request.email, request.password))
+        override suspend fun register(request: RegisterRequest): RegistrationStartDto = error("Unexpected registration")
+
+        override suspend fun resendRegistration(request: ResendRegistrationRequest) = error("Unexpected code resend")
+
+        override suspend fun verifyRegistration(request: VerifyRegistrationRequest) = error("Unexpected verification")
+
+        override suspend fun profile(bearer: String) = error("Unexpected profile read")
+
+        override suspend fun updateProfile(bearer: String, request: ProfileUpdateRequest) = error("Unexpected profile update")
 
         override suspend fun refresh(request: RefreshRequest): SessionDto {
             refreshCalls++

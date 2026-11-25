@@ -10,12 +10,14 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"loopy/backend/internal/domain"
 	"loopy/backend/internal/httpapi"
+	"loopy/backend/internal/security"
 	"loopy/backend/internal/store"
 	"loopy/backend/internal/vision"
 )
@@ -103,11 +105,32 @@ func run() error {
 		return err
 	}
 	checks := httpapi.NewClothingCheckService(pg, analyzer)
-	handler := httpapi.NewServer(auth, pg, checks).Routes()
+	api := httpapi.NewServer(auth, pg, checks)
+	requireRegistration, err := strconv.ParseBool(envOr("AUTH_EMAIL_VERIFICATION_REQUIRED", "true"))
+	if err != nil {
+		return errors.New("AUTH_EMAIL_VERIFICATION_REQUIRED must be true or false")
+	}
+	if requireRegistration {
+		mailer, err := security.ConfiguredVerificationMailer()
+		if err != nil {
+			return err
+		}
+		var verification *httpapi.EmailRegistration
+		if mailer == nil {
+			slog.Warn("Email verification required; registration is unavailable until SMTP is configured")
+			verification, err = httpapi.NewEmailRegistration(pg, nil, "")
+		} else {
+			verification, err = httpapi.NewEmailRegistration(pg, mailer, os.Getenv("AUTH_OTP_HMAC_KEY"))
+		}
+		if err != nil {
+			return err
+		}
+		api.RequireEmailRegistration(verification)
+	}
 
 	server := &http.Server{
 		Addr:              envOr("HTTP_ADDR", "127.0.0.1:8080"),
-		Handler:           handler,
+		Handler:           api.Routes(),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       15 * time.Second,
 		WriteTimeout:      45 * time.Second,

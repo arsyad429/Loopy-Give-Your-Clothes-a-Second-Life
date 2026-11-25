@@ -22,7 +22,9 @@ import androidx.compose.ui.unit.sp
 import id.ac.loopy.R
 import id.ac.loopy.domain.model.DonationStatus
 import id.ac.loopy.domain.model.DonationSummaryItem
+import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.TimeZone
 
 @Composable
 internal fun LoopyCard(
@@ -73,8 +75,24 @@ internal fun PointsCard(balance: Int, onRewards: (() -> Unit)? = null) {
 
 @Composable
 internal fun UserBottomBar(selected: String, onNavigate: (String) -> Unit) {
+    LoopyBottomBar(
+        listOf(Triple("s04", "Beranda", "house"), Triple("s08", "Donasiku", "package"), Triple("s10", "Rewards", "gift")),
+        selected, onNavigate,
+    )
+}
+
+@Composable
+internal fun AdminBottomBar(selected: String, onNavigate: (String) -> Unit) {
+    LoopyBottomBar(
+        listOf(Triple("a01", "Ringkasan", "house"), Triple("a02", "Pengajuan", "package")),
+        selected, onNavigate,
+    )
+}
+
+@Composable
+private fun LoopyBottomBar(tabs: List<Triple<String, String, String>>, selected: String, onNavigate: (String) -> Unit) {
     Row(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface).padding(12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        listOf(Triple("s04", "Beranda", "house"), Triple("s08", "Donasiku", "package"), Triple("s10", "Rewards", "gift")).forEach { (route, label, icon) ->
+        tabs.forEach { (route, label, icon) ->
             Column(
                 Modifier.weight(1f).background(if (selected == route) MaterialTheme.colorScheme.primaryContainer else Color.Transparent, RoundedCornerShape(16.dp))
                     .selectable(selected = selected == route, role = Role.Tab, onClick = { onNavigate(route) }).padding(vertical = 8.dp),
@@ -85,6 +103,15 @@ internal fun UserBottomBar(selected: String, onNavigate: (String) -> Unit) {
             }
         }
     }
+}
+
+internal fun formatDonationTimestamp(value: String): String {
+    val timestamp = if (value.endsWith("Z") && '.' in value) value.substringBefore('.') + "Z" else value
+    val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ROOT).apply { isLenient = false }
+    val date = runCatching { parser.parse(timestamp) }.getOrNull() ?: return value
+    return SimpleDateFormat("d MMM yyyy · HH.mm 'WIB'", Locale.forLanguageTag("id-ID")).apply {
+        timeZone = TimeZone.getTimeZone("Asia/Jakarta")
+    }.format(date)
 }
 
 @Composable

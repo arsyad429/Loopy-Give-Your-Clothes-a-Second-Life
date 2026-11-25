@@ -4,7 +4,7 @@ Loopy adalah aplikasi donasi pakaian dengan Android Kotlin dan Jetpack Compose, 
 
 | Bagian | Status |
 | --- | --- |
-| Android | Login/register, pemeriksaan pakaian, pickup, donasi, admin, saldo dan rewards terhubung ke API Go dengan sesi akun aktif. |
+| Android | Login, daftar dengan OTP email, profil dan pengaturan, pemeriksaan pakaian, pickup, donasi, admin, saldo, dan rewards terhubung ke API Go. |
 | API Go | Autentikasi, pemeriksaan Groq dan foto privat, peninjauan/jadwal pickup, penyelesaian donasi dengan kredit 10 poin satu kali, saldo, katalog, penukaran, serta riwayat reward. |
 
 Pemeriksaan pakaian memakai access token dari login Go. Android menyimpan sesi di memori selama proses aplikasi berjalan. [Panduan backend](docs/backend.md) · [Kontrak endpoint](docs/api-contract.md) · [Hasil verifikasi](docs/verification.md)
@@ -15,7 +15,7 @@ Untuk mencoba alur E–F, jalankan backend/PostgreSQL, login sesuai peran, lalu 
 
 Gunakan Docker Engine dengan Compose v2 atau Docker Desktop dengan Linux containers. Siapkan `.env` lokal dari [`.env.example`](.env.example) jika belum ada. Simpan API key Groq hanya di `.env` lokal. Jalankan dari root repository.
 
-Jalankan API Go dan PostgreSQL. Port 8082 dan nama proyek `loopy-go` memberi ruang bagi instalasi development lama.
+Jalankan API Go dan PostgreSQL. Port 8082 dan nama proyek `loopy-go` memberi ruang bagi instalasi development lama. Siapkan SMTP untuk menguji daftar dengan OTP, atau gunakan `AUTH_EMAIL_VERIFICATION_REQUIRED=false` khusus untuk pengujian lokal. [Pengaturan SMTP](docs/deploy-lxc.md#email-verification-for-registration)
 
 ```sh
 API_PORT=8082 docker compose -p loopy-go up --build -d --wait db backend
@@ -28,7 +28,7 @@ Untuk database Go yang sudah berjalan, gunakan kembali nama proyek Compose dan v
 
 1. Buka folder [`android/`](android/README.md) sebagai proyek yang sudah ada.
 2. Gunakan JDK 17, Android SDK Platform 36, dan Build Tools 36.0.0. Android Studio dapat membuat `local.properties` untuk SDK host.
-3. Jalankan varian `debug` pada emulator atau perangkat API 24+. Di katalog debug, buka S02, masuk sebagai pengguna, lalu pilih **Periksa pakaian** untuk membuka S05. S06 terbuka setelah analisis berhasil.
+3. Jalankan varian `debug` pada emulator atau perangkat API 24+. Saat aplikasi dibuka dari awal, pilih **Masuk** di halaman landing, lalu pilih **Periksa pakaian** setelah masuk sebagai pengguna. Layar hasil terbuka setelah analisis berhasil.
 4. Untuk HP fisik, aktifkan `adb reverse tcp:8082 tcp:8082` dan build APK dengan `-PLOOPY_API_BASE_URL=http://127.0.0.1:8082/`. Emulator memakai alamat `10.0.2.2` dengan port Go. [Panduan development](docs/development.md#koneksi-android-ke-backend)
 
 ```sh

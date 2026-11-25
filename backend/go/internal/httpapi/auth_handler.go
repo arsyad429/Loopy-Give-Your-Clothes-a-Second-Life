@@ -32,7 +32,7 @@ func MakeAccount(req domain.RegisterRequest) (domain.Account, error) {
 	}
 	hash, err := security.HashPassword(req.Password)
 	return domain.Account{
-		User:         domain.User{ID: id, Name: req.Name, Email: req.Email},
+		User:         domain.User{ID: id, Name: req.Name, Email: req.Email, Username: req.Username},
 		PasswordHash: hash,
 	}, err
 }
@@ -77,7 +77,10 @@ func (a *AuthService) Login(ctx context.Context, req domain.LoginRequest) (domai
 	if err != nil {
 		return domain.SessionResponse{}, err
 	}
-	if err = a.store.CreateSession(ctx, s); err != nil {
+	if err = a.store.CreateSession(ctx, s, u.PasswordHash); err != nil {
+		if errors.Is(err, domain.ErrNotFound) {
+			err = invalid
+		}
 		return domain.SessionResponse{}, err
 	}
 	response.User = u.User
@@ -104,6 +107,10 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 	var req domain.RegisterRequest
 	if err := decodeJSON(w, r, &req); err != nil {
 		writeError(w, err)
+		return
+	}
+	if s.emailRegistration != nil {
+		s.beginEmailRegistration(w, r, req)
 		return
 	}
 	response, err := s.auth.Register(r.Context(), req)
@@ -142,6 +149,50 @@ func (s *Server) refresh(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, 200, response)
+}
+
+func (s *Server) updateProfile(w http.ResponseWriter, r *http.Request) {
+	var req domain.ProfileUpdateRequest
+	if err := decodeJSON(w, r, &req); err != nil {
+		writeError(w, err)
+		return
+	}
+	req, err := domain.ValidateProfileUpdate(req)
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+	principal := currentPrincipal(r)
+	change := domain.ProfileUpdate{Principal: principal, Name: req.Name, Username: req.Username}
+	if req.NewPassword != "" {
+		account, err := s.auth.store.FindByEmail(r.Context(), principal.User.Email)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		if !security.VerifyPassword(req.CurrentPassword, account.PasswordHash) {
+			writeError(w, &domain.APIError{
+				Status: 422, Code: "VALIDATION_ERROR", Message: "Current password is incorrect.",
+				Fields: map[string]string{"currentPassword": "Current password is incorrect."},
+			})
+			return
+		}
+		change.OldPasswordHash = account.PasswordHash
+		change.NewPasswordHash, err = security.HashPassword(req.NewPassword)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+	}
+	profile, err := s.auth.store.UpdateProfile(r.Context(), change)
+	if errors.Is(err, domain.ErrProfileChanged) {
+		err = &domain.APIError{Status: 409, Code: "PROFILE_CHANGED", Message: "Reload the profile and try again."}
+	}
+	if err != nil {
+		writeError(w, domain.AccountError(err))
+		return
+	}
+	writeJSON(w, 200, profile)
 }
 
 func (s *Server) logout(w http.ResponseWriter, r *http.Request) {

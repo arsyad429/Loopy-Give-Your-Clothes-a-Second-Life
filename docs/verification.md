@@ -1,5 +1,21 @@
 # Hasil verifikasi Loopy
 
+## Navigasi, profil, pengaturan, dan verifikasi email — 26 November 2026
+
+1. Cocokkan alur Android dengan frame Figma S08–S09, A01–A04, S11–S13, dan S03. Tambahkan navigasi bawah pengguna dan admin, tarik untuk memperbarui Donasiku, timeline dengan waktu dari server, tiga pengajuan tertua yang perlu ditangani, dan alamat di konfirmasi jadwal.
+2. Tambahkan migrasi PostgreSQL 6 untuk username dan status verifikasi, serta migrasi 7 untuk pendaftaran sementara. Profil donatur dan admin membaca akun sendiri melalui `GET /v1/auth/me`. Settings mengirim nama, username, dan perubahan kata sandi lewat `PATCH /v1/auth/me`.
+3. Hubungkan form daftar ke challenge email. Server menyimpan digest kode dan mengirim OTP enam digit lewat SMTP TLS. Android baru menyimpan sesi setelah kode benar. Login selanjutnya tetap memakai email dan kata sandi.
+4. Uji Android dengan server HTTP tiruan, uji kontrak akun memakai PostgreSQL 17 sementara, dan uji transport email dengan server SMTP TLS lokal.
+
+| Pemeriksaan | Hasil |
+| --- | --- |
+| Backend | `go test -race -count=1 ./...`, `go vet ./...`, dan build lulus. Tes mencakup migrasi data lama, gagal kirim lalu retry, cooldown, salah/expired/replay, login sebelum dan sesudah verifikasi, username duplikat, dan perubahan kata sandi serta revokasi sesi lain. |
+| SMTP | Tes pengiriman melalui SMTP TLS lokal lulus. Pesan berisi alamat penerima uji dan kode. `govulncheck` tidak melaporkan kerentanan pada backend yang dipindai. |
+| Android | Build debug, release, APK instrumentasi, unit test, dan lint debug lulus. Tes Retrofit memastikan respons `202` belum menghasilkan sesi dan profil diperbarui setelah PATCH sukses. |
+
+Untuk uji penerimaan di VM, siapkan SMTP dan kunci OTP, lalu rebuild backend dan pasang APK baru. Coba daftar dengan inbox yang dikuasai, kirim ulang dan masukkan kode baru, logout, dan masuk kembali dengan email serta kata sandi. Uji perubahan profil dan kata sandi, lalu uji donasi dari dua sesi donatur/admin hingga timeline dan jadwal final sesuai. Email ke provider publik dan UI pada perangkat masih perlu diverifikasi. [Pengaturan SMTP di VM](deploy-lxc.md#email-verification-for-registration)
+
+
 ## Integrasi Rewards ke API akun aktif — 25 November 2026
 
 Branch `feature/rewards-api-integration` mengganti demo Room E–F dengan RewardApi/RewardRepositoryImpl dan RewardsViewModel. Admin completion tetap memakai endpoint yang sudah tersedia dari main. Katalog/nama/biaya, saldo serta riwayat berasal dari Go/PostgreSQL. Retry memakai reward dan Idempotency-Key yang sama; sesudah sukses/replay aplikasi mengambil saldo terkini. Perubahan akun membatalkan request dan membersihkan state pengguna sebelumnya.

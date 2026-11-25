@@ -15,7 +15,7 @@ PRD belum membagi pemilik implementasi. Neva/Rio/Alex/Arsyad tetap mengikuti tan
 | 9 | Transisi status admin dan kredit +10 melalui API terintegrasi Android | feature/admin, backend/go | Uji status dan idempotensi dengan PostgreSQL |
 | 10 | Katalog, saldo, redeem dan riwayat terintegrasi Android ke API akun aktif | feature/rewards, RewardRepositoryImpl | Uji Retrofit, state dan UI; lanjut verifikasi VM tim |
 | 11 | UI Figma final+integrasi/demo | components/theme/features | AC01–20+aksesibilitas |
-| Setelah MVP | Profil/settings/OTP | profile/settings/verification | Kontrak/scope disepakati |
+| Tambahan Figma | Profil, Settings, username, dan OTP saat daftar sudah terhubung | profile/settings/verification, docs/auth-go.md | Uji pengiriman dari VM dengan kredensial SMTP dan APK terbaru |
 
 S05 dan S06 menggunakan font Plus Jakarta Sans dan ikon dari desain. Layar lain mengikuti peta Figma saat diimplementasikan.
 

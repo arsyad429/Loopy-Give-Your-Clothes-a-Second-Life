@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.ac.loopy.domain.repository.DonationRepository
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,14 +20,17 @@ class MyDonationsViewModel(
     private val _uiState = MutableStateFlow(MyDonationsUiState(isLoading = true))
     val uiState: StateFlow<MyDonationsUiState> = _uiState.asStateFlow()
 
+    private var refreshJob: Job? = null
+
     init {
         refresh()
     }
 
     @MainThread
     fun refresh() {
+        if (refreshJob?.isActive == true) return
         _uiState.update { it.copy(isLoading = true, error = null) }
-        viewModelScope.launch {
+        refreshJob = viewModelScope.launch {
             try {
                 val items = repository.listMyDonations()
                     .sortedByDescending { it.createdAt }

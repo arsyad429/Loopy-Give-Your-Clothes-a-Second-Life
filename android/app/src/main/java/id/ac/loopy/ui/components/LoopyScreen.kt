@@ -18,7 +18,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.LocalContentColor
@@ -66,6 +68,7 @@ private val ScreenTypography = Typography(
     labelMedium = loopyType(12, 18, FontWeight.SemiBold),
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun LoopyScreen(
     title: String,
@@ -75,6 +78,8 @@ internal fun LoopyScreen(
     onAccount: (() -> Unit)? = null,
     contentSpacing: Int = 20,
     accountInitial: String = "A",
+    onRefresh: (() -> Unit)? = null,
+    refreshing: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
@@ -151,13 +156,23 @@ internal fun LoopyScreen(
                         }
                     }
 
-                    Column(
-                        modifier = Modifier.weight(1f).fillMaxWidth()
-                            .verticalScroll(rememberScrollState())
-                            .padding(start = 24.dp, top = 8.dp, end = 24.dp, bottom = 24.dp),
-                        verticalArrangement = Arrangement.spacedBy(contentSpacing.dp),
-                        content = content,
-                    )
+                    val body: @Composable (Modifier) -> Unit = { modifier ->
+                        Column(
+                            modifier = modifier.verticalScroll(rememberScrollState())
+                                .padding(start = 24.dp, top = 8.dp, end = 24.dp, bottom = 24.dp),
+                            verticalArrangement = Arrangement.spacedBy(contentSpacing.dp),
+                            content = content,
+                        )
+                    }
+                    if (onRefresh == null) {
+                        body(Modifier.weight(1f).fillMaxWidth())
+                    } else {
+                        PullToRefreshBox(
+                            isRefreshing = refreshing,
+                            onRefresh = onRefresh,
+                            modifier = Modifier.weight(1f).fillMaxWidth(),
+                        ) { body(Modifier.fillMaxSize()) }
+                    }
 
                     if (footer != null) {
                         Column(

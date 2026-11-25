@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/mail"
+	"regexp"
 	"strings"
 	"time"
 	"unicode"
@@ -20,11 +21,13 @@ const (
 
 // User represents a public Loopy account profile.
 type User struct {
-	ID          string `json:"userId"`
-	Name        string `json:"name"`
-	Email       string `json:"email"`
-	Role        string `json:"role"`
-	TotalPoints int    `json:"totalPoints"`
+	ID            string `json:"userId"`
+	Name          string `json:"name"`
+	Username      string `json:"username,omitempty"`
+	Email         string `json:"email"`
+	EmailVerified bool   `json:"emailVerified"`
+	Role          string `json:"role"`
+	TotalPoints   int    `json:"totalPoints"`
 }
 
 // Account extends User with the stored password hash.
@@ -64,6 +67,7 @@ type RegisterRequest struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Username string `json:"username,omitempty"`
 }
 
 // LoginRequest holds credential payload fields for sign-in.
@@ -76,9 +80,13 @@ type LoginRequest struct {
 func ValidateRegistration(req RegisterRequest) (RegisterRequest, error) {
 	req.Name = strings.TrimSpace(req.Name)
 	req.Email = NormalizeEmail(req.Email)
+	req.Username = normalizeUsername(req.Username)
 	fields := map[string]string{}
-	if !utf8.ValidString(req.Name) || utf8.RuneCountInString(req.Name) < 1 || utf8.RuneCountInString(req.Name) > 100 || strings.ContainsFunc(req.Name, unicode.IsControl) {
+	if !validName(req.Name) {
 		fields["name"] = "Use 1–100 characters without control characters."
+	}
+	if !validUsername(req.Username) {
+		fields["username"] = "Use 3–20 letters, numbers, or underscores."
 	}
 	if !ValidEmail(req.Email) {
 		fields["email"] = "Enter a valid email address (at most 254 bytes)."
@@ -90,6 +98,61 @@ func ValidateRegistration(req RegisterRequest) (RegisterRequest, error) {
 		return req, &APIError{Status: 422, Code: "VALIDATION_ERROR", Message: "Check the submitted fields.", Fields: fields}
 	}
 	return req, nil
+}
+
+func validName(name string) bool {
+	n := utf8.RuneCountInString(name)
+	return utf8.ValidString(name) && n >= 1 && n <= 100 && !strings.ContainsFunc(name, unicode.IsControl)
+}
+
+var usernamePattern = regexp.MustCompile(`^[a-z0-9_]{3,20}$`)
+
+func normalizeUsername(value string) string { return strings.ToLower(strings.TrimSpace(value)) }
+
+func validUsername(value string) bool {
+	return value == "" || usernamePattern.MatchString(value)
+}
+
+// ProfileUpdateRequest contains the fields editable by the authenticated account.
+type ProfileUpdateRequest struct {
+	Name            string `json:"name"`
+	Username        string `json:"username"`
+	CurrentPassword string `json:"currentPassword,omitempty"`
+	NewPassword     string `json:"newPassword,omitempty"`
+}
+
+// ValidateProfileUpdate checks account edits before they reach the store.
+func ValidateProfileUpdate(req ProfileUpdateRequest) (ProfileUpdateRequest, error) {
+	req.Name = strings.TrimSpace(req.Name)
+	req.Username = normalizeUsername(req.Username)
+	fields := map[string]string{}
+	if !validName(req.Name) {
+		fields["name"] = "Use 1–100 characters without control characters."
+	}
+	if !validUsername(req.Username) {
+		fields["username"] = "Use 3–20 letters, numbers, or underscores."
+	}
+	if req.CurrentPassword != "" || req.NewPassword != "" {
+		if !ValidPassword(req.CurrentPassword) {
+			fields["currentPassword"] = "Enter your current password."
+		}
+		if !ValidPassword(req.NewPassword) {
+			fields["newPassword"] = fmt.Sprintf("Use %d–%d characters (at most %d bytes).", MinPasswordLength, MaxPasswordLength, maxPasswordBytes)
+		}
+	}
+	if len(fields) != 0 {
+		return req, &APIError{Status: 422, Code: "VALIDATION_ERROR", Message: "Check the submitted fields.", Fields: fields}
+	}
+	return req, nil
+}
+
+// ProfileUpdate is a validated profile edit with optional password rotation.
+type ProfileUpdate struct {
+	Principal       Principal
+	Name            string
+	Username        string
+	OldPasswordHash string
+	NewPasswordHash string
 }
 
 // NormalizeEmail trims whitespace and lowercases an email address.

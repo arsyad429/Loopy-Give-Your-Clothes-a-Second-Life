@@ -6,6 +6,8 @@ import "errors"
 var (
 	ErrNotFound            = errors.New("record not found")
 	ErrDuplicateEmail      = errors.New("duplicate email")
+	ErrDuplicateUsername   = errors.New("duplicate username")
+	ErrProfileChanged      = errors.New("profile password changed")
 	ErrDonationChanged     = errors.New("donation version changed")
 	ErrDonationFinal       = errors.New("donation is no longer pending review")
 	ErrPickupInPast        = errors.New("pickup time is not in the future")
@@ -45,6 +47,9 @@ func RewardError(status int, code, message string) error {
 func AccountError(err error) error {
 	if errors.Is(err, ErrDuplicateEmail) {
 		return &APIError{Status: 409, Code: "EMAIL_ALREADY_REGISTERED", Message: "An account already uses this email."}
+	}
+	if errors.Is(err, ErrDuplicateUsername) {
+		return &APIError{Status: 409, Code: "USERNAME_ALREADY_REGISTERED", Message: "An account already uses this username.", Fields: map[string]string{"username": "Choose another username."}}
 	}
 	return err
 }

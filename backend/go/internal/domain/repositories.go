@@ -10,7 +10,8 @@ type AuthRepository interface {
 	Register(context.Context, Account, Session) (User, error)
 	CreateAdmin(context.Context, Account) (User, error)
 	FindByEmail(context.Context, string) (Account, error)
-	CreateSession(context.Context, Session) error
+	UpdateProfile(context.Context, ProfileUpdate) (User, error)
+	CreateSession(context.Context, Session, string) error
 	Authenticate(context.Context, []byte) (Principal, error)
 	Rotate(context.Context, []byte, Session) (User, time.Time, time.Time, error)
 	Revoke(context.Context, []byte) error

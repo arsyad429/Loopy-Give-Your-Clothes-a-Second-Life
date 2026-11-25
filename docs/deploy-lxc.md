@@ -116,6 +116,28 @@ Allow the chosen API port from your development devices or reverse proxy in the 
 
 Database credentials initialize an empty PostgreSQL volume. Changing `POSTGRES_PASSWORD` in `.env` after initialization does not change the existing database role's password; rotate the database password and application settings together ([official PostgreSQL image documentation](https://github.com/docker-library/docs/blob/master/postgres/README.md)).
 
+### Email verification for registration
+
+1. Prepare an SMTP relay or provider and a sender address approved by that provider. Allow the VM to reach its SMTP host and port.
+2. Generate a server-side key with `openssl rand -hex 32`. In `/opt/loopy/.env`, set `AUTH_OTP_HMAC_KEY` to the generated value. Keep this key and the SMTP credentials private.
+3. Configure these settings in the same file. Below are placeholders for a relay using STARTTLS. For implicit TLS, use `AUTH_SMTP_TLS_MODE=implicit` and the provider's implicit TLS port.
+
+```dotenv
+AUTH_EMAIL_VERIFICATION_REQUIRED=true
+AUTH_OTP_HMAC_KEY=<generated-hex-key>
+AUTH_SMTP_HOST=<smtp-host>
+AUTH_SMTP_PORT=587
+AUTH_SMTP_TLS_MODE=starttls
+AUTH_SMTP_USER=<smtp-user>
+AUTH_SMTP_PASSWORD=<smtp-password>
+AUTH_SMTP_FROM=<approved-sender-address>
+```
+
+4. Follow the startup steps below to apply migration versions 6 and 7. If Loopy already has data, take a backup before the update.
+5. In the new APK, register with an inbox you control. Enter the emailed code, sign out, and sign back in with email and password.
+
+`/ready` checks PostgreSQL. Use an actual signup to check email delivery. When SMTP is unconfigured, existing accounts can sign in and new signup returns `503`. For local tests without email, set `AUTH_EMAIL_VERIFICATION_REQUIRED=false`. [SMTP TLS behavior](https://pkg.go.dev/net/smtp)
+
 ## 5. Build, start, and check the services
 
 ```sh

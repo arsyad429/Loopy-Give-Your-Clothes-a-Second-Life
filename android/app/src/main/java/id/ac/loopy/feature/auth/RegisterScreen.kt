@@ -16,21 +16,22 @@ import id.ac.loopy.ui.components.LoopyIntro
 import id.ac.loopy.ui.components.LoopyScreen
 import id.ac.loopy.ui.components.LoopyTextField
 
-private const val MinimumPasswordLength = 8
-private const val MaximumPasswordLength = 128
-private const val MaximumPasswordBytes = 512
+internal const val MinimumPasswordLength = 8
+internal const val MaximumPasswordLength = 128
+internal const val MaximumPasswordBytes = 512
 
 @Composable
 fun RegisterScreen(
     onBack: () -> Unit,
     onLogin: () -> Unit,
-    onRegister: (name: String, email: String, password: String) -> Unit,
+    onRegister: (name: String, email: String, password: String, username: String) -> Unit,
     feedback: String? = null,
     isSubmitting: Boolean = false,
     fieldErrors: Map<String, String> = emptyMap(),
     onFieldEdited: (String) -> Unit = {},
 ) {
     var name by rememberSaveable { mutableStateOf("") }
+    var username by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var submitted by remember { mutableStateOf(false) }
@@ -44,6 +45,7 @@ fun RegisterScreen(
         else -> null
     }
 
+    val usernameError = usernameValidation(username)
     val emailError = emailValidation(email)
     val passwordLength = password.codePointCount(0, password.length)
     val passwordError = when {
@@ -66,9 +68,9 @@ fun RegisterScreen(
                 enabled = !isSubmitting,
                 onClick = {
                     submitted = true
-                    if (nameError == null && emailError == null && passwordError == null) {
+                    if (nameError == null && usernameError == null && emailError == null && passwordError == null) {
                         focusManager.clearFocus()
-                        onRegister(trimmedName, email.trim(), password)
+                        onRegister(trimmedName, email.trim(), password, username.trim())
                     }
                 },
             )
@@ -85,6 +87,18 @@ fun RegisterScreen(
             },
             placeholder = "Nama lengkapmu",
             error = nameError.takeIf { submitted } ?: fieldErrors["name"],
+            enabled = !isSubmitting,
+        )
+
+        LoopyTextField(
+            label = "Username (opsional)",
+            value = username,
+            onValueChange = {
+                username = it
+                onFieldEdited("username")
+            },
+            placeholder = "Contoh: loopy_user",
+            error = usernameError.takeIf { submitted } ?: fieldErrors["username"],
             enabled = !isSubmitting,
         )
 
@@ -123,3 +137,9 @@ fun RegisterScreen(
         LoopyInfo("Kamu mulai dari 0 poin", "Dapatkan 10 poin setiap pengajuan donasi selesai.")
     }
 }
+
+private val usernamePattern = Regex("[A-Za-z0-9_]{3,20}")
+
+internal fun usernameValidation(value: String): String? =
+    if (value.isBlank() || usernamePattern.matches(value.trim())) null
+    else "Gunakan 3–20 huruf, angka, atau underscore."
