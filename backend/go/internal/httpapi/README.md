@@ -1,9 +1,13 @@
-# HTTP API Backend Loopy
+# Routing dan handler HTTP
 
-Menangani routing `net/http`, middleware Bearer token & role guard, pembatasan request, validasi JSON ketat, serta handler per fitur:
+[server.go](server.go) memasang rute, autentikasi Bearer, pembatasan akses berdasarkan peran, batas request, dan respons error JSON. Rute terlindungi mengambil peran dan identitas dari sesi di database.
 
-- `server.go`: Router, middleware autentikasi/role, rate limiter, JSON helper, dan pemetaan error.
-- `auth_handler.go`: Autentikasi akun (`register`, `login`, `refresh`, `me`, `logout`).
-- `clothing_check_handler.go`: Upload multipart, detail pemeriksaan, dan foto privat.
-- `donation_handler.go`: Pengajuan pickup dan donasi terbaru donatur, serta ringkasan, antrean, detail, jadwal, dan penolakan admin.
-- `rewards_handler.go`: Transisi status selesai, saldo poin, katalog reward, dan redeem idempoten.
+| File | Alur |
+| --- | --- |
+| [auth_handler.go](auth_handler.go) | Login, refresh token, profil, pengaturan akun, dan logout. |
+| [email_registration.go](email_registration.go) | Challenge OTP, kirim ulang, validasi, dan pembuatan akun setelah kode benar. |
+| [clothing_check_handler.go](clothing_check_handler.go) | Upload multipart, pemeriksaan dengan Groq, pemutaran ulang idempoten, serta akses hasil dan foto privat. |
+| [donation_handler.go](donation_handler.go) | Submit pickup, donasi terakhir, dashboard admin, antrean, jadwal dan penolakan. |
+| [rewards_handler.go](rewards_handler.go) | Donasi milik donatur, status dijemput/selesai, katalog, saldo dan penukaran. |
+
+[httpapi_test.go](httpapi_test.go) menguji perilaku HTTP dasar. [integration_test.go](integration_test.go) dan [email_registration_test.go](email_registration_test.go) menjalankan alur memakai PostgreSQL uji. [Kontrak API](../../../../docs/api-contract.md)

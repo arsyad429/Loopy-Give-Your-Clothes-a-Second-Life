@@ -1,15 +1,13 @@
-# api
+# Interface Retrofit
 
-Deklarasi endpoint Retrofit untuk health, sesi, dan pemeriksaan yang disediakan oleh Go.
-
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
+| Interface | Rute |
 | --- | --- |
-| [`AdminApi.kt`](AdminApi.kt) | TEMPLATE — TODO: Retrofit suspend endpoints Admin, lihat docs/api-contract.md. dashboard; request list/detail; schedule/reject/status transition; server authorization; completed 10 poin sekali. |
-| [`AuthApi.kt`](AuthApi.kt) | Login, register, dan refresh sesi pada Go. |
-| [`ClothingCheckApi.kt`](ClothingCheckApi.kt) | Upload multipart, detail berdasarkan ID, dan unduhan JPEG privat dengan bearer token. |
-| [`DonationApi.kt`](DonationApi.kt) | TEMPLATE — TODO: Retrofit suspend endpoints Donation, lihat docs/api-contract.md. submit eligible check + konfirmasi bersih; observe/refresh daftar milik user; detail; status/history; idempotency submit. |
-| [`HealthApi.kt`](HealthApi.kt) | Retrofit suspend GET /health. |
-| [`HomeApi.kt`](HomeApi.kt) | Mengambil saldo dan ringkasan donasi terbaru milik akun aktif. |
-| [`RewardApi.kt`](RewardApi.kt) | Retrofit GET saldo/katalog/riwayat dan POST redemption dengan Idempotency-Key. |
+| [AuthApi.kt](AuthApi.kt) | Daftar, kirim ulang, verifikasi OTP, login, refresh, profil, dan logout. |
+| [ClothingCheckApi.kt](ClothingCheckApi.kt) | Upload multipart, detail pemeriksaan, dan foto privat. |
+| [DonationApi.kt](DonationApi.kt) | Buat pengajuan, daftar donatur, dan detail. |
+| [AdminApi.kt](AdminApi.kt) | Ringkasan, antrean, detail, keputusan, serta transisi status. |
+| [HomeApi.kt](HomeApi.kt) | Donasi terakhir dan saldo untuk Beranda. |
+| [RewardApi.kt](RewardApi.kt) | Saldo, katalog, penukaran, dan riwayat. |
+| [HealthApi.kt](HealthApi.kt) | Pemeriksaan HTTP dasar backend. |
+
+Path relatif memakai base URL dari `BuildConfig.API_BASE_URL`. Repository menambahkan header Bearer dan `Idempotency-Key` sesuai kontrak. [Kontrak API](../../../../../../../../../../../docs/api-contract.md)

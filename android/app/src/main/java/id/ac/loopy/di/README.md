@@ -1,9 +1,5 @@
-# di
+# Perakitan dependensi Android
 
-Satu AppContainer per proses menyediakan Room, DataStore, serta Retrofit dan repository yang berbagi sesi Go.
+[AppContainer.kt](AppContainer.kt) membuat Room, OkHttp, Retrofit, DAO draf admin, dan repository. Ia mengambil base URL dari `BuildConfig`, menetapkan timeout serta aturan redirect, lalu membagikan satu `AuthRepositoryImpl` agar request memakai sesi yang sama. [LoopyApplication.kt](../LoopyApplication.kt) memiliki instance container.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`AppContainer.kt`](AppContainer.kt) | Menghubungkan Room dan DataStore serta berbagi satu Retrofit untuk health, autentikasi dan pemeriksaan. |
+Tambahkan implementasi data di sini ketika fitur membutuhkan dependency baru. [Layer data](../data/README.md) · [Navigasi dan ViewModel](../ui/README.md)

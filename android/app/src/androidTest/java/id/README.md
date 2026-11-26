@@ -1,9 +1,7 @@
-# id
+# Namespace id untuk tes perangkat
 
-Segmen id pada namespace tes instrumentasi Loopy.
+Lanjut ke [id.ac.loopy](ac/loopy/README.md) untuk menemukan tes yang menjalankan UI Compose dan database Room di Android.
 
-## Isi file dan perannya
+## Subfolder
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`ac/`](ac/README.md) | Segmen ac pada namespace tes instrumentasi Loopy. |
+[ac](ac/README.md)

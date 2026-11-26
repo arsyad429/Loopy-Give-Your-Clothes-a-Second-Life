@@ -1,12 +1,11 @@
-# app
+# Modul aplikasi Loopy
 
-Modul APK Loopy untuk Android API 24 ke atas. Build debug membuka katalog layar dan dapat menghubungkan login serta S05–S06 ke backend Go lokal.
+Modul `id.ac.loopy` menggabungkan Compose, Navigation, Retrofit, Room, dan DataStore. Mulai dari [source main](src/main/README.md) untuk mengikuti alur aplikasi dan [AppContainer](src/main/java/id/ac/loopy/di/AppContainer.kt) untuk melihat susunan dependensinya.
 
-## Isi file dan perannya
+[build.gradle.kts](build.gradle.kts) menetapkan SDK, URL backend per build type, Java 17, serta ekspor schema Room. Task `prepareMainResources` menyalin resource ke direktori build dan mengecualikan README serta Markdown lisensi dari input compiler Android. [proguard-rules.pro](proguard-rules.pro) menampung aturan R8 modul. Minifikasi release saat ini dinonaktifkan.
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`build.gradle.kts`](build.gradle.kts) | Plugin, dependency dan task build modul/project; jaga kompatibilitas versi. |
-| [`proguard-rules.pro`](proguard-rules.pro) | Tempat aturan R8 tambahan setelah shrinking diuji nanti. |
-| [`schemas/`](schemas/README.md) | KSP mengekspor skema Room ke folder ini agar perubahan database lokal dapat direview bersama kode. |
-| [`src/`](src/README.md) | Source set Android memisahkan kode utama, konfigurasi debug, unit test JVM, dan tes instrumentasi. |
+Gunakan `assembleDebug` untuk APK, `testDebugUnitTest` untuk JVM, dan `assembleDebugAndroidTest` untuk APK tes perangkat. [Perintah Gradle](../README.md)
+
+## Subfolder
+
+[schemas](schemas/README.md) · [src](src/README.md)

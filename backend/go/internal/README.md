@@ -1,9 +1,5 @@
-# Paket Internal Backend Loopy
+# Paket internal backend
 
-Berisi paket privat yang hanya digunakan oleh aplikasi backend `loopy/backend`:
+Folder ini berisi implementasi privat dari module Go Loopy. Alur request dimulai dari [httpapi](httpapi/README.md), memakai model dan kontrak [domain](domain/README.md), dan menyimpan hasil ke [store](store/README.md). Dependensi eksternal berada di [security](security/README.md) untuk pengiriman OTP dan [vision](vision/README.md) untuk Groq.
 
-- `domain/`: Entitas bisnis, aturan validasi, error terstruktur, dan kontrak interface repository.
-- `security/`: Utilitas kriptografi untuk hashing kata sandi dengan Argon2id.
-- `vision/`: Integrasi Groq Vision API serta validasi/normalisasi foto pakaian JPEG/PNG.
-- `store/`: Implementasi persistensi PostgreSQL (`pgxpool`) dan runner migrasi atomik.
-- `httpapi/`: Router HTTP, middleware autentikasi/role, rate limiter, dan handler per domain.
+Perubahan endpoint biasanya menyentuh handler, kontrak domain, implementasi store, dan tes integrasi yang sesuai.

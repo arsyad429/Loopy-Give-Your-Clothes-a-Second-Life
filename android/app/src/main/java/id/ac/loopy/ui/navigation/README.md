@@ -1,7 +1,5 @@
-# Navigasi Android
+# Navigasi Compose
 
-Rute aktif berada di [LoopyApp.kt](../LoopyApp.kt). S05 dan S06 memerlukan sesi USER dan hanya meneruskan checkId melalui navigasi.
+[LoopyApp.kt](../LoopyApp.kt) memuat graf yang dipakai `MainActivity`, guard sesi dan role, perpindahan tab, serta penghapusan state saat logout. Rute detail hanya membawa ID. Repository mengambil detail dan foto lewat Bearer token.
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`LoopyNavGraph.kt`](LoopyNavGraph.kt) | Template graph sesi dan pembatasan rute publik, user, serta admin. |
+[LoopyNavGraph.kt](LoopyNavGraph.kt) mencatat prinsip awal graf. [Peta rute dan layar](../../../../../../../../../../docs/screen-map.md) · [Tes navigasi](../../../../../../../androidTest/java/id/ac/loopy/feature/README.md)

@@ -1,9 +1,7 @@
-# java
+# Source Kotlin unit test
 
-Akar source Kotlin untuk unit test aplikasi Android.
+Unit test pada source set `test` dipetakan ke package produksi agar mapper, repository, domain, dan state dapat diuji secara langsung. [Peta paket id.ac.loopy](id/ac/loopy/README.md)
 
-## Isi file dan perannya
+## Subfolder
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`id/`](id/README.md) | Segmen id pada namespace unit test Loopy. |
+[id](id/README.md)

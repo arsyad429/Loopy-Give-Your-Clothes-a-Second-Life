@@ -1,15 +1,9 @@
-# reference
+# Referensi produk, desain, dan PAPB
 
-Materi rujukan tim berisi PRD v2.1, metadata desain, dan katalog sumber PAPB beserta checksum.
+[PRD-v2.1.md](PRD-v2.1.md) mendefinisikan peran, status, cakupan MVP, dan kriteria penerimaan. Hubungkan rute serta node desain melalui [peta layar](../screen-map.md).
 
-## Isi file dan perannya
+- [figma-structure.xml](figma-structure.xml) dan [figma-overview.png](figma-overview.png) menyimpan ekspor struktur dan gambaran desain.
+- [s05-local-design.json](s05-local-design.json), [s05-android.png](s05-android.png), dan [local-design-thumbnail.png](local-design-thumbnail.png) memberi rujukan lokal untuk membandingkan layar pemeriksaan foto.
+- [papb-catalog.json](papb-catalog.json) mencatat judul materi, metadata, dan checksum. [Pemetaan PAPB](../papb-mapping.md) menghubungkan materi dengan implementasi.
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`PRD-v2.1.md`](PRD-v2.1.md) | Snapshot HackMD PRD2.1, status draft sesuai sumber. |
-| [`figma-overview.png`](figma-overview.png) | Screenshot overview referensi Figma, tidak digunakan sebagai aset app. |
-| [`figma-structure.xml`](figma-structure.xml) | Metadata aktual node/hierarki desain; bukan high-fidelity context. |
-| [`local-design-thumbnail.png`](local-design-thumbnail.png) | Thumbnail dari .fig lokal untuk referensi, bukan aset UI. |
-| [`s05-android.png`](s05-android.png) | Screenshot implementasi S05 pada emulator, state awal tanpa foto. |
-| [`s05-local-design.json`](s05-local-design.json) | Struktur dan nilai layout S05 hasil decode file .fig lokal (node 2:88); sumber implementasi bersama screenshot pengguna. |
-| [`papb-catalog.json`](papb-catalog.json) | Nama/ukuran/SHA256 10 PDF yang dibaca, tanpa menyalin materi kuliah. |
+File desain sumber tersedia di [folder UI design](../../UI%20design/README.md).

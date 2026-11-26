@@ -1,9 +1,3 @@
-# ac
+# Namespace id.ac untuk tes perangkat
 
-Segmen ac pada namespace tes instrumentasi Loopy.
-
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`loopy/`](loopy/README.md) | Tes instrumentasi untuk persistensi lokal DataStore dan Room, serta UI pemeriksaan pakaian. |
+Package [loopy](loopy/README.md) memuat kelas instrumentasi. Nama lengkap package dipakai pada filter `adb shell am instrument -e class`. [Cara menjalankan](../../../README.md)

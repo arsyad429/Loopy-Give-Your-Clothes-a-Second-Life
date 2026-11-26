@@ -1,17 +1,7 @@
-# Model domain Android
+# Model Kotlin untuk fitur
 
-Model domain aktif mencakup hasil pemeriksaan, jenis pakaian, dan status donasi. Model fitur lanjutan disiapkan sebagai template.
+- [ClothingCheck.kt](ClothingCheck.kt) dan [ClothingType.kt](ClothingType.kt) mendefinisikan hasil AI serta jenis yang dikirim ke backend.
+- [DonationRequest.kt](DonationRequest.kt), [DonationStatus.kt](DonationStatus.kt), dan [DonationStatusHistory.kt](DonationStatusHistory.kt) membawa data pengajuan, status, dan timeline.
+- [Reward.kt](Reward.kt) dan [Redemption.kt](Redemption.kt) membawa katalog dan penukaran. `User.kt` dan `PointTransaction.kt` menyimpan kerangka model tambahan.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`ClothingCheck.kt`](ClothingCheck.kt) | Model hasil pemeriksaan pakaian, tiga kategori AiResult, deskripsi, rekomendasi dan waktu hasil. |
-| [`DonationRequest.kt`](DonationRequest.kt) | TEMPLATE PRD §8 — TODO: data class DonationRequest: donationId, userId, checkId, phoneNumber, pickupAddress, city, quantity, preferredDate/Time, scheduledDate/Time nullable, notes, status, rejectionReason, createdAt/updatedAt. |
-| [`DonationStatus.kt`](DonationStatus.kt) | Enum dan transisi status PRD untuk UI; backend tetap memvalidasi secara otoritatif. |
-| [`DonationStatusHistory.kt`](DonationStatusHistory.kt) | TEMPLATE PRD §8 — TODO: data class DonationStatusHistory: historyId, donationId, previousStatus nullable, newStatus, updatedBy, updatedAt. |
-| [`PointTransaction.kt`](PointTransaction.kt) | TEMPLATE PRD §8 — TODO: data class PointTransaction: transactionId, userId, donationId atau redemptionId, type EARN/REDEEM, points signed, createdAt. Unique earn per donation di server. |
-| [`Redemption.kt`](Redemption.kt) | Snapshot riwayat serta hasil penukaran/replay dari server. |
-| [`Reward.kt`](Reward.kt) | Model katalog server: ID, nama, deskripsi, ikon, biaya, tipe dan status aktif. |
-| [`User.kt`](User.kt) | TEMPLATE PRD §8 — TODO: data class User: userId, name, email, role USER/ADMIN, totalPoints (server). Jangan simpan password dalam model/cache. |
-| [`ClothingType.kt`](ClothingType.kt) | Daftar 20 jenis pakaian, label dropdown, dan kode yang dikirim ke backend. |
+Status dan model wire dipetakan oleh [mapper](../../data/mapper/README.md). [Tes transisi status](../../../../../../../test/java/id/ac/loopy/domain/DonationStatusTest.kt)

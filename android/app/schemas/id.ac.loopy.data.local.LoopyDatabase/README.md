@@ -1,9 +1,5 @@
-# id.ac.loopy.data.local.LoopyDatabase
+# Riwayat schema LoopyDatabase
 
-Snapshot versi skema LoopyDatabase yang diekspor oleh Room. Perubahan tabel muncul di snapshot saat build.
+[1.json](1.json) memuat struktur awal `pickup_drafts`. [2.json](2.json) menambahkan tabel draf jadwal admin. Deklarasi auto-migration versi 1 ke 2 ada di [LoopyDatabase.kt](../../src/main/java/id/ac/loopy/data/local/LoopyDatabase.kt).
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`1.json`](1.json) | Konfigurasi/artefak pendukung folder. |
+Untuk perubahan Room, cocokkan entity, versi database, snapshot, dan skenario migrasi perangkat sebelum merge.

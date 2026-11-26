@@ -1,16 +1,13 @@
-# Font S05
+# Plus Jakarta Sans
 
-`plus_jakarta_extrabold.ttf` (weight 800) juga dipertahankan untuk saldo poin pada LoopyScreen. Font tersedia lokal dan tidak diunduh saat runtime.
+Font dikemas secara lokal. [OFL.md](OFL.md) memuat ketentuan distribusinya.
 
-Berkas Plus Jakarta Sans untuk tipografi Loopy. Ketentuan distribusinya tersedia di [OFL.md](OFL.md).
-
-TODO: gunakan font pada theme bersama ketika layar lain diimplementasikan.
-
-## Daftar file
-
-| File atau folder | Kegunaan |
+| File | Bobot |
 | --- | --- |
-| [`plus_jakarta_bold.ttf`](plus_jakarta_bold.ttf) | Plus Jakarta Sans Bold untuk judul. |
-| [`plus_jakarta_medium.ttf`](plus_jakarta_medium.ttf) | Plus Jakarta Sans Medium untuk label. |
-| [`plus_jakarta_regular.ttf`](plus_jakarta_regular.ttf) | Plus Jakarta Sans Regular untuk teks utama. |
-| [`plus_jakarta_semibold.ttf`](plus_jakarta_semibold.ttf) | Plus Jakarta Sans SemiBold untuk tombol dan subjudul. |
+| [plus_jakarta_regular.ttf](plus_jakarta_regular.ttf) | Regular 400 |
+| [plus_jakarta_medium.ttf](plus_jakarta_medium.ttf) | Medium 500 |
+| [plus_jakarta_semibold.ttf](plus_jakarta_semibold.ttf) | SemiBold 600 |
+| [plus_jakarta_bold.ttf](plus_jakarta_bold.ttf) | Bold 700 |
+| [plus_jakarta_extrabold.ttf](plus_jakarta_extrabold.ttf) | ExtraBold 800 |
+
+[LoopyScreen](../../java/id/ac/loopy/ui/components/LoopyScreen.kt) memakai keluarga font ini untuk tipografi layar dan saldo.

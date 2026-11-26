@@ -1,28 +1,28 @@
-# Implementasi Backend Go Loopy
+# Backend Go Loopy
 
-Server memakai `net/http`, PostgreSQL melalui `pgx/v5`, password Argon2id, dan access/refresh token opaque. [Panduan backend](../../docs/backend.md) · [Autentikasi](../../docs/auth-go.md) · [Peninjauan donasi](../../docs/donation-review-go.md)
+Proyek Go menggunakan `net/http`, `pgx/v5`, dan PostgreSQL. Versi Go dan dependensi dikunci oleh [go.mod](go.mod) dan [go.sum](go.sum).
 
-## Struktur Paket (Clean Architecture)
+## Dari request ke database
 
-| Lokasi | Tanggung jawab |
-| --- | --- |
-| [main.go](main.go) | Entrypoint aplikasi (`serve`, `create-admin`, `healthcheck`), pembacaan konfigurasi, pool PostgreSQL, dan graceful shutdown. |
-| [`migrations/`](migrations/README.md) | Skrip DDL PostgreSQL berurutan (`001`–`005`) yang di-embed ke binary melalui `embed.go`. |
-| [`internal/domain/`](internal/domain/README.md) | Model domain murni, konstanta, aturan validasi bisnis, sentinel errors, dan interface repository. |
-| [`internal/security/`](internal/security/README.md) | Hashing dan verifikasi kata sandi menggunakan Argon2id. |
-| [`internal/vision/`](internal/vision/README.md) | Integrasi Groq Vision AI serta validasi/normalisasi foto pakaian JPEG/PNG + orientasi EXIF. |
-| [`internal/store/`](internal/store/README.md) | Implementasi PostgreSQL (`PGStore`), runner migrasi advisory-lock, dan transaksi atomik per domain. |
-| [`internal/httpapi/`](internal/httpapi/README.md) | Server HTTP, middleware Bearer/role, rate limiter, validasi JSON, dan handler endpoint. |
-| [go.mod](go.mod) dan [go.sum](go.sum) | Versi Go, dependensi, dan checksum. |
+1. [main.go](main.go) membaca konfigurasi, membuat pool PostgreSQL, menjalankan migrasi, dan merangkai server. Command yang tersedia adalah `serve`, `create-admin`, dan `healthcheck`.
+2. [Paket HTTP](internal/httpapi/README.md) memeriksa sesi dan peran, memvalidasi payload, lalu memanggil service atau repository.
+3. [Domain](internal/domain/README.md) mendefinisikan aturan, model, serta kontrak. [Store PostgreSQL](internal/store/README.md) menjalankan transaksi dan mengembalikan hasilnya.
+4. [Paket security](internal/security/README.md) menangani Argon2id dan SMTP TLS. [Paket vision](internal/vision/README.md) memvalidasi foto dan menghubungi Groq.
 
-## Menjalankan dan Menguji di Host
+Backend menerapkan [migrasi 001–007](migrations/README.md) saat startup. `GET /ready` memeriksa PostgreSQL. Pendaftaran dan pemeriksaan foto perlu diuji tersendiri untuk memverifikasi provider.
 
-Set `DATABASE_URL` ke PostgreSQL lalu jalankan dari folder ini:
+## Pengujian
+
+Jalankan dari folder ini dengan `TEST_DATABASE_URL` yang mengarah ke PostgreSQL pengujian. Tes integrasi membuat schema terpisah untuk setiap suite.
 
 ```sh
-go test ./...
+go test -race -count=1 ./...
 go vet ./...
 go build ./...
 ```
 
-Set `TEST_DATABASE_URL` ke PostgreSQL khusus pengujian untuk menjalankan tes integrasi (`store` dan `httpapi`). Tiap tes membuat dan membersihkan schema terpisah.
+[Kontrak API](../../docs/api-contract.md) · [Autentikasi dan admin](../../docs/auth-go.md) · [Deploy LXC](../../docs/deploy-lxc.md)
+
+## Subfolder
+
+[internal](internal/README.md)

@@ -1,10 +1,3 @@
-# values
+# Nama aplikasi dan tema manifest
 
-Resource nilai yang dirujuk oleh manifest atau aplikasi Android.
-
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`strings.xml`](strings.xml) | String nama aplikasi; TODO pindahkan copy UI final untuk lokalisasi. |
-| [`themes.xml`](themes.xml) | Tema window Activity; tema komponen berada di Compose Theme.kt. |
+[strings.xml](strings.xml) menyediakan label aplikasi untuk Android. [themes.xml](themes.xml) mendefinisikan `Theme.Loopy` yang dipakai saat Activity dibuat. Setelah itu, warna Compose berasal dari [tema aplikasi](../../java/id/ac/loopy/ui/theme/README.md).

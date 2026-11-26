@@ -1,24 +1,15 @@
-# docs
+# Dokumentasi teknis Loopy
 
-Panduan pengembangan, kontrak API, rujukan desain, deployment, dan hasil uji Loopy.
+Mulai dengan [README utama](../README.md) untuk mencoba alur. Dokumen di sini memberi kontrak, rujukan, langkah deploy, serta catatan pengujian.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
+| Kebutuhan | Bahan yang dipakai |
 | --- | --- |
-| [`acceptance-tests.md`](acceptance-tests.md) | Dokumen acuan acceptance-tests; baca isi untuk spesifikasi/TODO. |
-| [`api-contract.md`](api-contract.md) | Dokumen acuan api-contract; baca isi untuk spesifikasi/TODO. |
-| [`auth-go.md`](auth-go.md) | Alur autentikasi Go, kontrak JSON, penjelasan kode, teori keamanan, dan cara menjalankan. |
-| [`backend.md`](backend.md) | Panduan API Go untuk akun, sesi, pemeriksaan pakaian, pickup, migrasi, dan pengujian. |
-| [`architecture.md`](architecture.md) | Dokumen acuan architecture; baca isi untuk spesifikasi/TODO. |
-| [`backlog.md`](backlog.md) | Dokumen acuan backlog; baca isi untuk spesifikasi/TODO. |
-| [`data-model.md`](data-model.md) | Dokumen acuan data-model; baca isi untuk spesifikasi/TODO. |
-| [`development.md`](development.md) | Dokumen acuan development; baca isi untuk spesifikasi/TODO. |
-| [`deploy-lxc.md`](deploy-lxc.md) | Deployment API Go/PostgreSQL dengan Docker di LXC: instalasi, jaringan, admin, HTTPS dan backup. |
-| [`donation-review-go.md`](donation-review-go.md) | Kontrak API admin, aturan jadwal WIB, riwayat keputusan, penanganan konflik, dan contoh pengujian manual. |
-| [`completion-rewards.md`](completion-rewards.md) | Demo Room E–F, API penyelesaian/poin/reward, idempotensi, serta penyesuaian migrasi setelah merge. |
-| [`papb-mapping.md`](papb-mapping.md) | Dokumen acuan papb-mapping; baca isi untuk spesifikasi/TODO. |
-| [`reference/`](reference/README.md) | Materi rujukan tim berisi PRD v2.1, metadata desain, dan katalog sumber PAPB beserta checksum. |
-| [`screen-map.json`](screen-map.json) | Mapping machine-readable 13 MVP+4 desain, node ID dan TODO. |
-| [`screen-map.md`](screen-map.md) | Dokumen acuan screen-map; baca isi untuk spesifikasi/TODO. |
-| [`verification.md`](verification.md) | Dokumen acuan verification; baca isi untuk spesifikasi/TODO. |
+| Mencari rute tampilan | [Peta layar](screen-map.md), [data pemetaan](screen-map.json), dan [rujukan PRD/Figma](reference/README.md). |
+| Mengubah endpoint | [Kontrak API](api-contract.md) dan [backend Go](backend.md) menjelaskan rute, payload, dan dependensi. |
+| Mengubah akun atau OTP | [Autentikasi Go](auth-go.md) berisi login, sesi, profil, OTP dan CLI admin. |
+| Mengerjakan pickup | [Peninjauan dan jadwal](donation-review-go.md) memuat aturan peran, jadwal WIB, dan konflik perubahan status. |
+| Mengerjakan poin atau rewards | [Penyelesaian dan redeem](completion-rewards.md) memuat transaksi, idempotensi, dan riwayat implementasi. |
+| Mencari data dan arsitektur | [Model data](data-model.md) serta [catatan arsitektur](architecture.md). Schema yang berjalan tercatat di [migrasi Go](../backend/go/migrations/README.md). |
+| Menjalankan VM atau APK | [Deploy LXC](deploy-lxc.md) mencakup SMTP, admin, TLS, upgrade dan backup. [Development lintas OS](development.md) mencakup Gradle dan koneksi perangkat. |
+| Menyiapkan demo atau review | [Kriteria penerimaan](acceptance-tests.md), [hasil verifikasi](verification.md), dan [backlog](backlog.md). |
+| Melacak materi perkuliahan | [Pemetaan PAPB](papb-mapping.md) dan [katalog referensi](reference/papb-catalog.json). |

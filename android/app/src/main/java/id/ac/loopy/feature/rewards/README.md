@@ -1,11 +1,5 @@
-# Rewards
+# S10 Rewards dan riwayat
 
-S10 membaca saldo, katalog dan riwayat akun aktif melalui RewardApi. Penukaran memakai POST /v1/redemptions, Bearer login dan Idempotency-Key. Saldo serta biaya tetap ditentukan server.
+[RewardsScreen.kt](RewardsScreen.kt) menampilkan saldo, katalog, konfirmasi penukaran, dan riwayat. [RewardsViewModel.kt](RewardsViewModel.kt) memuat data untuk akun aktif dan menyimpan penukaran tertunda dengan `SavedStateHandle` agar bisa memakai key yang sama saat mencoba ulang. [RewardsUiState.kt](RewardsUiState.kt) menyatakan loading, hasil, dan error.
 
-| File | Peran |
-| --- | --- |
-| [RewardsScreen.kt](RewardsScreen.kt) | UI katalog, konfirmasi, riwayat dan pemeriksaan penukaran tertunda. |
-| [RewardsViewModel.kt](RewardsViewModel.kt) | StateFlow, refresh, isolasi sesi, retry idempoten dan hasil transaksi. |
-| [RewardsUiState.kt](RewardsUiState.kt) | Saldo nullable serta state loading, error, pending dan sukses. |
-
-Demo Room lama sudah dihapus. [Panduan menjalankan dan batasan](../../../../../../../../../../docs/completion-rewards.md).
+Backend memvalidasi saldo dan mencatat penukaran serta debit secara atomik. Setelah penukaran berhasil, UI memperbarui saldo dan riwayat. [Repo rewards](../../data/repository/RewardRepositoryImpl.kt) · [Aturan poin](../../../../../../../../../../docs/completion-rewards.md)

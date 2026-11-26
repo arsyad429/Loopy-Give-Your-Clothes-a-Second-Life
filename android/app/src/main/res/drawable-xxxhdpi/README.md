@@ -1,3 +1,5 @@
-# Ikon donasi dan reward
+# Ikon PNG dari Figma
 
-Sepuluh PNG transparan hasil render SVG asli di `assets/figma_rewards/`, pada skala xxxhdpi (4x), termasuk ekspor shirt hero 48dp tersendiri agar tetap tajam. Dipakai `LoopyAsset` di `CompletionComponents.kt`; tidak ada pengambilan aset dari Figma saat aplikasi berjalan. Markdown disaring oleh task resource Gradle.
+PNG `loopy_*` dipakai untuk hero Beranda, kartu, navigasi bawah, waktu/alamat, dan rewards. Resource dikemas pada density `xxxhdpi`. [LoopyAsset](../../java/id/ac/loopy/ui/components/CompletionComponents.kt) memilih resource menurut nama ikon dan menetapkan ukurannya dalam dp.
+
+Perbarui PNG dari [SVG sumber](../../assets/figma_rewards/README.md) ketika ada revisi desain.

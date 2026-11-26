@@ -1,9 +1,3 @@
-# ac
+# Namespace id.ac aplikasi
 
-Segmen ac pada namespace Kotlin aplikasi Loopy.
-
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`loopy/`](loopy/README.md) | Package utama Android memuat Application, Activity, UI, domain, data, dan dependency injection. |
+Folder [loopy](loopy/README.md) adalah package utama yang dipakai manifest dan Gradle. Navigasi, ViewModel, dan data berada di subfolder package itu.

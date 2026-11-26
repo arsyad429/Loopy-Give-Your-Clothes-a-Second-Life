@@ -1,10 +1,5 @@
-# gradle
+# Katalog versi Android dan Wrapper
 
-Katalog versi plugin dan dependensi Android serta konfigurasi Gradle Wrapper.
+[libs.versions.toml](libs.versions.toml) memusatkan versi AGP, Kotlin, KSP, Compose, Navigation, Room, dan Retrofit serta dependency tes. Modul memanggil alias katalog dari [app/build.gradle.kts](../app/build.gradle.kts). Saat mengganti versi, cek kompatibilitas plugin dan jalankan build, unit test, serta lint.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`libs.versions.toml`](libs.versions.toml) | Version catalog Android terpusat: Kotlin, Compose, Room, DataStore, Retrofit, lifecycle, Navigation, tests. |
-| [`wrapper/`](wrapper/README.md) | Bootstrap Gradle untuk menghasilkan build Android dengan versi distribusi yang sama di setiap mesin. |
+[Wrapper](wrapper/README.md) menentukan versi Gradle yang dipakai laptop dan CI.

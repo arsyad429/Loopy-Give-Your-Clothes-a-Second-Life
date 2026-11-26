@@ -1,11 +1,15 @@
-# Migrasi PostgreSQL Loopy
+# Migrasi PostgreSQL
 
-Berisi skrip DDL berurutan yang di-embed ke binary Go melalui `embed.go`:
+[embed.go](embed.go) menyertakan SQL dalam binary dan mendaftarkan urutannya. Server menjalankan migrasi saat startup. Tambahkan file bernomor berikutnya beserta entri di `embed.go` saat mengubah schema yang sudah dipakai.
 
-1. `001_accounts_and_sessions.sql`: Tabel akun (`users`) dan sesi token (`auth_sessions`).
-2. `002_pickup_and_donations.sql`: Tabel pemeriksaan pakaian (`clothing_checks`), pengajuan donasi (`donation_requests`), dan audit status (`donation_status_history`).
-3. `003_vision_and_private_photos.sql`: Foto privat (`clothing_check_photos`), rekomendasi aksi AI, dan idempotensi pemeriksaan (`clothing_check_requests`).
-4. `004_rewards_and_ledger.sql`: Katalog reward (`rewards`), penukaran (`redemptions`), dan ledger poin (`point_transactions`).
-5. `005_donation_submit_idempotency.sql`: Idempotensi pengajuan pickup donatur (`donation_submit_requests`).
-6. `006_account_profiles.sql`: Username unik opsional dan status verifikasi email. Akun yang sudah ada tetap dapat masuk.
-7. `007_email_registration.sql`: Pendaftaran sementara sebelum kode email diverifikasi.
+| Migrasi | Perubahan |
+| --- | --- |
+| [001](001_accounts_and_sessions.sql) | Akun, peran, hash kata sandi, dan sesi. |
+| [002](002_pickup_and_donations.sql) | Pemeriksaan, pengajuan pickup, serta riwayat status. |
+| [003](003_vision_and_private_photos.sql) | Foto privat dan reservasi idempoten pemeriksaan. |
+| [004](004_rewards_and_ledger.sql) | Katalog rewards, transaksi poin, dan riwayat redeem. |
+| [005](005_donation_submit_idempotency.sql) | Pemetaan idempotensi submit pickup. |
+| [006](006_account_profiles.sql) | Username unik opsional dan status verifikasi email. |
+| [007](007_email_registration.sql) | Challenge pendaftaran sementara dan digest OTP. |
+
+Jalankan tes integrasi terhadap schema baru dan data yang sudah memakai versi sebelumnya. [Runner migrasi](../internal/store/postgres.go) · [Backup dan update VM](../../../docs/deploy-lxc.md#8-updates-and-backups)

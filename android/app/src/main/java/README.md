@@ -1,9 +1,7 @@
-# java
+# Source Kotlin aplikasi
 
-Akar source Kotlin untuk aplikasi Android id.ac.loopy.
+Gradle membaca kode Kotlin dari source set `main/java`. Implementasi dimulai pada [LoopyApplication dan MainActivity](id/ac/loopy/README.md), lalu terbagi menurut fitur, model, UI bersama, dan data.
 
-## Isi file dan perannya
+## Subfolder
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`id/`](id/README.md) | Segmen id pada namespace Kotlin aplikasi Loopy. |
+[id](id/README.md)

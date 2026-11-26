@@ -1,12 +1,5 @@
-# Image dan konfigurasi backend
+# Image backend dan konfigurasi VM
 
-Image backend Go dan contoh konfigurasi deployment Docker.
+[backend.Dockerfile](backend.Dockerfile) menguji dan membangun Go pada tahap build, lalu menjalankan binary non-root di Alpine. Healthcheck binary memakai `/ready`. [lxc.env.example](lxc.env.example) mencantumkan port, PostgreSQL, Groq, dan SMTP yang dipakai [Compose LXC](../compose.lxc.yaml).
 
-| File | Kegunaan |
-| --- | --- |
-| [backend.Dockerfile](backend.Dockerfile) | Build dan tes Go, runtime non-root, serta pemeriksaan status layanan. |
-| [lxc.env.example](lxc.env.example) | Contoh konfigurasi PostgreSQL, port API, dan Groq untuk deployment LXC. |
-
-Compose lokal dan LXC membangun satu API Go untuk login, pemeriksaan, dan admin. Untuk instalasi development dengan volume terpisah, gunakan `API_PORT=8082 docker compose -p loopy-go up --build -d --wait db backend` agar Go memperoleh volume sendiri. Simpan volume backend lama sebagai arsip jika masih diperlukan. Untuk instalasi Go yang sudah ada, gunakan proyek dan volume Go yang sama agar versi skema terbaru diterapkan pada data tersebut. [Compose lokal](../compose.yaml) · [Compose LXC](../compose.lxc.yaml)
-
-Image alat build Android didefinisikan di [Dockerfile root](../Dockerfile). [Panduan deployment LXC](../docs/deploy-lxc.md)
+Untuk VM yang sudah berjalan, edit `.env` di root repository dan gunakan kembali nama proyek serta volume yang sama. Nilai password PostgreSQL harus sesuai dengan role yang sudah dibuat. [Startup, HTTPS, dan backup](../docs/deploy-lxc.md) · [Compose development](../compose.yaml)

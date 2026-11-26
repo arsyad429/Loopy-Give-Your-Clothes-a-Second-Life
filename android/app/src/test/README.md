@@ -1,9 +1,13 @@
-# test
+# Unit test Android di JVM
 
-Unit test Android dijalankan pada JVM melalui testDebugUnitTest.
+Source set ini menguji state ViewModel, aturan domain, serta request Retrofit dengan fake atau MockWebServer. Android SDK diperlukan untuk build modul. Unit test berjalan tanpa perangkat dan memakai fixture yang disiapkan suite.
 
-## Isi file dan perannya
+```sh
+./gradlew testDebugUnitTest
+```
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`java/`](java/README.md) | Akar source Kotlin untuk unit test aplikasi Android. |
+Jalankan dari folder `android/`. Laporan HTML berada di `app/build/reports/tests/testDebugUnitTest/`. [Peta paket tes](java/id/ac/loopy/README.md) · [Tes di perangkat](../androidTest/README.md)
+
+## Subfolder
+
+[java](java/README.md)

@@ -1,22 +1,7 @@
-# auth
+# Masuk dan daftar
 
-S02 dan S03 memvalidasi form dan menghubungi Go melalui LoginViewModel. Role sesi menentukan rute pengguna.
+[LoginScreen.kt](LoginScreen.kt) dan [RegisterScreen.kt](RegisterScreen.kt) mengumpulkan input. [LoginViewModel.kt](LoginViewModel.kt) menjalankan masuk, pendaftaran, verifikasi kode, kirim ulang, dan logout. Password minimal 8 karakter, dengan validasi ulang oleh Go.
 
-## Isi file dan perannya
+Pendaftaran membuat challenge dan membuka [S13 Verifikasi email](../verification/README.md). Akun dan sesi tersedia setelah kode benar. Login setelah itu memakai email dan kata sandi. [LoopyApp.kt](../../ui/LoopyApp.kt) mengarahkan donatur ke S04 dan admin ke A01 dari satu layar masuk. Admin disiapkan melalui CLI. [Panduan admin dan OTP](../../../../../../../../../../docs/auth-go.md)
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`LoginScreen.kt`](LoginScreen.kt) | Form email dan password, validasi, pesan feedback, serta callback login atau menuju registrasi. |
-| [`LoginUiState.kt`](LoginUiState.kt) | TEMPLATE S02 (F02) — belum ada implementasi bisnis. TODO: buat LoginUiState: data class immutable berisi nilai form/data, field errors, loading, error, serta event sukses tanpa menyimpan NavController. Kebutuhan: Email/password; validasi; pesan gagal; loading; login user → Home, admin → Admin Dashboard; cegah double submit. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
-| [`LoginViewModel.kt`](LoginViewModel.kt) | Mengirim login/register lewat repository, mengamati sesi, dan mengelola loading serta error. |
-| [`RegisterScreen.kt`](RegisterScreen.kt) | Form nama, email dan password beserta validasi dan callback registrasi. |
-| [`RegisterUiState.kt`](RegisterUiState.kt) | TEMPLATE S03 (F02) — belum ada implementasi bisnis. TODO: buat RegisterUiState: data class immutable berisi nilai form/data, field errors, loading, error, serta event sukses tanpa menyimpan NavController. Kebutuhan: Nama/email/password; email unik; role user otomatis; saldo awal 0; admin tidak melalui registrasi publik. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
-| [`RegisterViewModel.kt`](RegisterViewModel.kt) | Template ViewModel terpisah. S03 menggunakan LoginViewModel saat ini. |
-
-## TODO
-
-- [x] Login S02 dengan validasi, feedback dan navigasi berdasarkan role.
-- [x] Registrasi publik S03 melalui Go dan masuk langsung sebagai `USER`.
-- [ ] Screen stateless menerima state/callback; UiState immutable; ViewModel via repository, StateFlow dan viewModelScope.
-- [ ] Loading/error/empty, cancellation/retry dan anti double-submit, sesuai fitur.
-- [ ] Cocokkan node di docs/screen-map.md dan lengkapi AC terkait sebelum menandai selesai.
+`RegisterViewModel.kt`, `RegisterUiState.kt` dan `LoginUiState.kt` menyimpan kerangka tambahan. Jalur aktif memakai state dan feedback dalam `LoginViewModel.kt`.

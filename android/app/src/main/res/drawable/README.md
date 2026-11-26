@@ -1,14 +1,5 @@
-# Ikon S05 dan S06
+# Ikon vektor Android
 
-Ikon VectorDrawable untuk layar Loopy, termasuk kontrol kamera S05 dan kategori hasil S06.
+Ikon `ic_clothing_*` dipakai untuk panah kembali, aksi kamera, dan pakaian. Ikon `ic_check_result_*` menandai kategori hasil pemeriksaan dan konfirmasi. Layar menggunakan `painterResource` sehingga ikon dikemas bersama aplikasi. [Layar pemeriksaan](../../java/id/ac/loopy/feature/clothingcheck/README.md)
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`ic_clothing_back.xml`](ic_clothing_back.xml) | Panah kembali 24dp yang dipakai kedua layar. |
-| [`ic_clothing_camera.xml`](ic_clothing_camera.xml) | Ikon kamera untuk instruksi pengambilan foto S05. |
-| [`ic_clothing_shirt.xml`](ic_clothing_shirt.xml) | Ilustrasi pratinjau kosong S05 berukuran 106dp. |
-| [`ic_check_result_shirt.xml`](ic_check_result_shirt.xml) | Ilustrasi foto kosong S06 berukuran 90dp. |
-| [`ic_check_result_verified.xml`](ic_check_result_verified.xml) | Ikon hasil berpotensi layak 24dp. |
-| [`ic_check_result_alert.xml`](ic_check_result_alert.xml) | Ikon peringatan 40dp untuk hasil foto ulang atau tidak direkomendasikan. |
-| [`ic_check_result_confirmation.xml`](ic_check_result_confirmation.xml) | Tanda centang 16dp untuk konfirmasi kebersihan dan keamanan. |
-| [`LICENSE-lucide.md`](LICENSE-lucide.md) | Lisensi aset Lucide. |
+Pertahankan [lisensi Lucide](LICENSE-lucide.md) saat menyalin atau mengubah ikon yang berasal dari Lucide.

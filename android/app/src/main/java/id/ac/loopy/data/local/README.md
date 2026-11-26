@@ -1,13 +1,9 @@
-# local
+# Penyimpanan perangkat
 
-LoopyDatabase menyimpan draft pickup dengan Room. Preferensi tema memakai DataStore.
+[LoopyDatabase.kt](LoopyDatabase.kt) mendeklarasikan Room versi 2 dengan dua entity draf dan auto-migration 1 ke 2. Draf jadwal admin dipakai di detail donasi dan dikunci menurut admin serta donasi. Draf pickup contoh masih dipakai pada fondasi tes. [Schema Room](../../../../../../../../schemas/README.md)
 
+[UserPreferencesDataSource](preferences/README.md) menyimpan tema melalui DataStore. Backend menjadi sumber resmi akun, donasi, saldo, dan rewards.
 
-## Isi file dan perannya
+## Subfolder
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`LoopyDatabase.kt`](LoopyDatabase.kt) | Room database versi1 draft; tambahkan cache/migration sesuai kebutuhan fitur. |
-| [`dao/`](dao/README.md) | Query Room untuk draft pickup dan template query cache bisnis per akun. |
-| [`entity/`](entity/README.md) | Entitas Room untuk draft pickup serta template entitas cache bisnis. |
-| [`preferences/`](preferences/README.md) | Preferences DataStore menyimpan pilihan tema lintas sesi aplikasi. |
+[dao](dao/README.md) · [entity](entity/README.md)
