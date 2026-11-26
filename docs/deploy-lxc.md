@@ -133,6 +133,8 @@ AUTH_SMTP_PASSWORD=<smtp-password>
 AUTH_SMTP_FROM=<approved-sender-address>
 ```
 
+For Brevo, use `smtp-relay.brevo.com` as `AUTH_SMTP_HOST`, with `587` and `starttls`. Copy the **SMTP Login** and **SMTP Key** into `AUTH_SMTP_USER` and `AUTH_SMTP_PASSWORD`. Use the approved sender address in `AUTH_SMTP_FROM`. Loopy supplies the message body and the one-time code. [Brevo SMTP configuration](https://help.brevo.com/hc/en-us/articles/7924908994450-Send-transactional-emails-using-Brevo-SMTP) · [Brevo SMTP ports](https://help.brevo.com/hc/en-us/articles/10905415650322-Which-SMTP-port-should-I-use-Port-587-465-or-2525)
+
 4. Follow the startup steps below to apply migration versions 6 and 7. If Loopy already has data, take a backup before the update.
 5. In the new APK, register with an inbox you control. Enter the emailed code, sign out, and sign back in with email and password.
 
@@ -236,3 +238,57 @@ docker compose -f compose.lxc.yaml exec -T db \
 ```
 
 Check the command succeeds, copy backups off the LXC, and test restoration in a separate database. Keep PostgreSQL on major version 17 until you plan a database upgrade; pulling a newer major image is not a data migration. Docker restart behavior is described in the [official restart-policy documentation](https://docs.docker.com/engine/containers/start-containers-automatically/).
+
+## 9. Verify the deployed version
+
+Run these checks on the VM from `/opt/loopy`. Use the port printed by Compose for the health requests.
+
+```sh
+git log -1 --oneline
+docker compose -f compose.lxc.yaml config --quiet
+docker compose -f compose.lxc.yaml ps
+docker compose -f compose.lxc.yaml port backend 8080
+curl -fsS http://127.0.0.1:8080/ready
+```
+
+For a LAN-only bind, substitute the VM address in the URL. Compare the deployed commit with the one used to produce the APK and apply the appropriate base URL. The API remains on port 8080 inside the container.
+
+### Check whether the backend loaded the configuration
+
+Use the environment inside the running service to diagnose configuration mismatches. This command prints presence only.
+
+```sh
+docker compose -f compose.lxc.yaml exec -T backend sh -c '
+  for key in AUTH_EMAIL_VERIFICATION_REQUIRED AUTH_OTP_HMAC_KEY \
+    AUTH_SMTP_HOST AUTH_SMTP_PORT AUTH_SMTP_TLS_MODE AUTH_SMTP_USER \
+    AUTH_SMTP_PASSWORD AUTH_SMTP_FROM GROQ_API_KEY; do
+    if [ -n "$(printenv "$key")" ]; then
+      printf "%s set\n" "$key"
+    else
+      printf "%s empty\n" "$key"
+    fi
+  done
+'
+```
+
+After editing environment only, apply the settings with `docker compose -f compose.lxc.yaml up -d --wait backend`. When source changed, add `--build`. Then verify `/ready` again and run the relevant feature smoke test. Use `config --quiet` for validation when screen sharing or collecting logs.
+
+### Smoke test after an update
+
+1. From the laptop, confirm the URL that will be used by the APK. With the loopback bind, keep the SSH tunnel running and configure ADB reverse on USB. [Phone setup](development.md#koneksi-android-ke-backend)
+2. Register with a test inbox. Enter the OTP, then sign out and log in using email and password. Check transactional delivery logs from the SMTP provider if the message fails.
+3. While signed in as a donor, send a test JPEG or PNG and view the result. Groq key and model availability are exercised only when performing a check.
+4. Submit an eligible donation. From a separate admin session, schedule, mark picked up, and complete it. Refresh the donor view and verify the timeline and the +10 credit. Redeem a reward and check the balance and history.
+5. Record the commit, APK build, test environment, and resulting status or error code in the test report. [Acceptance criteria](acceptance-tests.md)
+
+| Symptom | Next step |
+| --- | --- |
+| `/ready` gives `503 NOT_READY` | Inspect `backend` and `db` status and logs. Check the database credentials, the existing named volume, and migration startup. |
+| `/ready` works but registration gives `503 VERIFICATION_EMAIL_UNAVAILABLE` | Verify SMTP settings in the running container, allow outbound connections to the relay, and check the sender and delivery events. |
+| Registration works but photo checks give `503 AI_UNAVAILABLE` | Check `GROQ_API_KEY` in the running service and Groq availability. For `502 AI_RESPONSE_FAILED`, check the configured model and response mode. |
+| HTTP works on the VM, phone cannot reach it | Check the host port, laptop listener, `adb reverse --list`, and the URL embedded in the APK. |
+| Existing data appears missing | Compare the active Compose project and volume name with those used before the update. Check the database in that project before taking any recovery action. |
+
+### Check a backup before relying on it
+
+Use PostgreSQL tooling at a compatible version. A successful `pg_restore --list` confirms the archive can be read. Perform the actual restore test into a separate database and check the accounts, donation history, and redemption totals there. Use that result and the recorded source commit when planning recovery. [Schema and data invariants](data-model.md)

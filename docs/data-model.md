@@ -1,35 +1,66 @@
 # Model data dan transaksi
 
-Migrasi [versi 1](../backend/go/schema.sql) membuat tabel akun dan sesi. Migrasi [versi 2](../backend/go/schema_pickup.sql) menambahkan pemeriksaan pakaian, pengajuan donasi, dan riwayat status. Migrasi [versi 3](../backend/go/schema_vision.sql) menambahkan foto privat, rekomendasi AI, dan idempotensi pemeriksaan. API mengembalikan waktu audit dalam UTC ISO-8601. Jadwal final memakai `Asia/Jakarta`. Identitas dan role berasal dari akun dalam sesi.
+Schema berjalan didefinisikan oleh [migrasi PostgreSQL 001–007](../backend/go/migrations/README.md). [PGStore](../backend/go/internal/store/README.md) memakai ID akun dari sesi. Waktu audit API memakai UTC, sementara jadwal penjemputan ditampilkan dalam `Asia/Jakarta`.
 
-| Tabel | Field/batasan PRD §8 dan kebutuhan teknis |
+```mermaid
+erDiagram
+    USERS ||--o{ AUTH_SESSIONS : memiliki
+    USERS ||--o{ CLOTHING_CHECKS : meminta
+    CLOTHING_CHECKS ||--o| CLOTHING_CHECK_PHOTOS : menyimpan
+    CLOTHING_CHECKS ||--o{ DONATION_REQUESTS : menjadi_dasar
+    USERS ||--o{ DONATION_REQUESTS : mengajukan
+    DONATION_REQUESTS ||--o{ DONATION_STATUS_HISTORY : mencatat
+    USERS ||--o{ POINT_TRANSACTIONS : memiliki
+    USERS ||--o{ REDEMPTIONS : menukar
+    REWARDS ||--o{ REDEMPTIONS : disalin_ke
+```
+
+## Akun dan identitas
+
+| Tabel | Isi dan batasan |
 | --- | --- |
-| users | user_id PK, name, normalized email UNIQUE, password_hash atau auth-provider ID, role USER/ADMIN, total_points CHECK >=0 |
-| auth_sessions | session_id PK, user_id FK, access_hash/refresh_hash UNIQUE (SHA-256, bukan token mentah), access_expires_at,refresh_expires_at,created_at; rotasi atomik dan hapus saat logout |
-| clothing_checks | check_id PK, user_id FK, private photo key, clothing_type, ai_result tiga kategori, ai_description, action_recommendation, created_at |
-| clothing_check_photos | check_id FK, jpeg ternormalisasi hingga 2 MiB |
-| clothing_check_requests | PK (user_id, request_key), request_hash, claim_id, claimed_until, check_id FK yang dibatasi ke pemilik |
-| donation_requests | donation_id PK, user_id FK, pasangan check_id/user_id FK ke pemeriksaan milik donatur, phone_number, pickup_address, city, quantity CHECK>=1, preferred_date/time, scheduled_at TIMESTAMPTZ, notes, status, rejection_reason, created_at/updated_at, version |
-| donation_status_history | PK (donation_id, version), donation_id FK, previous_status null pada versi awal, new_status, updated_by FK, updated_at |
-| point_transactions | transaction_id PK, user_id FK, donation_id nullable atau redemption_id nullable, transaction_type EARN/REDEEM, signed points, created_at; partial UNIQUE donation_id WHERE type=EARN |
-| rewards | reward_id PK, name, description, image, required_points>0, reward_type, is_active |
-| redemptions | redemption_id PK, user_id/reward_id FK, points_used, reward_details snapshot, redeemed_at |
-| idempotency_records (dukungan) | actor_id+operation+key UNIQUE, request_hash, response reference/status; retry sama mengembalikan hasil sama |
+| `users` | `user_id` UUID, nama, email ternormalisasi unik, hash password, role `USER` atau `ADMIN`, saldo nonnegatif, username unik opsional, dan `email_verified_at`. |
+| `auth_sessions` | `session_id`, pemilik, digest access/refresh unik, waktu kedaluwarsa, dan waktu pembuatan. Rotasi mengganti kedua digest. Logout menghapus satu sesi. |
+| `email_registrations` | Challenge unik per email dengan hash password, digest OTP, batas kirim ulang, waktu kedaluwarsa dan jumlah percobaan. Akun baru masuk `users` setelah verifikasi kode benar. |
 
-Versi 2 mengindeks antrean menurut waktu dan status, serta pengajuan menurut donatur. Jadwal wajib untuk status terjadwal, dijemput, dan selesai. Alasan wajib untuk status ditolak. API detail admin mengembalikan kunci penyimpanan foto. Pemilik dan admin mengambil foto pemeriksaan baru melalui route privat Go.
+Role user dan saldo awal disediakan oleh schema saat pendaftaran. `create-admin` menetapkan role admin secara eksplisit. Perubahan password menghapus sesi lain dalam transaksi yang sama. [Migrasi akun](../backend/go/migrations/001_accounts_and_sessions.sql) · [Profil](../backend/go/migrations/006_account_profiles.sql) · [OTP](../backend/go/migrations/007_email_registration.sql)
 
-## Completed yang direncanakan
+## Pemeriksaan, pickup dan riwayat
 
-BEGIN → verifikasi admin → lock donation+wallet dalam urutan konsisten → validasi PICKED_UP → status COMPLETED+audit → insert ledger +10 dengan unique donation ID → saldo +10 → COMMIT. Kegagalan rollback seluruh langkah. Retry completed tanpa poin tambahan. Jumlah pakaian tidak mengalikan poin: satu pengajuan selesai +10.
+| Tabel | Isi dan batasan |
+| --- | --- |
+| `clothing_checks` | Pemeriksaan dengan pemilik, kategori pakaian, hasil dan deskripsi AI, rekomendasi opsional, dan referensi foto. |
+| `clothing_check_photos` | JPEG privat ternormalisasi hingga 2 MiB, dikaitkan dengan `check_id`. |
+| `clothing_check_requests` | Key unik menurut akun, hash payload, klaim dan batas waktunya, serta referensi hasil ketika berhasil. |
+| `donation_requests` | Donatur, pemeriksaan miliknya, kontak, alamat, kota, kuantitas, preferensi tanggal/jam, jadwal final, alasan penolakan, status, waktu, dan versi. |
+| `donation_status_history` | Key `(donation_id, version)`, status sebelumnya dan baru, pelaku, serta waktu perubahan. `previous_status` kosong untuk versi pertama. |
+| `donation_submit_requests` | Key unik menurut donatur, hash request, dan ID pengajuan hasil sehingga retry dapat diulang dengan aman. |
 
-## Redeem yang direncanakan
+Foreign key gabungan `(check_id, user_id)` mengikat pengajuan ke pemeriksaan donatur yang sama. Daftar memakai urutan stabil `(created_at, donation_id)` dan cursor. Pencarian terbaru memakai urutan terbalik. Preferensi donatur tetap tersimpan ketika admin menetapkan jadwal final. [Schema pickup](../backend/go/migrations/002_pickup_and_donations.sql) · [Schema foto](../backend/go/migrations/003_vision_and_private_photos.sql) · [Schema idempotensi pickup](../backend/go/migrations/005_donation_submit_idempotency.sql)
 
-BEGIN → autentikasi user → cek idempotency key/request hash → lock wallet → reward aktif+cost dari server → cek saldo cukup → redemption+ledger negatif+debit bersyarat saldo>=cost → simpan hasil idempotency → COMMIT. Gagal rollback semuanya. Dua request bersamaan tidak membuat saldo negatif. Harga/poin dari APK tidak dipercaya.
+## Poin dan penukaran
 
-API aktif memproses `PENDING_REVIEW → PICKUP_SCHEDULED` dan `PENDING_REVIEW → REJECTED`. Transaksi mengunci pengajuan, memeriksa versinya, lalu mengubah status dan menulis riwayat pada versi yang sama. Lihat [alur verifikasi dan penjadwalan](donation-review-go.md). Skema menyediakan status `PICKED_UP` dan `COMPLETED` untuk penanganan pickup lanjutan.
+| Tabel | Isi dan batasan |
+| --- | --- |
+| `rewards` | Katalog aktif dengan ID, judul, deskripsi, ikon, tipe, dan biaya poin positif. |
+| `redemptions` | Reward dan pemilik, snapshot nama/deskripsi/ikon/tipe, jumlah poin yang dipakai, saldo tersisa saat transaksi, waktu, dan key idempoten unik per akun. |
+| `point_transactions` | Ledger dengan `points` bertanda. Kredit memakai satu `donation_id` unik dan bernilai +10. Debit memakai satu `redemption_id` unik dan bernilai negatif. |
 
-Fitur pengajuan pengguna perlu memasukkan pengajuan awal dan riwayat versi 1 dalam satu transaksi. Keputusan berikutnya memakai migrasi tambahan untuk database yang sudah berjalan. Lihat juga [model akun dan sesi](auth-go.md).
+Katalog menyediakan badge 10 poin, wallpaper 20 poin, dan voucher demo 30 poin. Snapshot menjaga isi riwayat ketika katalog berubah. Saldo yang dibaca aplikasi berada di `users.total_points` dan diperbarui bersama ledger. [Schema poin dan reward](../backend/go/migrations/004_rewards_and_ledger.sql)
 
-## Transaksi pemeriksaan pakaian
+## Batas transaksi
 
-Go memvalidasi pemilik melalui `auth_sessions` dan mereservasi key idempotensi sebelum memanggil Groq. Setelah analisis, satu transaksi menulis pemeriksaan, foto, dan referensi hasil bagi key tadi. Migrasi versi 3 menjaga referensi pickup dan foto terdahulu pada database Go. Database dari skema backend lama memerlukan impor terpisah.
+| Operasi | Langkah atomik | Cara mengulang |
+| --- | --- | --- |
+| Verifikasi OTP | Validasi challenge, buat akun dan sesi, konsumsi challenge. | Kode yang telah dipakai ditolak. |
+| Pemeriksaan foto | Selesaikan klaim dengan menulis hasil pemeriksaan dan JPEG, lalu kaitkan hasil ke key. Groq dipanggil sebelum commit hasil. | Pakai key dan payload yang sama. Payload lain dengan key lama ditolak. |
+| Submit pickup | Periksa hasil layak milik donatur, masukkan pengajuan versi 1, tulis riwayat awal, rekam key. | Gunakan key yang sama ketika hasil request sebelumnya belum pasti. |
+| Jadwal, tolak, atau maju status | Kunci pengajuan, cek versi dan transisi, perbarui baris, tambahkan riwayat. | Jika versi berubah, muat detail terbaru sebelum memberi keputusan lagi. |
+| Selesaikan donasi | Simpan perubahan dari `PICKED_UP` menjadi `COMPLETED`, riwayat, kredit unik +10 dan saldo. | Versi atau status lama menghasilkan konflik. Kredit unik mencegah saldo bertambah dua kali. |
+| Redeem | Kunci saldo pemilik, cek key dan reward aktif, simpan snapshot, tulis debit, kurangi saldo. | Key dan reward yang sama mengembalikan snapshot awal. Muat kembali saldo terkini untuk UI. |
+
+Setiap operasi menulis bagian yang saling terkait dalam satu transaksi sehingga kegagalan membatalkan keduanya. Contoh tes konkurensi dan rollback ada di [suite store](../backend/go/internal/store/store_integration_test.go). [Alur admin](donation-review-go.md) · [Alur redeem](completion-rewards.md)
+
+## Penyimpanan Android
+
+Room versi 2 berisi draf fondasi dan draf jadwal admin. Draf jadwal dipisah berdasarkan `adminId` dan `donationId`. Tema disimpan di DataStore. Data transaksi donasi, foto privat, ledger, dan redeem tetap dibaca dari API. [Room](../android/app/src/main/java/id/ac/loopy/data/local/README.md) · [Schema Room](../android/app/schemas/README.md)

@@ -50,7 +50,7 @@ Katalog awal server masih mencakup badge 10 poin, wallpaper 20 poin dan voucher 
 
 ## Verifikasi
 
-Dari `android/`: `./gradlew assembleDebug testDebugUnitTest lintDebug connectedDebugAndroidTest` (PowerShell: `.\\gradlew.bat`).
+Dari `android/`, jalankan `./gradlew assembleDebug testDebugUnitTest lintDebug`. Gunakan emulator atau perangkat uji khusus untuk `connectedDebugAndroidTest`. [Instrumentasi Android](../android/app/src/androidTest/README.md)
 
 - `RewardRepositoryHttpTest`: request Retrofit sungguhan ke server HTTP pengujian lokal; JSON, Bearer/refresh, path endpoint, body dan Idempotency-Key.
 - `RewardsViewModelTest`: retry respons tidak pasti, pemulihan kunci, replay, saldo terbaru, saldo kurang, kegagalan refresh setelah sukses, dan isolasi pergantian akun.
@@ -58,3 +58,28 @@ Dari `android/`: `./gradlew assembleDebug testDebugUnitTest lintDebug connectedD
 - Backend: `TEST_DATABASE_URL=... go test ./...` dengan PostgreSQL pengujian.
 
 Hasil aktual dicatat pada [verification.md](verification.md). Pengujian lokal tidak membuktikan deployment atau keterjangkauan VM tim.
+
+## Menelusuri kredit dan debit
+
+| Tahap | Perubahan server | Yang dicek di aplikasi |
+| --- | --- | --- |
+| Admin menetapkan jadwal dan menandai dijemput | Versi dan riwayat meningkat. Saldo belum bertambah. | Detail donatur memperlihatkan jadwal final dan progres. |
+| Admin menyelesaikan pickup | PostgreSQL menulis status akhir, versi, riwayat, satu kredit +10, dan saldo dalam transaksi. | Saldo Beranda dan Rewards meningkat 10 setelah refresh. |
+| Donatur memilih dan membatalkan reward | Belum ada request mutasi. | Saldo serta riwayat sama. |
+| Donatur mengonfirmasi reward aktif | PostgreSQL mengunci saldo pemilik, cek key dan biaya, lalu menulis snapshot, debit, dan saldo baru. | Satu item riwayat serta saldo terbaru. |
+| Respons mutasi hilang setelah commit | Server bisa membaca snapshot transaksi berdasarkan key dan akun. | Retry menggunakan key yang sama. Riwayat tetap satu transaksi. |
+
+## Contoh memeriksa redeem dengan API
+
+Gunakan akun uji yang punya minimal 10 poin, `LOOPY_BASE`, dan `DONOR_ACCESS_TOKEN` dari sesi akun. Contoh mendebit badge satu kali pada akun tes.
+
+```sh
+REDEEM_KEY="$(openssl rand -hex 16)"
+curl -sS -i "$LOOPY_BASE/v1/redemptions" \
+  -H "Authorization: Bearer $DONOR_ACCESS_TOKEN" \
+  -H "Idempotency-Key: $REDEEM_KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{"rewardId":"eco-supporter-badge"}'
+```
+
+Request pertama yang berhasil memberi `201` dengan `replayed=false`. Jalankan ulang request dengan variabel `REDEEM_KEY` yang sama untuk memperoleh `200` dan `replayed=true`. `remainingBalance` pada replay adalah snapshot setelah transaksi tersimpan. Baca `/v1/points/balance` untuk saldo saat ini dan `/v1/redemptions` untuk riwayat. Key yang sama dengan reward lain memberi `409 IDEMPOTENCY_CONFLICT`. [Kode transaksi Go](../backend/go/internal/store/rewards_store.go) · [Model ledger](data-model.md#poin-dan-penukaran)

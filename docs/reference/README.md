@@ -7,3 +7,9 @@
 - [papb-catalog.json](papb-catalog.json) mencatat judul materi, metadata, dan checksum. [Pemetaan PAPB](../papb-mapping.md) menghubungkan materi dengan implementasi.
 
 File desain sumber tersedia di [folder UI design](../../UI%20design/README.md).
+
+## Cara memakai rujukan
+
+- Saat mereview kebutuhan, mulai dari PRD dan catat ID fitur serta kriteria penerimaan. Gunakan [lampiran implementasi](PRD-v2.1.md#lampiran-rujukan-implementasi) untuk menghubungkan requirement dengan kode dan evidence.
+- Saat mereview UI, cari ID layar pada [peta layar](../screen-map.md). Gunakan node Figma serta screenshot perangkat untuk state yang sama. Ekspor JSON, XML, dan PNG membantu memeriksa struktur secara lokal.
+- Saat mereview tugas PAPB, cocokkan judul dan checksum di katalog, lalu buka [pemetaan materi](../papb-mapping.md) untuk contoh di repo. Katalog mendokumentasikan materi, sementara pengajaran tetap merujuk ke sumber kampus.
