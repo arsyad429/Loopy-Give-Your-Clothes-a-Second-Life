@@ -1,16 +1,5 @@
-# entity
+# Entity Room
 
-Entitas Room untuk draft pickup serta template entitas cache bisnis.
+[AdminPickupScheduleDraftEntity.kt](AdminPickupScheduleDraftEntity.kt) menyimpan pilihan tanggal dan jam admin per donasi. [PickupDraftEntity.kt](PickupDraftEntity.kt) adalah entity draf pengujian fondasi. Jadwal yang sudah dikonfirmasi disimpan oleh backend.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`ClothingCheckCacheEntity.kt`](ClothingCheckCacheEntity.kt) | TEMPLATE opsional — TODO: cache ClothingCheck ber-key userId; minimalkan PII, TTL dan invalidasi logout. Room hanya cache/draft; otoritas status, role dan poin di backend. |
-| [`DonationCacheEntity.kt`](DonationCacheEntity.kt) | TEMPLATE opsional — TODO: cache Donation ber-key userId; minimalkan PII, TTL dan invalidasi logout. Room hanya cache/draft; otoritas status, role dan poin di backend. |
-| [`PickupDraftEntity.kt`](PickupDraftEntity.kt) | Entity contoh draft lokal tanpa PII, bukan pengajuan resmi backend. |
-| [`PointTransactionCacheEntity.kt`](PointTransactionCacheEntity.kt) | TEMPLATE opsional — TODO: cache PointTransaction ber-key userId; minimalkan PII, TTL dan invalidasi logout. Room hanya cache/draft; otoritas status, role dan poin di backend. |
-| [`RedemptionCacheEntity.kt`](RedemptionCacheEntity.kt) | TEMPLATE opsional — TODO: cache Redemption ber-key userId; minimalkan PII, TTL dan invalidasi logout. Room hanya cache/draft; otoritas status, role dan poin di backend. |
-| [`RewardCacheEntity.kt`](RewardCacheEntity.kt) | TEMPLATE opsional — TODO: cache Reward ber-key userId; minimalkan PII, TTL dan invalidasi logout. Room hanya cache/draft; otoritas status, role dan poin di backend. |
-| [`StatusHistoryCacheEntity.kt`](StatusHistoryCacheEntity.kt) | TEMPLATE opsional — TODO: cache StatusHistory ber-key userId; minimalkan PII, TTL dan invalidasi logout. Room hanya cache/draft; otoritas status, role dan poin di backend. |
-| [`UserCacheEntity.kt`](UserCacheEntity.kt) | TEMPLATE opsional — TODO: cache User ber-key userId; minimalkan PII, TTL dan invalidasi logout. Room hanya cache/draft; otoritas status, role dan poin di backend. |
+File `*CacheEntity.kt` mendokumentasikan rencana model cache. Dua entity yang terdaftar di [LoopyDatabase.kt](../LoopyDatabase.kt) menentukan schema aktif. [Snapshot schema](../../../../../../../../../schemas/README.md)

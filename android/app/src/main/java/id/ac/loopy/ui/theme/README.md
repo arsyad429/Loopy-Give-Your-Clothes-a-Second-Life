@@ -1,12 +1,5 @@
-# theme
+# Tema dan tipografi Loopy
 
-Warna, tipografi, bentuk, dan tema Material 3 untuk Compose.
+[Theme.kt](Theme.kt) memasang tema terang atau gelap berdasarkan preferensi pada `MainActivity`. [LoopyScreen.kt](../components/LoopyScreen.kt) menerapkan palet permukaan dan tipografi layar bersama. Plus Jakarta Sans berada di [resource font](../../../../../../res/font/README.md).
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`Color.kt`](Color.kt) | TEMPLATE — TODO: color tokens/status colors Figma. Nilai theme saat ini sementara. |
-| [`Shape.kt`](Shape.kt) | TEMPLATE — TODO: radius/shape serta spacing konsisten UI kit. Nilai theme saat ini sementara. |
-| [`Theme.kt`](Theme.kt) | Tema light/dark sementara; TODO font Plus Jakarta Sans dan token Figma. |
-| [`Typography.kt`](Typography.kt) | TEMPLATE — TODO: font Plus Jakarta Sans lokal berlisensi dan scale Figma. Nilai theme saat ini sementara. |
+`Color.kt`, `Shape.kt`, dan `Typography.kt` menyimpan kerangka token tambahan. Saat menambah komponen, gunakan `MaterialTheme` dan pastikan tampil jelas pada kedua tema.

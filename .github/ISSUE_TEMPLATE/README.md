@@ -1,9 +1,3 @@
-# ISSUE_TEMPLATE
+# Template issue
 
-Form issue untuk mencatat masalah, pekerjaan fitur, dan kriteria penerimaan Loopy.
-
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`feature.md`](feature.md) | Template pengambilan tugas fitur/AC, pemilik/dependensi, definisi selesai. |
+[feature.md](feature.md) memberi struktur untuk menjelaskan kebutuhan, tampilan atau endpoint, serta kriteria selesai. Untuk laporan bug, sertakan langkah reproduksi, peran donatur atau admin, versi build, hasil yang terlihat, dan hasil yang diharapkan. Pakai data uji saat melampirkan log atau tangkapan layar.

@@ -1,10 +1,5 @@
-# wrapper
+# Gradle Wrapper
 
-Bootstrap Gradle untuk menghasilkan build Android dengan versi distribusi yang sama di setiap mesin.
+[gradle-wrapper.properties](gradle-wrapper.properties) menunjuk distribusi Gradle 8.13 serta checksum SHA-256. [gradle-wrapper.jar](gradle-wrapper.jar) melakukan bootstrap melalui `gradlew` atau `gradlew.bat`.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`gradle-wrapper.jar`](gradle-wrapper.jar) | Binary bootstrap resmi Gradle8.13, jangan diedit manual. |
-| [`gradle-wrapper.properties`](gradle-wrapper.properties) | Distribusi Gradle8.13 dan SHA256 untuk validasi unduhan. |
+Saat melakukan upgrade, regenerasi berkas wrapper sesuai versi target dan cocokkan checksum distribusi. [Panduan build Android](../../README.md)

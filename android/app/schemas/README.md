@@ -1,9 +1,7 @@
-# schemas
+# Schema Room yang diekspor
 
-KSP mengekspor skema Room ke folder ini agar perubahan database lokal dapat direview bersama kode.
+KSP menyimpan snapshot schema Room dalam JSON. Snapshot versi 1 dan 2 dipakai untuk auto-migration `LoopyDatabase`. Simpan versi lama di Git dan biarkan build menulis snapshot baru saat versi database dinaikkan. [Konfigurasi KSP](../build.gradle.kts) · [Database Android](../src/main/java/id/ac/loopy/data/local/README.md)
 
-## Isi file dan perannya
+## Subfolder
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`id.ac.loopy.data.local.LoopyDatabase/`](id.ac.loopy.data.local.LoopyDatabase/README.md) | Snapshot versi skema LoopyDatabase yang diekspor oleh Room. Perubahan tabel muncul di snapshot saat build. |
+[id.ac.loopy.data.local.LoopyDatabase](id.ac.loopy.data.local.LoopyDatabase/README.md)

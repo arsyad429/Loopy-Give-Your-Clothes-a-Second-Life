@@ -1,9 +1,7 @@
-# java
+# Source JVM untuk tes perangkat
 
-Akar source Kotlin untuk tes instrumentasi Android Loopy.
+Folder `java` ini memuat tes Kotlin yang dikompilasi ke APK instrumentasi. Kelas tes berada di [id.ac.loopy](id/ac/loopy/README.md) dan dijalankan oleh AndroidJUnitRunner. [Cara menjalankan](../README.md)
 
-## Isi file dan perannya
+## Subfolder
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`id/`](id/README.md) | Segmen id pada namespace tes instrumentasi Loopy. |
+[id](id/README.md)

@@ -1,11 +1,5 @@
-# S04 Beranda pengguna
+# S04 Beranda donatur
 
-S04 menyapa akun aktif, membuka pemeriksaan pakaian S05, dan menampilkan saldo Loopy Points serta donasi terakhir dari Go. Kartu donasi membuka detail S09. Navigasi bawah mengarah ke Donasiku dan Rewards. Menu akun menyediakan logout.
+[HomeViewModel.kt](HomeViewModel.kt) memuat saldo dan donasi terakhir melalui dua request terpisah. [HomeUiState.kt](HomeUiState.kt) melacak loading dan kegagalan masing-masing hasil. [HomeScreen.kt](HomeScreen.kt) menyegarkan data saat kembali aktif dan menyediakan tombol retry.
 
-| File | Kegunaan |
-| --- | --- |
-| [HomeScreen.kt](HomeScreen.kt) | Tata letak S04, tombol pemeriksaan, kartu saldo dan donasi, navigasi, serta menu akun. |
-| [HomeUiState.kt](HomeUiState.kt) | State saldo, donasi, loading, dan kegagalan untuk setiap bagian. |
-| [HomeViewModel.kt](HomeViewModel.kt) | Memuat saldo dan donasi melalui HomeRepository, termasuk refresh saat beranda dibuka kembali. |
-
-Home menampilkan saldo nol hanya jika Go mengirimkannya. Ketika refresh gagal, data yang sebelumnya berhasil dimuat tetap terlihat dengan keterangan. Mode demo debug tetap memakai Room. S10 untuk akun aktif masih berupa halaman sementara.
+Tombol `Cek pakaian` membuka S05. Tab menuju Donasiku atau Rewards, kartu donasi membuka detail, dan avatar membuka Profil secara langsung. Pengaturan serta logout tersedia dari profil. [API Beranda](../../data/remote/api/HomeApi.kt) · [Tes Beranda](../../../../../../../androidTest/java/id/ac/loopy/feature/HomeScreenTest.kt)

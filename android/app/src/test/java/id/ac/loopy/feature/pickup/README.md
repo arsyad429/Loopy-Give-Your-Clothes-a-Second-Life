@@ -1,3 +1,3 @@
-# Unit Test Validasi Pickup Request
+# Unit test validasi pickup
 
-Unit test untuk `PickupRequestValidator` dan `PickupRequestViewModel`.
+[PickupRequestValidationTest.kt](PickupRequestValidationTest.kt) mencakup data wajib, batas jumlah, tanggal dengan zona Jakarta, dan state pengiriman seperti loading atau hasil submit. [Implementasi form pickup](../../../../../../../main/java/id/ac/loopy/feature/pickup/README.md)

@@ -1,10 +1,7 @@
-# loopy
+# Suite unit test Android
 
-Unit test model domain dan validasi kualitas foto pada fitur pemeriksaan.
+- [Data](data/README.md) memeriksa request HTTP, pemetaan hasil, sesi, serta idempotensi.
+- [Domain](domain/README.md) memeriksa aturan status murni.
+- [Fitur](feature/README.md) memeriksa pesan error, state layar, dan validasi form.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`domain/`](domain/README.md) | DonationStatusTest memeriksa transisi status donasi yang dipakai UI. |
-| [`feature`](feature/README.md) | Tes fitur menurut layar yang diuji. |
+[Perintah Gradle dan lokasi laporan](../../../../README.md)

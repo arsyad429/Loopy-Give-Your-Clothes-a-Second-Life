@@ -1,5 +1,5 @@
-# Unit test fitur Android
+# Unit test state fitur Android
 
-Unit test perilaku fitur. Tes clothingcheck memeriksa kualitas foto S05 melalui piksel sintetis.
+[AuthFeedbackTest.kt](AuthFeedbackTest.kt) menguji validasi dan feedback autentikasi. [HomeViewModelTest.kt](HomeViewModelTest.kt) menguji refresh saldo dan donasi terakhir secara terpisah. [RewardsViewModelTest.kt](RewardsViewModelTest.kt) memeriksa katalog, perubahan akun, saldo gagal, serta pemulihan redeem tertunda.
 
-- [HomeViewModelTest.kt](HomeViewModelTest.kt) — Memeriksa refresh, kegagalan satu bagian, dan pemulihan saldo serta ringkasan donasi.
+Tes lainnya mengikuti folder fitur [clothingcheck](clothingcheck/README.md), [donations](donations/README.md), dan [pickup](pickup/README.md). [Peta kode fitur](../../../../../../main/java/id/ac/loopy/feature/README.md)

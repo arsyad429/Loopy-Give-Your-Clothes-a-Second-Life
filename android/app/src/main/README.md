@@ -1,11 +1,9 @@
-# main
+# Source utama Android
 
-Source set utama memuat manifest, kode Kotlin aplikasi, dan resource UI.
+[AndroidManifest.xml](AndroidManifest.xml) mendaftarkan `LoopyApplication`, `MainActivity`, izin internet, dan `FileProvider` untuk foto dari kamera. Manifest utama menonaktifkan backup aplikasi dan cleartext. Varian debug memiliki override HTTP lokal. [Manifest debug](../debug/README.md)
 
-## Isi file dan perannya
+Kode berada di [namespace id.ac.loopy](java/id/ac/loopy/README.md). [Resources](res/README.md) memuat ikon, font, dan XML. [Assets](assets/README.md) menyimpan SVG sumber visual.
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`AndroidManifest.xml`](AndroidManifest.xml) | Activity/application/permission. Main menolak cleartext, overlay debug mengizinkan HTTP lokal. |
-| [`java/`](java/README.md) | Akar source Kotlin untuk aplikasi Android id.ac.loopy. |
-| [`res/`](res/README.md) | Resource Android untuk ikon, font, nilai aplikasi, dan konfigurasi FileProvider. |
+## Subfolder
+
+[java](java/README.md)

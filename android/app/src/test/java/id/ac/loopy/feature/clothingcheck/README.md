@@ -1,5 +1,3 @@
 # Unit test pemeriksaan pakaian
 
-Unit test kualitas foto S05 mencakup gelap, transparan, detail rendah, dan contoh pakaian gelap yang masih terlihat jelas.
-
-[ClothingPhotoQualityTest.kt](ClothingPhotoQualityTest.kt) membangun fixture piksel dan memeriksa alasan foto diminta ulang.
+[CheckResultAndDetectorViewModelTest.kt](CheckResultAndDetectorViewModelTest.kt) memeriksa state analisis, hasil, kegagalan, dan retry memakai repository uji. [ClothingPhotoQualityTest.kt](ClothingPhotoQualityTest.kt) menguji penilaian lokal untuk foto yang gelap atau kurang jelas. [Implementasi pemeriksaan](../../../../../../../main/java/id/ac/loopy/feature/clothingcheck/README.md)

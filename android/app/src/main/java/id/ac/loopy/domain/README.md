@@ -1,10 +1,5 @@
-# domain
+# Domain Android
 
-Model bisnis dan kontrak repository yang dipakai oleh ViewModel dan lapisan data.
+[Model](model/README.md) berisi bentuk data yang dipakai ViewModel dan Compose, termasuk status donasi dan hasil pemeriksaan. [Kontrak repository](repository/README.md) mendokumentasikan batas antara fitur dan layer data. Validasi akhir dan peran berasal dari backend.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`model/`](model/README.md) | Model domain aktif mencakup hasil pemeriksaan, jenis pakaian, dan status donasi. Model fitur lanjutan disiapkan sebagai template. |
-| [`repository/`](repository/README.md) | Kontrak domain repository. ViewModel S05 dan S06 memakai ClothingCheckRepository untuk meminta analisis dan mengambil detail. |
+Jika status atau payload berubah, periksa [domain Go](../../../../../../../../../backend/go/internal/domain/README.md), [mapper](../data/mapper/README.md), dan UI yang menampilkan status itu.

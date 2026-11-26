@@ -1,18 +1,5 @@
-# settings
+# S12 Pengaturan akun
 
-Template S12 untuk preferensi pengguna. Tema yang aktif dapat diuji melalui katalog debug dan disimpan dengan DataStore.
+[SettingsScreen.kt](SettingsScreen.kt) mengedit nama dan username, serta menerima kata sandi saat ini dan kata sandi baru bila pengguna ingin menggantinya. [AccountViewModel](../profile/AccountViewModel.kt) menampilkan hasil dan error per field dari `PATCH /v1/auth/me`.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`SettingsScreen.kt`](SettingsScreen.kt) | Template S12: Preferensi non-sensitif DataStore; ganti password/username memerlukan kontrak backend dan persetujuan scope. |
-| [`SettingsUiState.kt`](SettingsUiState.kt) | TEMPLATE S12 (Design extension) — belum ada implementasi bisnis. TODO: buat SettingsUiState: data class immutable berisi nilai form/data, field errors, loading, error, serta event sukses tanpa menyimpan NavController. Kebutuhan: Preferensi non-sensitif DataStore; ganti password/username memerlukan kontrak backend dan persetujuan scope. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
-| [`SettingsViewModel.kt`](SettingsViewModel.kt) | TEMPLATE S12 (Design extension) — belum ada implementasi bisnis. TODO: buat SettingsViewModel: ViewModel dengan private MutableStateFlow, StateFlow immutable, viewModelScope, cancellation, loading/success/error dan cegah request berulang. Kebutuhan: Preferensi non-sensitif DataStore; ganti password/username memerlukan kontrak backend dan persetujuan scope. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
-
-## TODO
-
-- [ ] **S12 / Design extension**: Preferensi non-sensitif DataStore; ganti password/username memerlukan kontrak backend dan persetujuan scope.
-- [ ] Screen stateless menerima state/callback; UiState immutable; ViewModel via repository, StateFlow dan viewModelScope.
-- [ ] Loading/error/empty, cancellation/retry dan anti double-submit, sesuai fitur.
-- [ ] Cocokkan node di docs/screen-map.md dan lengkapi AC terkait sebelum menandai selesai.
+Saat perubahan kata sandi berhasil, backend mencabut sesi akun yang lain. Pengaturan memakai model yang sama pada profil donatur dan admin. `SettingsViewModel.kt` dan `SettingsUiState.kt` mempertahankan kerangka awal. [Kontrak profil](../../../../../../../../../../docs/auth-go.md)

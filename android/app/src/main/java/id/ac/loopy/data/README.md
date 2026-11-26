@@ -1,12 +1,5 @@
-# data
+# Akses data Android
 
-Implementasi data Android untuk Retrofit ke Go, preferensi DataStore, dan draft Room.
+ViewModel memanggil [repository](repository/README.md). Repository mengirim request melalui [Retrofit](remote/README.md), lalu [mapper](mapper/README.md) mengubah DTO ke model yang dipakai UI. [Data lokal](local/README.md) menangani draf serta preferensi perangkat.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`local/`](local/README.md) | LoopyDatabase menyimpan draft pickup dengan Room. Preferensi tema memakai DataStore. |
-| [`mapper/`](mapper/README.md) | Template mapper antara DTO, domain, dan cache. Konversi hasil pemeriksaan yang aktif ada di ClothingCheckDto. |
-| [`remote/`](remote/README.md) | Interface Retrofit dan DTO untuk health, register, login, refresh, dan pemeriksaan pakaian. |
-| [`repository/`](repository/README.md) | Repository untuk autentikasi, pemeriksaan pakaian, dan demo fondasi aplikasi, beserta template akses data fitur berikutnya. |
+Untuk menambah endpoint, mulai dari kontrak Go, tambahkan interface API dan DTO, lalu ubah repository serta tes yang memeriksa request/response. [Kontrak API](../../../../../../../../../docs/api-contract.md) · [Perakitan dependensi](../di/README.md)

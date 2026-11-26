@@ -1,12 +1,10 @@
-# src
+# Source set Android
 
-Source set Android memisahkan kode utama, konfigurasi debug, unit test JVM, dan tes instrumentasi.
-
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
+| Folder | Dipakai untuk |
 | --- | --- |
-| [`androidTest/`](androidTest/README.md) | Tes instrumentasi Android dijalankan pada perangkat atau emulator dengan connectedDebugAndroidTest. |
-| [`debug/`](debug/README.md) | Manifest khusus debug mengizinkan HTTP untuk API lokal yang diakses lewat ADB reverse. |
-| [`main/`](main/README.md) | Source set utama memuat manifest, kode Kotlin aplikasi, dan resource UI. |
-| [`test/`](test/README.md) | Unit test Android yang berjalan pada JVM melalui testDebugUnitTest. |
+| [main](main/README.md) | Aplikasi, manifest, resource, dan akses backend. |
+| [debug](debug/README.md) | Override manifest untuk koneksi HTTP pengembangan. |
+| [test](test/README.md) | Unit test JVM untuk mapper, repository, dan state. |
+| [androidTest](androidTest/README.md) | Tes Compose dan Room pada perangkat atau emulator. |
+
+Build varian memilih manifest dan dependency yang sesuai dari [Gradle modul](../build.gradle.kts).

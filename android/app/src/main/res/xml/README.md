@@ -1,9 +1,5 @@
-# xml
+# Jalur foto FileProvider
 
-Konfigurasi jalur FileProvider untuk berbagi URI foto dengan aplikasi kamera.
+[file_paths.xml](file_paths.xml) mendeklarasikan `cache/clothing_photos/` sebagai lokasi berbagi foto sementara. [Manifest](../../AndroidManifest.xml) memasang provider dengan authority `${applicationId}.files`. Kamera memperoleh akses melalui URI yang diberikan oleh `ActivityResultContracts.TakePicture`.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`file_paths.xml`](file_paths.xml) | Konfigurasi/artefak pendukung folder. |
+[Implementasi penggunaan kamera](../../java/id/ac/loopy/feature/clothingcheck/ClothingDetectorScreen.kt)

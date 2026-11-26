@@ -1,13 +1,5 @@
-# ui
+# Susunan UI dan rute
 
-NavHost Compose, komponen tampilan yang dipakai ulang, tema, dan state demo fondasi.
+[LoopyApp.kt](LoopyApp.kt) mendefinisikan `NavHost`, mengamati sesi, dan merangkai ViewModel. S01 landing menjadi tujuan awal. Login memilih S04 untuk donatur atau A01 untuk admin. Rute terlindungi mengarahkan akun dengan peran yang sesuai. S09 dan A03 membawa ID pengajuan melalui rute.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`LoopyApp.kt`](LoopyApp.kt) | NavHost untuk katalog debug, autentikasi Go, navigasi berdasarkan role, serta alur S05–S07 dengan checkId. |
-| [`TemplateViewModel.kt`](TemplateViewModel.kt) | StateFlow combine/stateIn, coroutine scope, loading/error/cancellation untuk demo fondasi. |
-| [`components/`](components/README.md) | Komponen Compose bersama untuk input, tombol, tata letak, dan feedback, beserta template komponen fitur. |
-| [`navigation/`](navigation/README.md) | Rute aktif berada di LoopyApp.kt. S05 dan S06 memerlukan sesi USER dan hanya meneruskan checkId melalui navigasi. |
-| [`theme/`](theme/README.md) | Warna, tipografi, bentuk, dan tema Material 3 untuk Compose. |
+`navigateToUserTab` menyimpan state tab donatur. Beranda memakai entri yang sudah ada saat kembali dari Donasiku atau Rewards. [TemplateViewModel.kt](TemplateViewModel.kt) membawa state tema DataStore untuk `MainActivity` serta aksi fondasi tes. [Navigasi](navigation/README.md) · [Komponen](components/README.md) · [Tema](theme/README.md)

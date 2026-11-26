@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -93,13 +94,7 @@ fun LoopyApp(container: AppContainer) {
     }
 
     val logout: () -> Unit = { authModel.logout { goToAccountScreen(null) } }
-    val userNavigate: (String) -> Unit = { route ->
-        nav.navigate(route) {
-            popUpTo("s04") { saveState = true }
-            launchSingleTop = true
-            restoreState = true
-        }
-    }
+    val userNavigate: (String) -> Unit = nav::navigateToUserTab
     val openDonation: (String) -> Unit = { id -> nav.navigate("s09/${Uri.encode(id)}") { launchSingleTop = true } }
     val account: () -> Unit = { nav.navigate("s11") { launchSingleTop = true } }
     val adminAccount: () -> Unit = { nav.navigate("a04") { launchSingleTop = true } }
@@ -211,9 +206,6 @@ fun LoopyApp(container: AppContainer) {
                             onRewards = { nav.navigate("s10") { launchSingleTop = true } },
                             onDonation = openDonation,
                             onProfile = account,
-                            onLogout = logout,
-                            logoutBusy = submitting,
-                            logoutError = logoutError,
                         )
                     }
                 }
@@ -483,5 +475,14 @@ fun LoopyApp(container: AppContainer) {
 
             }
         }
+    }
+}
+
+internal fun NavController.navigateToUserTab(route: String) {
+    navigate(route) {
+        popUpTo("s04") { saveState = true }
+        launchSingleTop = true
+        // Beranda is already in the stack. Restoring its saved state can reopen the previous tab.
+        restoreState = route != "s04"
     }
 }

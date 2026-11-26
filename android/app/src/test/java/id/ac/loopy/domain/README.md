@@ -1,9 +1,3 @@
-# domain
+# Tes aturan status donasi
 
-DonationStatusTest memeriksa transisi status donasi yang dipakai UI.
-
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`DonationStatusTest.kt`](DonationStatusTest.kt) | Unit test semua pasangan status, transisi valid dan larangan lompatan/final. |
+[DonationStatusTest.kt](DonationStatusTest.kt) memastikan enum Android hanya menawarkan transisi yang diizinkan alur produk. Perubahan status juga perlu diperiksa di kontrak backend dan UI admin. [Model Android](../../../../../../main/java/id/ac/loopy/domain/model/DonationStatus.kt) · [Aturan Go](../../../../../../../../../backend/go/internal/domain/donation.go)

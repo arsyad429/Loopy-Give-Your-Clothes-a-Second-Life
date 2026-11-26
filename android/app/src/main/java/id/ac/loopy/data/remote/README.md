@@ -1,11 +1,5 @@
-# remote
+# Lapisan HTTP Android
 
-Interface Retrofit dan DTO untuk health, register, login, refresh, dan pemeriksaan pakaian.
+[Interface Retrofit](api/README.md) mendeklarasikan request dan respons. [DTO](dto/README.md) mengikuti kontrak JSON Go. `AppContainer` membuat Retrofit dan OkHttp bersama, lalu memberikan interface ke repository. Request berautentikasi memakai `AuthRepositoryImpl.withBearer`.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`api/`](api/README.md) | Deklarasi endpoint Retrofit untuk health, sesi, dan pemeriksaan yang disediakan oleh Go. |
-| [`datasource/`](datasource/README.md) | Template pembungkus panggilan jarak jauh. Repository auth dan pemeriksaan aktif memakai Retrofit secara langsung. |
-| [`dto/`](dto/README.md) | Bentuk JSON untuk Retrofit, termasuk health, akun, token sesi, dan hasil pemeriksaan. |
+Folder [datasource](datasource/README.md) berisi kerangka pemisahan lapisan. Jalur aktif dari ViewModel ke Retrofit berada di [repository](../repository/README.md). [Kontrak server](../../../../../../../../../../docs/api-contract.md)

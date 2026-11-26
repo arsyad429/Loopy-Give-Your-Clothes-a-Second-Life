@@ -1,9 +1,7 @@
-# id
+# Namespace id aplikasi
 
-Segmen id pada namespace Kotlin aplikasi Loopy.
+Namespace ini menuju package [id.ac.loopy](ac/loopy/README.md). Buka folder itu untuk menemukan entry point dan pembagian kode fitur.
 
-## Isi file dan perannya
+## Subfolder
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`ac/`](ac/README.md) | Segmen ac pada namespace Kotlin aplikasi Loopy. |
+[ac](ac/README.md)

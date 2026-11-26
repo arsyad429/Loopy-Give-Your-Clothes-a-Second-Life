@@ -1,11 +1,5 @@
-# .github
+# Kontribusi dan otomatisasi GitHub
 
-Konfigurasi GitHub untuk pengecekan perubahan, laporan issue, dan pull request Loopy.
+Gunakan [template PR](pull_request_template.md) untuk mencatat perubahan, langkah uji, dan batasan hasil. Sertakan rute layar atau endpoint yang terpengaruh agar reviewer dapat mengulangi alur. [Panduan kontribusi](../CONTRIBUTING.md)
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`ISSUE_TEMPLATE/`](ISSUE_TEMPLATE/README.md) | Form issue untuk mencatat masalah, pekerjaan fitur, dan kriteria penerimaan Loopy. |
-| [`pull_request_template.md`](pull_request_template.md) | Template deskripsi perubahan, kaitan PRD, hasil cek dan batasan. |
-| [`workflows/`](workflows/README.md) | Dokumentasi penggunaan dan peta file subfolder. |
+[Workflow Verify Loopy](workflows/README.md) dijalankan saat push dan pull request. [Template issue](ISSUE_TEMPLATE/README.md) membantu mencatat pekerjaan dan kondisi penerimaan.

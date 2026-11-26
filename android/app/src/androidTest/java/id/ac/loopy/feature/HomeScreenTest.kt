@@ -2,6 +2,7 @@ package id.ac.loopy.feature
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -35,7 +36,7 @@ class HomeScreenTest {
                     onRewards = { actions.add("rewards") },
                     onDonation = { actions.add(it) },
                     onRefresh = {},
-                    onLogout = { actions.add("logout") },
+                    onProfile = { actions.add("profile") },
                 )
             }
         }
@@ -46,9 +47,9 @@ class HomeScreenTest {
         compose.onNodeWithText("Donasiku").performClick()
         compose.onNodeWithText("Rewards").performClick()
         compose.onNodeWithContentDescription("Akun").performClick()
-        compose.onNodeWithText("Keluar").performClick()
+        compose.onNode(isDialog()).assertDoesNotExist()
         compose.runOnIdle {
-            assertEquals(listOf("check", "sample-1", "donations", "rewards", "logout"), actions)
+            assertEquals(listOf("check", "sample-1", "donations", "rewards", "profile"), actions)
         }
     }
 
@@ -60,7 +61,7 @@ class HomeScreenTest {
                     state = HomeUiState(isLoading = false, pointsUnavailable = true, donationUnavailable = true),
                     name = "Nara",
                     onCheckClothing = {}, onMyDonations = {}, onRewards = {}, onDonation = {},
-                    onRefresh = { retries++ }, onLogout = {},
+                    onRefresh = { retries++ }, onProfile = {},
                 )
             }
         }

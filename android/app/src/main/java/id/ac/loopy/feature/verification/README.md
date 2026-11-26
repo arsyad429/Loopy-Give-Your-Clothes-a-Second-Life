@@ -1,18 +1,5 @@
-# verification
+# S13 Verifikasi email pendaftaran
 
-S13 merupakan pratinjau verifikasi email pada katalog debug. Penerbitan dan konfirmasi OTP masih dalam rencana.
+[EmailVerificationScreen.kt](EmailVerificationScreen.kt) menampilkan alamat tersamar, isian kode enam digit, dan waktu menunggu kirim ulang. [LoginViewModel](../auth/LoginViewModel.kt) menyimpan challenge aktif dan memanggil endpoint kirim ulang atau verifikasi. Kode benar membuat akun dan membuka sesi donatur.
 
-## Isi file dan perannya
-
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`EmailVerificationScreen.kt`](EmailVerificationScreen.kt) | UI kode verifikasi, email yang dimasker, dan callback kembali, ubah email, atau verifikasi lokal. |
-| [`EmailVerificationUiState.kt`](EmailVerificationUiState.kt) | TEMPLATE S13 (Design extension) — belum ada implementasi bisnis. TODO: buat EmailVerificationUiState: data class immutable berisi nilai form/data, field errors, loading, error, serta event sukses tanpa menyimpan NavController. Kebutuhan: OTP expiry/resend/rate limit/percobaan gagal; alur belum diwajibkan PRD 2.1, sepakati sebelum implementasi. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
-| [`EmailVerificationViewModel.kt`](EmailVerificationViewModel.kt) | TEMPLATE S13 (Design extension) — belum ada implementasi bisnis. TODO: buat EmailVerificationViewModel: ViewModel dengan private MutableStateFlow, StateFlow immutable, viewModelScope, cancellation, loading/success/error dan cegah request berulang. Kebutuhan: OTP expiry/resend/rate limit/percobaan gagal; alur belum diwajibkan PRD 2.1, sepakati sebelum implementasi. Definisi selesai: acceptance criteria pada docs/acceptance-tests.md terkait fitur ini lulus. |
-
-## TODO
-
-- [ ] **S13 / Design extension**: OTP expiry/resend/rate limit/percobaan gagal; alur belum diwajibkan PRD 2.1, sepakati sebelum implementasi.
-- [ ] Screen stateless menerima state/callback; UiState immutable; ViewModel via repository, StateFlow dan viewModelScope.
-- [ ] Loading/error/empty, cancellation/retry dan anti double-submit, sesuai fitur.
-- [ ] Cocokkan node di docs/screen-map.md dan lengkapi AC terkait sebelum menandai selesai.
+Challenge disimpan selama proses aplikasi hidup. Jika proses ditutup, pendaftaran mungkin perlu dimulai lagi setelah cooldown. `EmailVerificationViewModel.kt` dan `EmailVerificationUiState.kt` berisi kerangka layar. [Backend OTP](../../../../../../../../../../backend/go/internal/httpapi/email_registration.go) · [SMTP di VM](../../../../../../../../../../docs/deploy-lxc.md#email-verification-for-registration)

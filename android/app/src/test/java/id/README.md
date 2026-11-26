@@ -1,9 +1,7 @@
-# id
+# Namespace id untuk unit test
 
-Segmen id pada namespace unit test Loopy.
+Lanjut ke [id.ac.loopy](ac/loopy/README.md) untuk menemukan tes yang berjalan pada JVM Gradle.
 
-## Isi file dan perannya
+## Subfolder
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`ac/`](ac/README.md) | Segmen ac pada namespace unit test Loopy. |
+[ac](ac/README.md)

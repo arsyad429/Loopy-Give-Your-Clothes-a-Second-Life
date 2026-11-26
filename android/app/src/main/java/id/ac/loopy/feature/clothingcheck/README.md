@@ -1,16 +1,7 @@
-# Pemeriksaan pakaian S05 dan S06
+# Pemeriksaan foto pakaian
 
-S05 memeriksa kualitas foto sebelum upload. S06 menampilkan keputusan AI, penjelasan, dan foto privat melalui sesi Go. [Peta layar](../../../../../../../../../../docs/screen-map.md)
+[ClothingDetectorScreen.kt](ClothingDetectorScreen.kt) membuka Photo Picker atau kamera lewat `FileProvider`. [ClothingPhotoLoader.kt](ClothingPhotoLoader.kt) membaca pratinjau, dan [ClothingPhotoQuality.kt](ClothingPhotoQuality.kt) menandai foto yang sulit dinilai. [ClothingDetectorViewModel.kt](ClothingDetectorViewModel.kt) mengirim JPEG/PNG serta jenis pakaian melalui repository.
 
-| File atau folder | Kegunaan |
-| --- | --- |
-| [`ClothingDetectorScreen.kt`](ClothingDetectorScreen.kt) | Activity Result untuk kamera dan Photo Picker, pratinjau, dropdown jenis pakaian, dan aksi pemeriksaan. |
-| [`ClothingDetectorUiState.kt`](ClothingDetectorUiState.kt) | State foto, input jenis pakaian, error, serta syarat aktivasi tombol. |
-| [`ClothingDetectorViewModel.kt`](ClothingDetectorViewModel.kt) | Memanggil kontrak repository, menerbitkan checkId, dan menangani loading, error, dan pembatalan. |
-| [`ClothingPhotoLoader.kt`](ClothingPhotoLoader.kt) | Membaca JPEG atau PNG dari URI, membatasi ukuran dan preview, mengoreksi EXIF, serta memuat foto hasil bila diberikan URI lokal atau URL HTTPS. |
-| [`ClothingPhotoQuality.kt`](ClothingPhotoQuality.kt) | Pemeriksaan awal piksel transparan, kegelapan, dan detail rendah pada sampel foto. |
-| [`CheckResultScreen.kt`](CheckResultScreen.kt) | Menampilkan foto privat dari endpoint Go, kategori, saran tindakan, coba ulang, dan konfirmasi kelayakan. |
-| [`CheckResultUiState.kt`](CheckResultUiState.kt) | Menampung hasil dan menentukan kapan penjemputan dapat diajukan. |
-| [`CheckResultViewModel.kt`](CheckResultViewModel.kt) | Memuat hasil berdasarkan checkId, mencoba ulang saat gagal, dan menerima konfirmasi untuk hasil berpotensi layak. |
+[CheckResultViewModel.kt](CheckResultViewModel.kt) mengambil hasil S06 menurut `checkId`. [CheckResultScreen.kt](CheckResultScreen.kt) menampilkan foto privat dan kategori AI. Hasil `POTENTIALLY_ELIGIBLE` dengan konfirmasi pakaian bersih dan aman membuka [pickup](../pickup/README.md).
 
-Android memakai base URL Go dan sesi login yang sama untuk upload, detail, dan foto privat. S05 mengirim `checkId` ke S06. Pemeriksaan fokus S05 memakai heuristik gradien dan ambangnya diuji dengan citra sintetis. [Rujukan metode fokus](https://www.sciencedirect.com/science/article/pii/S0031320312004736)
+Batas upload adalah 10 MiB. Backend menormalisasi gambar sebelum mengirim ke Groq. Untuk memeriksa gagalnya proses, cek MIME dan ukuran foto, koneksi API, serta `GROQ_API_KEY` di server. [Repository](../../data/repository/ClothingCheckRepositoryImpl.kt) · [Alur Groq](../../../../../../../../../../backend/go/internal/vision/README.md) · [Tes layar](../../../../../../../androidTest/java/id/ac/loopy/feature/clothingcheck/README.md)
