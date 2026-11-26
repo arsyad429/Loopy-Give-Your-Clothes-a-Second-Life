@@ -4,4 +4,4 @@
 
 Pendaftaran membuat challenge dan membuka [S13 Verifikasi email](../verification/README.md). Akun dan sesi tersedia setelah kode benar. Login setelah itu memakai email dan kata sandi. [LoopyApp.kt](../../ui/LoopyApp.kt) mengarahkan donatur ke S04 dan admin ke A01 dari satu layar masuk. Admin disiapkan melalui CLI. [Panduan admin dan OTP](../../../../../../../../../../docs/auth-go.md)
 
-`RegisterViewModel.kt`, `RegisterUiState.kt` dan `LoginUiState.kt` menyimpan kerangka tambahan. Jalur aktif memakai state dan feedback dalam `LoginViewModel.kt`.
+Login, pendaftaran, dan OTP berbagi state serta feedback di `LoginViewModel.kt`.

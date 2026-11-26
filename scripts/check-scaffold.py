@@ -8,10 +8,9 @@ errors=[]
 screens=json.loads((root/'docs/screen-map.json').read_text())
 assert len(screens)==17
 assert len([s for s in screens if s['scope']=='MVP'])==13
-for s in screens:
- for suffix in ['Screen','ViewModel','UiState']:
-  p=root/'android/app/src/main/java/id/ac/loopy/feature'/s['feature']/(s['name']+suffix+'.kt')
-  if not p.is_file(): errors.append('Missing '+str(p.relative_to(root)))
+for screen in screens:
+ p=root/'android/app/src/main/java/id/ac/loopy/feature'/screen['feature']/(screen['name']+'Screen.kt')
+ if not p.is_file(): errors.append('Missing screen '+str(p.relative_to(root)))
 for folder in [root]+[p for p in root.rglob('*') if p.is_dir() and not any(v in skip for v in p.relative_to(root).parts)]:
  if not (folder/'README.md').is_file(): errors.append('Missing README '+str(folder.relative_to(root)))
 for path in ['gradlew', 'gradlew.bat', 'gradle/wrapper/gradle-wrapper.jar', 'gradle/wrapper/gradle-wrapper.properties']:

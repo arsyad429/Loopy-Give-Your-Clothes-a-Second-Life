@@ -52,7 +52,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import id.ac.loopy.feature.rewards.RewardsViewModel
 import id.ac.loopy.feature.rewards.RewardsScreen
-import id.ac.loopy.ui.components.TemplateScreen
 import id.ac.loopy.feature.settings.SettingsScreen
 import id.ac.loopy.feature.verification.EmailVerificationScreen
 
@@ -269,18 +268,6 @@ fun LoopyApp(container: AppContainer) {
                         },
                     )
                 }
-                composable("s07") {
-                    val role = session?.user?.role
-                    if (role != "USER") {
-                        LaunchedEffect(role) { goToAccountScreen(role) }
-                    } else {
-                        PickupRequestScreen(
-                            viewModel = null, onBack = goBack,
-                            onRecheck = { nav.navigate("s05") },
-                            onGoToMyDonations = { nav.navigate("s08") },
-                        )
-                    }
-                }
                 composable(
                     route = "s07/{checkId}",
                     arguments = listOf(navArgument("checkId") { type = NavType.StringType }),
@@ -350,9 +337,6 @@ fun LoopyApp(container: AppContainer) {
                             onAccount = account,
                         )
                     }
-                }
-                composable("s09") {
-                    TemplateScreen("Detail donasi", "Pilih donasi dari daftar Donasiku.", goBack)
                 }
                 composable("s09/{id}") { entry ->
                     val role = session?.user?.role

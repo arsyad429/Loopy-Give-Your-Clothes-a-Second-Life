@@ -11,13 +11,11 @@ import id.ac.loopy.data.remote.api.AdminApi
 import id.ac.loopy.data.remote.api.AuthApi
 import id.ac.loopy.data.remote.api.ClothingCheckApi
 import id.ac.loopy.data.remote.api.DonationApi
-import id.ac.loopy.data.remote.api.HealthApi
 import id.ac.loopy.data.remote.api.HomeApi
 import id.ac.loopy.data.repository.AdminRepositoryImpl
 import id.ac.loopy.data.repository.AuthRepositoryImpl
 import id.ac.loopy.data.repository.ClothingCheckRepositoryImpl
 import id.ac.loopy.data.repository.DonationRepositoryImpl
-import id.ac.loopy.data.repository.FoundationRepository
 import id.ac.loopy.data.repository.RemoteHomeRepository
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -58,10 +56,7 @@ class AppContainer(context: Context) {
 
     internal val homeRepository = RemoteHomeRepository(retrofit.create(HomeApi::class.java), authRepository)
 
-    val foundationRepository = FoundationRepository(
-        UserPreferencesDataSource(context),
-        database.pickupDraftDao(),
-        retrofit.create(HealthApi::class.java),
-    )
+    internal val userPreferences = UserPreferencesDataSource(context)
+
     val rewardRepository = RewardRepositoryImpl(retrofit.create(RewardApi::class.java), authRepository)
 }

@@ -5,10 +5,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.loopy.ui.LoopyApp
-import id.ac.loopy.ui.TemplateViewModel
 import id.ac.loopy.ui.theme.LoopyTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,9 +15,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val container = (application as LoopyApplication).container
         setContent {
-            val model: TemplateViewModel = viewModel(factory = TemplateViewModel.factory(container))
-            val state = model.state.collectAsStateWithLifecycle().value
-            LoopyTheme(darkTheme = state.darkTheme) {
+            val darkTheme = container.userPreferences.darkTheme.collectAsStateWithLifecycle(initialValue = false)
+            LoopyTheme(darkTheme = darkTheme.value) {
                 LoopyApp(container = container)
             }
         }

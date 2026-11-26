@@ -8,6 +8,5 @@
 | [AdminApi.kt](AdminApi.kt) | Ringkasan, antrean, detail, keputusan, serta transisi status. |
 | [HomeApi.kt](HomeApi.kt) | Donasi terakhir dan saldo untuk Beranda. |
 | [RewardApi.kt](RewardApi.kt) | Saldo, katalog, penukaran, dan riwayat. |
-| [HealthApi.kt](HealthApi.kt) | Pemeriksaan HTTP dasar backend. |
 
 Path relatif memakai base URL dari `BuildConfig.API_BASE_URL`. Repository menambahkan header Bearer dan `Idempotency-Key` sesuai kontrak. [Kontrak API](../../../../../../../../../../../docs/api-contract.md)
