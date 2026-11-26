@@ -8,6 +8,5 @@
 | [AdminRepositoryImpl.kt](AdminRepositoryImpl.kt) | Ringkasan, antrean dengan cursor, detail dan keputusan memakai versi pengajuan. |
 | [HomeRepository.kt](HomeRepository.kt) | Membaca saldo dan donasi terakhir secara terpisah. |
 | [RewardRepositoryImpl.kt](RewardRepositoryImpl.kt) | Katalog, saldo, redeem idempoten dan riwayat. |
-| [FoundationRepository.kt](FoundationRepository.kt) | Tema DataStore, draf fondasi Room, dan health check. |
 
 [Perakitan repository](../../di/AppContainer.kt) · [Tes repository](../../../../../../../test/java/id/ac/loopy/data/repository/README.md)
