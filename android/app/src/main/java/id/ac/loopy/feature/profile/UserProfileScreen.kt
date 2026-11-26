@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.dropUnlessResumed
 import id.ac.loopy.ui.components.LoopyButton
 import id.ac.loopy.ui.components.LoopyCard
 import id.ac.loopy.ui.components.LoopyInfo
@@ -42,9 +43,7 @@ internal fun AccountProfileScreen(
     val state by model.state.collectAsStateWithLifecycle()
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { model.refresh() }
 
-    LoopyScreen(title = title, onBack = onBack, footer = {
-        LoopyButton(if (logoutBusy) "Mengakhiri sesi…" else "Keluar dari akun", onLogout, enabled = !logoutBusy, outlined = true)
-    }) {
+    LoopyScreen(title = title, onBack = onBack) {
         state.profile?.let { profile ->
             LoopyCard(spacing = 8) {
                 Text(if (profile.role == "ADMIN") "Admin" else "Donatur", style = MaterialTheme.typography.labelMedium)
@@ -63,5 +62,11 @@ internal fun AccountProfileScreen(
             LoopyButton("Muat ulang", model::refresh, outlined = true)
         }
         logoutError?.let { LoopyInfo("Gagal keluar", it, isError = true) }
+        LoopyButton(
+            label = if (logoutBusy) "Mengakhiri sesi…" else "Keluar dari akun",
+            onClick = dropUnlessResumed(block = onLogout),
+            enabled = !logoutBusy,
+            outlined = true,
+        )
     }
 }

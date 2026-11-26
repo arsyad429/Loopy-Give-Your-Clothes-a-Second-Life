@@ -1,18 +1,12 @@
 package id.ac.loopy.feature.home
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.heading
@@ -39,9 +33,6 @@ internal fun HomeScreen(
     onRewards: () -> Unit,
     onDonation: (String) -> Unit,
     onProfile: () -> Unit,
-    onLogout: () -> Unit,
-    logoutBusy: Boolean,
-    logoutError: String?,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refresh() }
@@ -55,9 +46,6 @@ internal fun HomeScreen(
         onDonation = onDonation,
         onRefresh = viewModel::refresh,
         onProfile = onProfile,
-        onLogout = onLogout,
-        logoutBusy = logoutBusy,
-        logoutError = logoutError,
     )
 }
 
@@ -70,12 +58,8 @@ internal fun HomeContent(
     onRewards: () -> Unit,
     onDonation: (String) -> Unit,
     onRefresh: () -> Unit,
-    onLogout: () -> Unit,
-    logoutBusy: Boolean = false,
-    logoutError: String? = null,
-    onProfile: (() -> Unit)? = null,
+    onProfile: () -> Unit,
 ) {
-    var showAccount by rememberSaveable { mutableStateOf(false) }
     HomeLayout(
         name = name,
         onNavigate = { route ->
@@ -84,7 +68,7 @@ internal fun HomeContent(
                 "s10" -> onRewards()
             }
         },
-        onAccount = { showAccount = true },
+        onAccount = onProfile,
         onCheck = onCheckClothing,
     ) {
         if (state.points != null) {
@@ -113,33 +97,6 @@ internal fun HomeContent(
         }
         val refreshLabel = if (state.pointsUnavailable || state.donationUnavailable) "Coba lagi" else "Perbarui beranda"
         LoopyButton(refreshLabel, onRefresh, enabled = !state.isLoading, outlined = true)
-    }
-
-    if (showAccount) {
-        AlertDialog(
-            onDismissRequest = { if (!logoutBusy) showAccount = false },
-            title = { Text("Akun") },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(name)
-                    if (onProfile != null) {
-                        TextButton(onClick = {
-                            showAccount = false
-                            onProfile()
-                        }, enabled = !logoutBusy) { Text("Lihat profil") }
-                    }
-                    if (logoutError != null) Text(logoutError, color = MaterialTheme.colorScheme.error)
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = onLogout, enabled = !logoutBusy) {
-                    Text(if (logoutBusy) "Sedang keluar…" else "Keluar")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showAccount = false }, enabled = !logoutBusy) { Text("Tutup") }
-            },
-        )
     }
 }
 
