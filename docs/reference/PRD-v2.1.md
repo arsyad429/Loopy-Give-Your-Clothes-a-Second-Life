@@ -1067,3 +1067,17 @@ Loopy merupakan proyek akademik yang mengadaptasi konsep ReWear sebagai referens
 **Document Status:** Draft — Pending Team Approval
 
 **Prepared by:** Neva — Project Manager, Loopy
+
+## Lampiran rujukan implementasi
+
+Lampiran ini membantu tim menelusuri naskah PRD v2.1 ke kode dan pengujian. Cakupan produk dan kriteria penerimaan mengikuti bagian utama dokumen.
+
+| Fitur | Implementasi dan cara memeriksa |
+| --- | --- |
+| F01–F03 Landing, akun, dan Beranda | [Peta layar](../screen-map.md), [arsitektur Android](../architecture.md), dan [kontrak autentikasi](../auth-go.md). |
+| F04–F06 Pemeriksaan dan pengajuan | [Kontrak foto dan pickup](../api-contract.md), [alur Go](../backend.md#pemeriksaan-pakaian-go), dan [pemeriksaan penerimaan](../acceptance-tests.md). |
+| F07–F08 Peninjauan, jadwal, dan pelacakan | [Alur admin](../donation-review-go.md), [model data](../data-model.md), dan [peta layar](../screen-map.md). |
+| F09–F10 Poin dan rewards | [Penyelesaian dan redeem](../completion-rewards.md) serta [model ledger](../data-model.md#poin-dan-penukaran). |
+| AC-01–AC-20 | [Matriks langkah dan bukti](../acceptance-tests.md) serta [riwayat verifikasi](../verification.md). |
+
+Implementasi juga mencakup username opsional, profil, pengaturan, dan OTP pada pendaftaran sebagai perluasan layar. Login berikutnya memakai email dan kata sandi. [Peta perluasan desain](../screen-map.md) · [Backlog dan pekerjaan rilis](../backlog.md)

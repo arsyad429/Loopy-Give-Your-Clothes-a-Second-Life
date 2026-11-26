@@ -1,5 +1,21 @@
 # Hasil verifikasi Loopy
 
+## Ringkasan bukti yang tersedia
+
+| Lapisan | Bukti yang tercatat | Batas pengujian |
+| --- | --- | --- |
+| CI untuk navigasi dan dokumentasi | PR #19 dan commit `d0f4752` lulus job Android, Go dengan PostgreSQL, dan Compose. [GitHub Actions](https://github.com/arsyad429/Loopy-Give-Your-Clothes-a-Second-Life/actions/runs/45744264348) | Workflow menguji build, unit test, lint dan pemeriksaan backend. |
+| Android di perangkat | Lima tes instrumentasi lulus untuk navigasi tab, avatar langsung ke profil, aksi keluar pada profil yang masih aktif, dan kembali menuju daftar donatur/admin. APK dipasang dengan `adb install -r` dan runner dijalankan manual. | Tes UI memakai fixture akun. Perilaku provider diuji tersendiri pada environment yang terhubung. |
+| SMTP di VM | Backend berhasil memuat konfigurasi OTP. Probe dari VM menunjukkan koneksi TLS dan login SMTP diterima. | Delivery ke inbox dan kode berhasil dipakai perlu dicatat dari alur pendaftaran aktual. |
+| Foto dan dependensi Groq | Diagnosis VM pernah menemukan `GROQ_API_KEY` kosong walau `/ready` memberi `200`. Integrasi Go dan Retrofit terhadap fixture serta Groq tercatat pada pengujian terdahulu di bawah. | Saat konfigurasi berubah, unggah foto uji dari APK yang berjalan untuk memverifikasi model dan kredensial. |
+| Transaksi produk | Smoke test API lokal mencakup jadwal admin, pickup, status selesai, kredit +10, redeem, dan riwayat. Tes juga mereproduksi batas halaman pertama Donasiku dengan 26 pengajuan. | Ulangi alur dua role pada deployment yang akan dipakai demo. |
+
+## Cara menambahkan catatan uji
+
+Tulis tanggal, commit, target backend, metode build, perangkat atau versi PostgreSQL, dan langkah yang benar-benar dijalankan. Cantumkan test class, tautan workflow, status HTTP, atau perbandingan state yang dapat diulang reviewer. Gunakan fixture atau samarkan informasi kontak, token, OTP, dan kredensial. [Matriks penerimaan](acceptance-tests.md)
+
+Catatan setelah bagian ini disusun menurut riwayat pengembangan. Status lama merekam kondisi pada saat pengujian tersebut.
+
 ## Navigasi, profil, pengaturan, dan verifikasi email — 26 November 2026
 
 1. Cocokkan alur Android dengan frame Figma S08–S09, A01–A04, S11–S13, dan S03. Tambahkan navigasi bawah pengguna dan admin, tarik untuk memperbarui Donasiku, timeline dengan waktu dari server, tiga pengajuan tertua yang perlu ditangani, dan alamat di konfirmasi jadwal.
@@ -177,9 +193,9 @@ Partisi sistem/Docker pada host penuh, sedangkan partisi workspace memiliki ruan
 
 Build awal sempat gagal karena disk host, cache Gradle yang dipakai bersamaan lintas container/host, dan README di resource Android. Source final menyaring Markdown dari resource melalui prepareMainResources dan script container memakai snapshot baru. Build final dijalankan dengan cache container terpisah dan lulus. Untuk development berikutnya, sediakan ruang Docker yang memadai; jangan prune data proyek lain.
 
-## Yang belum dibuktikan/diimplementasikan
+## Verifikasi sebelum rilis
 
-- Verifikasi produk lengkap, termasuk login serta pengiriman pemeriksaan dan foto dari Android ke backend, masih tertunda.
-- Pickup dari donatur, penyelesaian donasi, poin, dan redemption masih dalam backlog.
-- macOS/ARM belum diuji langsung; Windows telah diuji untuk backend Go di atas. Panduan dan batas tools Linux x86_64 ada di development.md.
-- Sebelum release: lengkapi ikon, kebijakan ekstraksi/backup data, HTTPS deployment, auth/Keystore, UI final serta semua AC.
+- Catat satu uji end-to-end dari APK serta deployment yang sama, mencakup OTP inbox, login kedua, foto, pickup, keputusan dan penyelesaian admin, serta redeem. [Langkah smoke test](deploy-lxc.md#9-verify-the-deployed-version)
+- Uji Donasiku dengan lebih dari 25 item dan gunakan hasilnya untuk menilai perbaikan pagination. Uji pemulihan saat proses ditutup di tengah OTP atau submit pickup. [Backlog](backlog.md)
+- Catat hasil TalkBack, font besar, dan perbandingan visual per rute. Uji APK release bertanda tangan yang memakai HTTPS sebenarnya. [Peta layar](screen-map.md) · [Distribusi APK](deploy-lxc.md#7-connect-android-or-a-public-domain)
+- Jika tim memakai Windows/macOS atau host ARM, lakukan smoke test pada kombinasi host dan toolchain tersebut. [Development](development.md)

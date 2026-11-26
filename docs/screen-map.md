@@ -1,6 +1,6 @@
 # Pemetaan PRD/Figma/Kotlin
 
-Metadata dibaca 16 November 2026. Detail design context terkena kuota Figma Starter; visual/token/aset belum diverifikasi. PRD memuat 13 layar wajib; desain terbaru menambah empat layar serta state/dialog. Screenshot hanya referensi.
+Metadata node diambil pada 16 November 2026. Peta memuat 13 layar MVP dan empat perluasan desain. Gunakan [arsip Figma](../UI%20design/README.md) sebagai rujukan visual dan [LoopyApp](../android/app/src/main/java/id/ac/loopy/ui/LoopyApp.kt) sebagai graf Android yang berjalan.
 
 | ID | Layar | Scope | File Android | Node Figma |
 | --- | --- | --- | --- | --- |
@@ -25,6 +25,25 @@ Metadata dibaca 16 November 2026. Detail design context terkena kuota Figma Star
 
 Dialog/state: PickupSuccess6:663, RedeemConfirm6:674, RejectRequest6:687, Schedule6:703, NeedsRecheck6:712, NotRecommended6:723, Reward-ku6:734. UI kit2:51. Tambahan settings admin19:524, tersimpan19:537, OTP/validasi19:683.
 
-Figma Register memuat username, PRD hanya nama/email/password. Profil lengkap/settings/OTP bukan kewajiban PRD2.1; jangan mewajibkannya tanpa perluasan scope. MVP cukup menu akun/logout.
+Desain Register menambahkan username opsional. Profil, Settings, dan OTP saat daftar terhubung sebagai perluasan dari baseline PRD 2.1. [Catatan implementasi](reference/PRD-v2.1.md#lampiran-rujukan-implementasi)
 
-TODO: ambil high-fidelity context per node+screenshot, download aset Figma resmi, typography/color/spacing ke theme, UI Compose responsif, verifikasi screenshot emulator. Tidak ada temporary asset URL di app.
+Untuk review visual, ambil tampilan node terkait dan screenshot APK pada perangkat. Catat perbedaan warna, tipografi, jarak, ikon, serta state. Arsip metadata awal belum menjadi bukti kesesuaian visual seluruh layar.
+
+## Jalur rute yang berjalan
+
+| Alur | Rute dan kondisi |
+| --- | --- |
+| Buka aplikasi | S01 membuka S02 atau S03. |
+| Pendaftaran | S03 menerima challenge dan membuka S13. Setelah kode benar, sesi donatur membuka S04. |
+| Masuk | S02 menggunakan role dari respons. `USER` menuju S04, `ADMIN` menuju A01. |
+| Pemeriksaan dan pickup | S04 → S05 → `s06/{checkId}` → `s07/{checkId}`. Lanjut ke S07 hanya dari hasil layak dan konfirmasi. Submit berhasil dapat membuka S08. |
+| Daftar dan reward | S04, S08 dan S10 terhubung melalui tab. S08 membuka `s09/{id}`. |
+| Keputusan admin | A01 → A02 → `a03/{id}`. Detail membuka dialog jadwal, penolakan, atau konfirmasi status sesuai state. |
+| Profil dan pengaturan | Avatar donatur membuka S11, avatar admin membuka A04. Keduanya dapat menuju S12. Panah kembali mem-pop rute dan aksi keluar hanya diproses ketika profil aktif. |
+
+## Memeriksa tiap state desain
+
+- Untuk S05 dan S06, ambil snapshot sebelum memilih foto, saat analisis, dan untuk ketiga kategori hasil. Bandingkan ikon dan aset yang dipakai.
+- Untuk S08, S09, A02 dan A03, periksa keadaan kosong, gagal, loading, serta daftar/detail berisi data. Pastikan preferensi dan jadwal final terbaca sebagai field berbeda.
+- Untuk S10, uji saldo kurang, dialog konfirmasi, dan riwayat setelah penukaran. Untuk S13, uji kode salah, cooldown dan kirim ulang.
+- Gunakan [kriteria penerimaan](acceptance-tests.md) untuk memisahkan review visual dan verifikasi alur. Mulai dari [kode fitur](../android/app/src/main/java/id/ac/loopy/feature/README.md) untuk mencari ViewModel dan data layar.

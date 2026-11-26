@@ -54,8 +54,8 @@ For local API testing, set `AUTH_EMAIL_VERIFICATION_REQUIRED=false` to create ac
 - Access tokens last **15 minutes**. Refresh tokens last **30 days from login/register**, with an absolute expiry that does not slide forward.
 - On access expiry, call `POST /v1/auth/refresh` with the refresh token. Rotation replaces both token hashes in one conditional database update. The old access and refresh tokens stop working immediately; simultaneous refreshes have only one winner.
 - Android must serialize refresh attempts and atomically replace the saved token pair. If a refresh response is lost, the old refresh token cannot recover it; require login again. Reuse returns 401; it does not revoke the winning session or implement token-family theft detection.
-- Logout requires a valid current access token and deletes that session, invalidating both tokens immediately. If access expired, refresh first; if refresh also fails, clear local state. Other device sessions remain active.
-- After logout, clear tokens and all cached account data. Keep token material protected by Android Keystore-backed storage. Never persist the user's password.
+- Logout deletes the current session, invalidating both tokens immediately. If the access token is expired, Android attempts one refresh. A `401` rejection clears the local session. A network or other temporary failure is shown as a retryable logout error. Other device sessions remain active.
+- Android currently holds the token pair in memory. Logout clears that state, and a new app process starts without a session. Any future persistent token storage must protect token material and keep it scoped to the signed-in account.
 
 ## 2. Exact HTTP contract
 
@@ -103,111 +103,47 @@ Errors: 400 malformed JSON/unknown fields; 401 invalid credentials/session; 403 
 
 ## 3. Code needed and where to read it
 
-| File in `backend/go/` | Responsibility | Why it exists |
-| --- | --- | --- |
-| `main.go` | Environment, DB connection, migration startup, private admin command, HTTP timeouts/shutdown | Composition root; secrets stay on server |
-| `password.go` | Argon2id salted hashing and constant-time verification | Slow offline guessing after a DB leak |
-| `store.go` | Parameterized PostgreSQL queries, atomic registration/rotation, migration | Persistence and concurrency guarantees |
-| `schema.sql` | `users`, `auth_sessions`, constraints, indexes | Database enforces invariants |
-| `auth.go` | Validation, random IDs/tokens, response models, register/login/refresh | Business rules independent of HTTP parsing |
-| `http.go` | Routes, JSON errors, Bearer middleware, role guard, rate limiter | HTTP boundary and authorization |
-| `auth_test.go` | Validation, hashing, HTTP/middleware tests | Fast checks without a database |
-| `store_integration_test.go` | Real PostgreSQL flow, races, rollback, persistence | Evidence for behavior mocks cannot establish |
+| Location | Responsibility |
+| --- | --- |
+| [main.go](../backend/go/main.go) | Configuration, migration startup, SMTP wiring, and the private admin command. |
+| [domain/auth.go](../backend/go/internal/domain/auth.go) and [domain/email_registration.go](../backend/go/internal/domain/email_registration.go) | Input validation, account and session models, token generation, and OTP policy constants. |
+| [auth_handler.go](../backend/go/internal/httpapi/auth_handler.go) and [email_registration.go](../backend/go/internal/httpapi/email_registration.go) | Registration, OTP challenge, verify/resend, credentials, profile edits, refresh and logout. |
+| [server.go](../backend/go/internal/httpapi/server.go) | JSON decoding, Bearer middleware, role guard, timeouts, and peer rate limiting. |
+| [security](../backend/go/internal/security/README.md) | Argon2id password derivation, verification, and SMTP TLS transport. |
+| [auth_store.go](../backend/go/internal/store/auth_store.go) and [email_registration_store.go](../backend/go/internal/store/email_registration_store.go) | PostgreSQL transactions for challenges, users, sessions, token rotation, and revocation. |
+| [Migrations](../backend/go/migrations/README.md) | Versions 1, 6, and 7 for accounts/sessions, profiles, and pending email registrations. |
+| [Auth repository Android](../android/app/src/main/java/id/ac/loopy/data/repository/AuthRepositoryImpl.kt) and [LoginViewModel](../android/app/src/main/java/id/ac/loopy/feature/auth/LoginViewModel.kt) | In-memory session, refresh synchronization, form feedback, and OTP screen state. |
 
-The important code patterns are:
+### Walkthrough from request to verified account
 
-```go
-// Password hashing: fresh random salt + memory/cpu cost.
-key := argon2.IDKey([]byte(password), salt, 2, 19*1024, 1, 32)
+1. `Server.register` decodes exactly one JSON object. It validates the account and uses the email registration service when OTP is enabled.
+2. `beginEmailRegistration` prepares a random challenge and code. PostgreSQL receives a password hash and an HMAC digest of the challenge ID and code. The sender receives the plaintext code only for composing the message.
+3. The SMTP result controls the response. A successful send returns `202`. If an initial send fails, the server cancels that reservation so users can retry.
+4. `CompleteEmailRegistration` locks the challenge row. The store checks expiry and attempts. Correct verification uses one transaction to insert the user and session, then delete the challenge. OTP attempts and consumption are enforced at the database boundary.
+5. Android stores the verified session and navigates by the server-provided role. A pending challenge can show the OTP form without setting a session.
 
-// Session tokens: random secrets, only the hashes go to PostgreSQL.
-secret := make([]byte, 32)
-_, err := rand.Read(secret) // handle err before using secret
-token := base64.RawURLEncoding.EncodeToString(secret)
-digest := sha256.Sum256([]byte(token))
+### Walkthrough for protected requests and rotation
 
-// Public registration cannot assign privileges.
-// role and points come from SQL defaults; request has no such fields.
-// INSERT INTO users (user_id, name, email, password_hash) VALUES ($1,$2,$3,$4)
+`Server.Authenticate` validates the Bearer format, hashes the token, and looks up the session in PostgreSQL. Only an unexpired access hash joins to the current account. The principal placed in request context supplies user ID and role. Admin routes additionally use `RequireRole("ADMIN", handler)`. Owner-only routes filter by the authenticated user ID or compare ownership before returning data.
 
-// Protect future admin handlers with BOTH middleware layers.
-// mux.Handle("GET /v1/admin/summary",
-//     api.authenticate(requireRole("ADMIN", summaryHandler)))
-// For owner-only queries use the authenticated user's ID in WHERE user_id=$1.
-```
+In `PGStore.Rotate`, an update finds the current refresh digest with `refresh_expires_at > now()`. It replaces the access and refresh hashes and limits access expiry to the absolute refresh expiry. One concurrent caller can consume the old digest. `AuthRepositoryImpl.withBearer` serializes refresh and reuses a newly rotated token if another in-flight request already refreshed it.
 
-These snippets explain the mechanisms; follow the linked source for complete error handling, transactions, and tests. The Android client uses Retrofit for registration, login, and serialized refresh in memory.
-
-### Walkthrough: from JSON to a committed account
-
-The request moves through `net/http handler -> auth service -> PostgreSQL repository`. Each layer has one job: the handler speaks HTTP, the service applies account rules, and the repository executes SQL. Go structs describe the data, `json` tags define Android's field names, `context.Context` carries cancellation/deadlines, and explicit `error` returns let the caller handle failures.
-
-The register handler in [`http.go`](../backend/go/http.go) parses the JSON object, rejects unknown fields, calls the service, and maps success to HTTP 201:
-
-```go
-func (a *api) register(w http.ResponseWriter, r *http.Request) {
-    var req registerRequest
-    if err := decodeJSON(w, r, &req); err != nil {
-        writeError(w, err)
-        return
-    }
-    response, err := a.auth.register(r.Context(), req)
-    if err != nil {
-        writeError(w, err)
-        return
-    }
-    writeJSON(w, 201, response)
-}
-```
-
-The service in [`auth.go`](../backend/go/auth.go) validates first, then builds a hashed account and random session. It passes both to one repository operation:
-
-```go
-func (a *authService) register(ctx context.Context, req registerRequest) (sessionResponse, error) {
-    req, err := validateRegistration(req)
-    if err != nil { return sessionResponse{}, err }
-    u, err := makeAccount(req)
-    if err != nil { return sessionResponse{}, err }
-    s, response, err := newSession(u.ID)
-    if err != nil { return sessionResponse{}, err }
-    response.User, err = a.store.Register(ctx, u, s)
-    return response, accountError(err)
-}
-```
-
-[`store.go`](../backend/go/store.go) opens a transaction, inserts the user, inserts the session, and commits. A deferred rollback covers every failure before commit. The user INSERT deliberately omits role and points, so [`schema.sql`](../backend/go/schema.sql) supplies `USER` and `0`. SQL values use `$1`, `$2`, etc., with arguments passed separately. The returned `user` type contains no password hash.
-
-### Walkthrough: checking a protected request
-
-The route in [`http.go`](../backend/go/http.go) wraps its handler with `authenticate`:
-
-```go
-mux.Handle("GET /v1/auth/me", a.authenticate(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-    writeJSON(w, 200, currentPrincipal(r).User)
-})))
-```
-
-The middleware validates the Bearer token format, computes its SHA-256 digest, and calls `store.Authenticate`. The database joins the session to its current account and rejects expired sessions. The middleware puts that trusted identity into the request context. The handler reads it through `currentPrincipal`; Android never chooses which user `/me` returns. Future admin handlers must also use `requireRole("ADMIN", handler)` inside `authenticate`.
-
-### Walkthrough: refresh without a race
-
-The core SQL in [`store.go`](../backend/go/store.go) consumes the old refresh digest and returns the account plus actual expiry times in one statement:
+The [store query](../backend/go/internal/store/auth_store.go) uses these update conditions before returning the user and expiry timestamps.
 
 ```sql
-WITH rotated AS (
-    UPDATE auth_sessions
-    SET access_hash = $2,
-        refresh_hash = $3,
-        access_expires_at = LEAST($4, refresh_expires_at)
-    WHERE refresh_hash = $1 AND refresh_expires_at > now()
-    RETURNING user_id, access_expires_at, refresh_expires_at
-)
-SELECT u.user_id::text, u.name, u.email, u.role, u.total_points,
-       r.access_expires_at, r.refresh_expires_at
-FROM rotated r JOIN users u USING (user_id);
+UPDATE auth_sessions
+SET access_hash = $2,
+    refresh_hash = $3,
+    access_expires_at = LEAST($4, refresh_expires_at)
+WHERE refresh_hash = $1 AND refresh_expires_at > now()
+RETURNING user_id, access_expires_at, refresh_expires_at;
 ```
 
-`$1` is the old token digest; `$2` and `$3` are new digests; `$4` is a new 15-minute access expiry. `LEAST` prevents access from outliving the absolute refresh expiry. No returned row means the token is invalid, expired, or already consumed. PostgreSQL rechecks the update condition after a concurrent writer finishes, so only one refresh succeeds.
+`$1` is the old refresh digest, `$2` and `$3` are the new token digests, and `$4` is the new 15-minute access expiry. A request that loses the concurrent update gets no row because the old digest has already been replaced.
+
+### Walkthrough for profile and password changes
+
+`GET /v1/auth/me` returns the current principal. `PATCH /v1/auth/me` accepts name and username plus both password fields if a password change is requested. The handler checks the current password. The store guards the update against a changed password hash and deletes other sessions in the same transaction. The current session remains attached to the updated profile.
 
 ## 4. Theory behind the design
 
@@ -244,7 +180,7 @@ Android emulator base URL remains `http://10.0.2.2:8080/`. Use HTTPS for release
 
 ### Try the flow from PowerShell
 
-With the backend running, use disposable account data. `Invoke-RestMethod` parses each JSON response into a PowerShell object:
+Run this example on an isolated local backend with `AUTH_EMAIL_VERIFICATION_REQUIRED=false` and disposable account data. `Invoke-RestMethod` parses each JSON response into a PowerShell object.
 
 ```powershell
 $baseUrl = 'http://localhost:8080'
@@ -262,7 +198,7 @@ $login = @{ email = 'neva@example.test'; password = 'a long sample passphrase' }
 $session = Invoke-RestMethod -Method Post -Uri "$baseUrl/v1/auth/login" -ContentType 'application/json' -Body $login
 ```
 
-Android follows these same requests through Retrofit and an auth repository. Keep the token pair and account together in session state, attach only the access token to API requests, serialize refresh on 401, retry the original request once, and return to Login if refresh fails. Choose Home/Admin Dashboard from the returned role. The backend role guard remains necessary even when Android hides an admin screen.
+Android follows these same requests through Retrofit and an auth repository. Keep the token pair and account together in session state, attach only the access token to API requests, serialize refresh on 401, retry the original request once, and return to Login when refresh is rejected with HTTP 401. Choose Home/Admin Dashboard from the returned role. The backend role guard remains necessary even when Android hides an admin screen.
 
 ## 6. Verification and limits
 
@@ -272,4 +208,51 @@ Run `go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...` to check known reach
 
 Verify register -> me -> refresh -> old tokens rejected -> logout -> both new tokens rejected; duplicate normalized emails; invalid password/malformed requests; injected role rejected; admin login/role guard; registration rollback; concurrent duplicate registration and refresh; token expiry; and sessions surviving new server instances.
 
-This F02 implementation covers account registration and revocable sessions. Expired records are rejected even before cleanup. The [backend guide](backend.md) tracks the current state of email verification, Android integration, and the business endpoints. The full AC-03/04/19/20 need Android integration and owner-specific business endpoints before they can be marked complete.
+Record which layer was exercised. HTTP and store suites cover challenge expiry, resend cooldown, incorrect codes, duplicate accounts, concurrent rotation, revocation, and access control. Retrofit tests cover challenge and profile responses. A test involving a real SMTP inbox additionally verifies deployment credentials, sender and mailbox delivery. See [acceptance tests](acceptance-tests.md) and [verification history](verification.md).
+
+## 7. Diagnose account issues
+
+| Symptom | First check |
+| --- | --- |
+| `202` with a challenge | Enter the six-digit code from the test inbox. The response intentionally carries challenge metadata. |
+| `409 EMAIL_ALREADY_REGISTERED` | Use a new address for a new account, or log in with the existing one. The CLI also checks email uniqueness. |
+| `409 USERNAME_ALREADY_REGISTERED` | Choose a different normalized username or leave it empty. |
+| `410 OTP_EXPIRED` or `429 OTP_LOCKED` | Obtain a fresh code while the challenge can be resent. Start registration again if the challenge ended. |
+| `429 OTP_COOLDOWN` | Wait until resend is available, then use the latest code received. |
+| `503 VERIFICATION_EMAIL_UNAVAILABLE` | Check the backend container's effective SMTP settings and the provider logs for the test inbox. |
+| `401 INVALID_SESSION` | Check whether the app process restarted or refresh failed. Sign in again if the session was revoked or expired. |
+
+## 8. Try the OTP flow from Bash
+
+Use a fresh test address whose inbox you can read and an instance with email verification enabled. The following uses `curl`, `jq`, and an interactive Bash shell. Replace the base URL with that instance.
+
+```bash
+base='http://127.0.0.1:8082'
+read -r -p 'Test email: ' email
+read -rs -p 'Test password: ' password
+printf '\n'
+
+challenge=$(
+  jq -n --arg email "$email" --arg password "$password" \
+    '{name:"Loopy Test", email:$email, password:$password}' |
+    curl -fsS "$base/v1/auth/register" \
+      -H 'Content-Type: application/json' --data-binary @-
+)
+unset password
+printf '%s\n' "$challenge" | jq '{maskedEmail, expiresInSeconds, resendAfterSeconds}'
+
+challenge_id=$(printf '%s\n' "$challenge" | jq -er .challengeId)
+read -rs -p 'OTP from the test inbox: ' code
+printf '\n'
+session=$(
+  jq -n --arg id "$challenge_id" --arg code "$code" \
+    '{challengeId:$id, code:$code}' |
+    curl -fsS "$base/v1/auth/register/verify" \
+      -H 'Content-Type: application/json' --data-binary @-
+)
+unset code
+printf '%s\n' "$session" | jq '.user | {role, emailVerified, totalPoints}'
+unset session challenge challenge_id
+```
+
+The challenge example should report the masked test address and a 300-second code lifetime. Successful verification yields `role=USER`, `emailVerified=true`, and 0 points. To test resend, wait for the server-provided cooldown, send `{"challengeId":"..."}` to `/v1/auth/register/resend`, and enter the newest code. Check invalid, expired, and consumed codes in [the OTP test suite](../backend/go/internal/httpapi/email_registration_test.go).

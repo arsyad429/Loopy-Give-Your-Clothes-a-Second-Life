@@ -1,30 +1,30 @@
 # Backend Loopy
 
-API Go menangani akun, pemeriksaan pakaian dengan Groq, dan peninjauan pickup. Login dan pemeriksaan berbagi satu server serta database PostgreSQL. [Implementasi Go](../backend/go/README.md)
+API Go menangani OTP pendaftaran, login, profil, pemeriksaan pakaian dengan Groq, pickup, keputusan admin, dan rewards. Satu PostgreSQL menyimpan data untuk seluruh alur. [Proyek Go](../backend/go/README.md) · [Kontrak endpoint](api-contract.md)
 
 ## Cara kerja
 
-| Bagian | Implementasi | Tanggung jawab |
+| Bagian | Titik masuk | Tanggung jawab |
 | --- | --- | --- |
-| Startup | [main.go](../backend/go/main.go), [store.go](../backend/go/store.go) | Membaca konfigurasi, membuka pool PostgreSQL, menjalankan migrasi, dan memulai server HTTP. |
-| HTTP | [http.go](../backend/go/http.go) | Routing, autentikasi Bearer, pemeriksaan role, batas ukuran JSON, dan format error. |
-| Autentikasi akun | [auth.go](../backend/go/auth.go), [password.go](../backend/go/password.go), [store.go](../backend/go/store.go) | Register, login, refresh, profil akun aktif, dan logout. Kata sandi di-hash dengan Argon2id. Database menyimpan hash token sesi. |
-| Verifikasi donasi dan jadwal | [donation_http.go](../backend/go/donation_http.go), [donation.go](../backend/go/donation.go), [donation_store.go](../backend/go/donation_store.go) | Ringkasan, antrean, detail pengajuan, persetujuan dengan jadwal final, dan penolakan dengan alasan. |
-| Pemeriksaan pakaian | [clothing_check.go](../backend/go/clothing_check.go), [clothing_photo.go](../backend/go/clothing_photo.go), [groq_vision.go](../backend/go/groq_vision.go), [clothing_check_store.go](../backend/go/clothing_check_store.go) | Validasi dan normalisasi foto, analisis Groq, penyimpanan atomik, dan pembacaan foto privat. |
-| Penyimpanan | [schema.sql](../backend/go/schema.sql), [schema_pickup.sql](../backend/go/schema_pickup.sql), [schema_vision.sql](../backend/go/schema_vision.sql), [schema_rewards.sql](../backend/go/schema_rewards.sql) | Versi 1 akun/sesi, versi 2 pickup, versi 3 Vision, versi 4 poin dan reward. |
-| Penyelesaian dan reward | [rewards_http.go](../backend/go/rewards_http.go), [rewards_store.go](../backend/go/rewards_store.go) | Transisi status, kredit unik, saldo, katalog, transaksi penukaran idempoten dan riwayat pengguna. |
+| Startup | [main.go](../backend/go/main.go) | Membaca konfigurasi, menyiapkan pool, menerapkan migrasi, memilih command, dan menjalankan HTTP dengan graceful shutdown. |
+| Batas HTTP | [server.go](../backend/go/internal/httpapi/server.go) | Router, format error, Bearer, guard role, batas ukuran JSON, timeout, dan rate limit autentikasi. |
+| Akun | [auth_handler.go](../backend/go/internal/httpapi/auth_handler.go) · [email_registration.go](../backend/go/internal/httpapi/email_registration.go) | Pendaftaran sementara, kirim ulang OTP, verifikasi, login, rotasi token, pembaruan profil dan logout. |
+| Pemeriksaan | [clothing_check_handler.go](../backend/go/internal/httpapi/clothing_check_handler.go) · [vision](../backend/go/internal/vision/README.md) | Validasi multipart, reservasi key, pemrosesan foto, pemanggilan Groq, dan pembacaan foto privat. |
+| Pickup dan admin | [donation_handler.go](../backend/go/internal/httpapi/donation_handler.go) · [donation_store.go](../backend/go/internal/store/donation_store.go) | Submit, ringkasan, antrean, detail, penjadwalan, dan penolakan. |
+| Status dan rewards | [rewards_handler.go](../backend/go/internal/httpapi/rewards_handler.go) · [rewards_store.go](../backend/go/internal/store/rewards_store.go) | Donasi milik donatur, status dijemput atau selesai, saldo, katalog, redeem, dan riwayat. |
+| Database | [postgres.go](../backend/go/internal/store/postgres.go) · [migrasi 001–007](../backend/go/migrations/README.md) | Pool pgx, migrasi dengan advisory lock, transaksi per alur, dan kompatibilitas database lama yang tercakup suite. |
 
-Migrasi berjalan sekali per versi. Server mengambil advisory lock PostgreSQL untuk menyerialkan startup beberapa instance. Setiap startup menerapkan versi yang tertunda dan mencatatnya dalam transaksi. Migrasi mempertahankan akun, sesi, dan data pickup yang sudah tersimpan di database Go.
+Server memakai `serve` sebagai command utama. `create-admin` membuka database dan menjalankan migrasi sebelum membuat akun admin. `healthcheck` meminta `/ready` pada port 8080 di container. [Panduan akun admin](deploy-lxc.md#6-create-an-admin-account-if-needed)
 
 ## Akun, sesi, dan hak akses
 
-Register membuat akun ber-role `USER` dan membuat sesi. Login pengguna dan admin memakai endpoint yang sama. Buat admin melalui perintah `create-admin` dengan konfigurasi privat. Login mengembalikan access token dan refresh token. Aplikasi mengirim access token dalam header `Authorization: Bearer <accessToken>`. Refresh merotasi token. Logout mencabut sesi itu. Pada setiap request yang dilindungi, API membaca role akun dari database. [Alur, keamanan, kontrak, dan contoh autentikasi](auth-go.md)
+Pendaftaran dengan konfigurasi normal mengembalikan `202` dan challenge. Kode yang benar membuat akun `USER` serta sesi, lalu mengembalikan `201`. Admin dibuat melalui CLI dan masuk dari endpoint login yang sama. PostgreSQL menyimpan hash Argon2id untuk password dan hash SHA-256 untuk token acak. Request terlindungi membawa access token. Refresh mengganti pasangan token, dan logout menghapus sesi aktif. [Autentikasi](auth-go.md)
 
-Endpoint admin memerlukan role `ADMIN`. Antrean memuat ringkasan pengajuan, sedangkan kontak, alamat, dan penilaian AI tersedia di endpoint detail yang juga dilindungi. Keputusan admin mencatat ID akun dari sesi sebagai pelaku. [Kontrak verifikasi donasi dan penjadwalan](donation-review-go.md)
+Layanan memakai identitas dari sesi untuk memfilter resource milik pengguna. Akses antrean dan keputusan memerlukan `ADMIN`. Antrean mengembalikan ringkasan, sedangkan kontak dan alamat dimuat melalui detail. Foto privat diakses dengan token oleh pemilik atau admin. [Review admin](donation-review-go.md)
 
 ## Menjalankan dan memeriksa backend
 
-Dari root repo, jalankan Docker Compose. Database memakai volume bernama sehingga data tersedia kembali saat service dijalankan ulang.
+Mulai dari root repository. Gunakan `.env.example` sebagai rujukan untuk database, SMTP, dan Groq. Gunakan nama proyek Compose yang sama jika ingin membuka volume PostgreSQL yang sudah ada.
 
 ```bash
 API_PORT=8082 docker compose -p loopy-go up --build -d --wait db backend
@@ -32,18 +32,31 @@ curl -fsS http://127.0.0.1:8082/health
 curl -fsS http://127.0.0.1:8082/ready
 ```
 
-- `GET /health` mengembalikan `{"status":"ok","mode":"go-auth"}` sebagai respons liveness yang dipakai klien sekarang.
-- `GET /ready` memeriksa koneksi PostgreSQL dan mengembalikan `{"status":"ready"}`. Jika database tidak bisa diakses, responsnya `503 NOT_READY`.
-- Untuk menjalankan Go langsung, set `DATABASE_URL`, masuk ke `backend/go`, lalu jalankan `go run .`. Alamat bawaan adalah `127.0.0.1:8080`; `HTTP_ADDR` dapat mengubahnya. Lihat [panduan deployment LXC](deploy-lxc.md) untuk jaringan dan deployment.
+| Pemeriksaan | Arti hasil |
+| --- | --- |
+| `GET /health` | HTTP `200` dengan `{"status":"ok","mode":"go-auth"}` menunjukkan proses HTTP merespons. |
+| `GET /ready` | `200` dengan `{"status":"ready"}` menunjukkan koneksi PostgreSQL tersedia. Kegagalan database memberi `503 NOT_READY`. |
+| Daftar dan verifikasi OTP | Menguji SMTP, alamat pengirim, challenge, pengiriman ke inbox, dan pembuatan akun. |
+| Unggah foto memakai akun uji | Menguji request multipart, izin, kredensial Groq, dan hasil analisis end-to-end. |
 
-Dari `backend/go`, jalankan `go test ./...`, `go vet ./...`, dan `go build ./...`. Set `TEST_DATABASE_URL` ke PostgreSQL khusus pengujian untuk menjalankan tes integrasi. Tes membuat schema terpisah untuk setiap kasus dan menghapusnya setelah selesai. CI menjalankan tes integrasi dengan PostgreSQL 17 dan `-race`. [Bukti pemeriksaan](verification.md)
-
-## Status fitur
-
-Backend aktif menyediakan autentikasi, pemeriksaan/foto privat, verifikasi/jadwal/penolakan, transisi `PICKUP_SCHEDULED → PICKED_UP → COMPLETED` dengan 10 poin satu kali, pembacaan donasi pemilik, saldo, katalog, redeem, dan riwayat. Android menggunakan API untuk auth, pemeriksaan, pickup, donasi, admin dan reward. Saldo serta transaksi reward bersumber dari PostgreSQL; demo Room E–F telah dihapus. OTP dan fitur tambahan profil/settings memerlukan kontrak tersendiri. [Kontrak API](api-contract.md) · [Panduan E–F](completion-rewards.md)
+Untuk Go di host, siapkan PostgreSQL yang bisa diakses, set `DATABASE_URL`, lalu jalankan `go run .` dari `backend/go`. `HTTP_ADDR` mengatur bind dan defaultnya `127.0.0.1:8080`. Compose development dapat memublikasikan port host sesuai konfigurasinya. Compose LXC memakai `API_BIND_ADDRESS` dengan default loopback. [Koneksi perangkat](development.md#koneksi-android-ke-backend) · [Konfigurasi VM](deploy-lxc.md)
 
 ## Pemeriksaan pakaian Go
 
-Go menerima JPEG atau PNG dan jenis pakaian melalui multipart. Backend menormalkan foto menjadi JPEG, mengirimkannya ke Groq, lalu menyimpan hasil dan foto privat dalam satu transaksi PostgreSQL. Pemilik dan admin menggunakan access token Go untuk mengakses hasil dan foto. Pengulangan request dengan key dan payload yang sama mengembalikan hasil sebelumnya.
+1. `POST /v1/checks` menerima satu file JPEG atau PNG hingga 10 MiB serta satu kode `clothingType`. Identitas berasal dari token `USER`.
+2. Backend mengoreksi orientasi, menormalisasi gambar ke JPEG, dan mencatat reservasi key per akun. Panggilan Groq dilakukan dengan deadline dan jumlah pemeriksaan paralel yang dibatasi.
+3. Hasil, foto, dan referensi key disimpan atomik. Request dengan key serta payload yang sama dapat memperoleh hasil sebelumnya. Jika payload berubah, gunakan key baru.
+4. Pemilik atau admin membaca detail dan foto melalui endpoint terpisah. Hasil yang berpotensi layak dapat dipakai untuk mengajukan pickup.
 
-Isi `GROQ_API_KEY` di `.env` server untuk mengaktifkan analisis baru. Data dari skema backend lama memerlukan proses impor tersendiri. Android memakai access token Go yang sama untuk upload, detail, dan unduhan privat. Token diperbarui melalui refresh ketika server menolak access token dengan `401`. [Kontrak API](api-contract.md#kontrak-pemeriksaan-pakaian-go) · [Tes Go](../backend/go/README.md)
+Jika `GROQ_API_KEY` kosong, pemeriksaan baru mengembalikan `503 AI_UNAVAILABLE` meski `/ready` sehat. `502 AI_RESPONSE_FAILED` menunjukkan respons provider gagal dipakai. Cek model, mode respons, dan konektivitas pada konfigurasi yang efektif di container. [Aturan foto dan provider](../backend/go/internal/vision/README.md) · [Contoh request](api-contract.md#kontrak-pemeriksaan-pakaian-go)
+
+## Verifikasi pengembangan
+
+```bash
+cd backend/go
+go test -race -count=1 ./...
+go vet ./...
+go build ./...
+```
+
+Set `TEST_DATABASE_URL` ke PostgreSQL khusus tes untuk mencakup migrasi, rollback, kepemilikan, dan konkurensi. Suite membuka schema uji terisolasi. Tanpa variabel itu, tes yang memerlukan PostgreSQL dilewati. [Workflow CI](../.github/workflows/README.md) · [Hasil verifikasi](verification.md)

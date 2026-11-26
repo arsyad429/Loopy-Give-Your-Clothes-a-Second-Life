@@ -1,22 +1,20 @@
 # Backlog implementasi
 
-PRD belum membagi pemilik implementasi. Neva/Rio/Alex/Arsyad tetap mengikuti tanggung jawab dokumentasi §12; tim menetapkan pemilik tugas kode terpisah.
+Alur inti akun, foto, pickup, admin, status, poin, dan redeem sudah terhubung pada Android dan Go. Backlog ini mencatat pekerjaan yang tersisa atau perlu dibuktikan. Penanggung jawab tugas kode dapat ditetapkan tim per issue, mengikuti pembagian dokumentasi [PRD §12](reference/PRD-v2.1.md). [Riwayat verifikasi](verification.md)
 
-| Urutan | Pekerjaan | Tempat awal | Selesai bila |
-| --- | --- | --- | --- |
-| 1 | Backend Go/auth sudah dipilih; sepakati AI, wilayah/waktu pickup dan scope tambahan | API/data model/screen map | Kontrak tim disetujui |
-| 2 | Auth Go, CLI admin, login/register Android, dan refresh sesi di memori | backend/go, docs/auth-go.md | Backend auth teruji; isolasi bisnis diverifikasi saat route tersedia |
-| 3 | Landing/login/register+session graph | feature landing/auth, navigation | AC01–04,19–20 |
-| 4 | Home ringkasan/status/saldo | feature home, repositories | Loading/empty/error dan data benar |
-| 5 | Sambungkan pemeriksaan Android ke API | clothingcheck, repository Android, backend checks/storage | Retrofit memakai access token Go untuk upload, detail, dan foto privat. Uji pada perangkat untuk memverifikasi kamera dan navigasi. |
-| 6 | Pickup submit idempotent | pickup, backend donations | AC07–08, request/history atomik |
-| 7 | API Go untuk ringkasan, antrean, detail, jadwal, dan penolakan sudah tersedia. Lanjut integrasi Android dan penyediaan foto privat. | admin Android, backend/go, docs/donation-review-go.md | AC09–11 teruji dengan data sungguhan |
-| 8 | My Donations+tracking detail | donations | AC12,19 tanpa GPS |
-| 9 | Transisi status admin dan kredit +10 melalui API terintegrasi Android | feature/admin, backend/go | Uji status dan idempotensi dengan PostgreSQL |
-| 10 | Katalog, saldo, redeem dan riwayat terintegrasi Android ke API akun aktif | feature/rewards, RewardRepositoryImpl | Uji Retrofit, state dan UI; lanjut verifikasi VM tim |
-| 11 | UI Figma final+integrasi/demo | components/theme/features | AC01–20+aksesibilitas |
-| Tambahan Figma | Profil, Settings, username, dan OTP saat daftar sudah terhubung | profile/settings/verification, docs/auth-go.md | Uji pengiriman dari VM dengan kredensial SMTP dan APK terbaru |
+## Kesiapan demo dan rilis
 
-S05 dan S06 menggunakan font Plus Jakarta Sans dan ikon dari desain. Layar lain mengikuti peta Figma saat diimplementasikan.
+| Pekerjaan | Kondisi saat ini | Selesai bila |
+| --- | --- | --- |
+| Pagination Donasiku | API mengirim `nextCursor` dan admin sudah memuat halaman lanjutan. Repository Donasiku baru mengambil halaman pertama, sehingga akun dengan lebih dari 25 pengajuan dapat kehilangan hasil dalam daftar. | Akun dengan lebih dari 25 pengajuan dapat melihat, mencari, dan memfilter semua item yang relevan. Uji refresh, perpindahan filter, dan ID ganda. [Repository Android](../android/app/src/main/java/id/ac/loopy/data/repository/DonationRepositoryImpl.kt) |
+| Ketahanan submit pickup | Key retry tersimpan di memori repository dan form donatur berada di state layar. Draf jadwal admin sudah memakai Room. | Pada koneksi putus setelah server commit, hasil dapat direkonsiliasi setelah proses aplikasi dimulai ulang. Draf tidak tercampur saat berganti akun. [Form pickup](../android/app/src/main/java/id/ac/loopy/feature/pickup/README.md) |
+| Pemulihan OTP | Challenge aktif berada di `LoginViewModel` selama proses hidup. | Tim menguji force-stop atau jaringan terputus selama pendaftaran dan mencatat cara memperoleh kode baru beserta pesan yang terlihat. [OTP](auth-go.md) |
+| Alur lengkap di VM | CI dan beberapa tes perangkat telah dijalankan. Uji regresi menyeluruh perlu dilakukan pada versi APK dan server yang sama. | Lakukan satu demo dua akun dari daftar dengan inbox, analisis foto, review, jadwal, selesai, hingga redeem. Catat bukti masing-masing tahap. [Acceptance](acceptance-tests.md) |
+| Desain dan aksesibilitas | Screenshot dan metadata tersedia. Pemeriksaan visual menyeluruh per node masih perlu dicatat. | Tangkapan layar dibandingkan untuk state loading, empty, error, dan sukses. TalkBack dan font besar diperiksa. [Peta layar](screen-map.md) |
+| Distribusi APK | Properti URL HTTPS dan build release tersedia. | APK ditandatangani tim, dibangun dengan URL HTTPS yang terjangkau, dan lulus smoke test di HP. [Release](deploy-lxc.md#7-connect-android-or-a-public-domain) |
 
-Di luar MVP: kurir terpisah, GPS live, pembayaran, push notification, voucher merchant nyata, hadiah fisik, marketplace dan optimasi rute. Pickup/reward simulasi akademik.
+## Ketika mencatat pekerjaan baru
+
+Sertakan rute layar atau endpoint, langkah reproduksi, data uji, commit, serta hasil yang diharapkan. Untuk perubahan transaksi, tambahkan kondisi retry, konkurensi, dan bukti rollback pada database uji. Untuk perubahan UI, sertakan role, ukuran layar, dan kondisi data yang dipakai.
+
+Keputusan produk yang perlu disepakati tim mencakup wilayah layanan, jam pickup, dan jika ada perluasan cakupan AI. Di luar MVP terdapat kurir terpisah, GPS live, pembayaran, push notification, voucher merchant nyata, hadiah fisik, marketplace, dan optimasi rute. Pickup serta reward demo digunakan dalam simulasi akademik.
